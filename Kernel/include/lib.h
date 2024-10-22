@@ -8,4 +8,9 @@ void * memcpy(void * destination, const void * source, uint64_t length);
 
 char *cpuVendor(char *result);
 
+uint8_t getSeconds();
+uint8_t getMinutes();
+uint8_t getHours();
+uint8_t getKeyPressed();
+
 #endif

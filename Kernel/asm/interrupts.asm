@@ -13,10 +13,14 @@ GLOBAL _irq03Handler
 GLOBAL _irq04Handler
 GLOBAL _irq05Handler
 
+GLOBAL _irq60Handler
+
 GLOBAL _exception0Handler
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
+
+EXTERN sysCaller
 
 SECTION .text
 
@@ -138,6 +142,19 @@ _irq04Handler:
 _irq05Handler:
 	irqHandlerMaster 5
 
+;SysCaller
+; para maneja las interrupciones del sistema
+_irq60Handler: 
+	pushState
+
+	mov rdi, rax
+	mov rsi, rbx
+	mov rdx, rcx
+	
+	call sysCaller
+
+	popState ; Restaura el estado guardado
+	iretq ; Retorna de la interrupción
 
 ;Zero Division Exception
 _exception0Handler:

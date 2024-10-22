@@ -3,6 +3,9 @@
 #include <lib.h>
 #include <moduleLoader.h>
 #include <naiveConsole.h>
+#include <videoDriver.h>
+#include <idtLoader.h>
+#include <keyboardDriver.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -82,6 +85,7 @@ void * initializeKernelBinary()
 
 int main()
 {	
+	load_idt();
 	ncPrint("[Kernel Main]");
 	ncNewline();
 	ncPrint("  Sample code module at 0x");
@@ -98,6 +102,12 @@ int main()
 	ncPrint("  Sample data module contents: ");
 	ncPrint((char*)sampleDataModuleAddress);
 	ncNewline();
+
+	ncNewline();
+	ncPrint("Press ESC to exit text mode.");
+	ncNewline();
+	//printKeys sin interrupcion
+	pressKey();
 
 	ncPrint("[Finished]");
 	return 0;

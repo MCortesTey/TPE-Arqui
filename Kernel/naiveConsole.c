@@ -16,10 +16,34 @@ void ncPrint(const char * string)
 		ncPrintChar(string[i]);
 }
 
+void ncPrintColour(const char * string, uint8_t textColour, uint8_t bgColour)
+{
+    int i;
+    uint8_t attribute = (bgColour << 4) | (textColour & 0x0F);
+
+    for (i = 0; string[i] != 0; i++)
+    {
+        *currentVideo = string[i];
+        *(currentVideo + 1) = attribute;
+        currentVideo += 2;
+    }
+}
+
 void ncPrintChar(char character)
 {
 	*currentVideo = character;
 	currentVideo += 2;
+}
+
+void ncPrintCharStyle(char character, char style){
+	*currentVideo++ = character;
+	*currentVideo++ = style;
+}
+
+void ncPrintStyle(const char * string, char style){
+	int i;
+	for (i = 0; string[i] != 0; i++)
+		ncPrintCharStyle(string[i], style);
 }
 
 void ncNewline()
@@ -93,3 +117,11 @@ static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
 
 	return digits;
 }
+
+void ncDelete()
+{
+	currentVideo -= 2;
+	ncPrintChar(' ');
+	currentVideo -= 2;
+}
+
