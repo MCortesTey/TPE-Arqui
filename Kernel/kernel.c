@@ -107,8 +107,8 @@ int main()
 	ncPrint("Press ESC to exit text mode.");
 	ncNewline();
 	//printKeys sin interrupcion
-	pressKey();
-
+	//pressKey();
+	while(1);
 	ncPrint("[Finished]");
 	return 0;
 }
