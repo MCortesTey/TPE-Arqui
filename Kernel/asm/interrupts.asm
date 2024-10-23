@@ -81,7 +81,9 @@ SECTION .text
 
 %macro exceptionHandler 1
 	pushState
+	//guardado en Struct de registers
 
+	//muevo a rsi los register
 	mov rdi, %1 ; pasaje de parametro
 	call exceptionDispatcher
 
