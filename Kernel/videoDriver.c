@@ -190,3 +190,13 @@ void backspaceMove() {
         }
     }
 }
+
+/*
+void vdPrintRegister(char *regName, uint64_t regValue) { // le paso el nombre y el estado del registro en uint64
+    char buffer[256] = {0}; 
+    vdPrintColor(regName, blanco!! , negro!!);  // puse blanco y negro para que quede puesto pero hay que definirlos 
+    vdPrintColor(": ", blanco, negro); 
+    uintToBase(regValue, buffer, 16);  // pasa el estado a hexa 
+    vdPrintColor(buffer, blanco, negro);
+    // imprimo nueva linea 
+}*/

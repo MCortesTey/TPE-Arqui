@@ -254,7 +254,7 @@ saveRegisters:
 section .bss 
 	aux resq 1	
 	
-	GLOBAL regBackup
+	GLOBAL regBackup   ; struct para guardar cada registro en su lugar sin tener que movernos con suma de bytes
 	regBackup:
 	.r_rax resq 1
 	.r_rbx resq 1
