@@ -167,5 +167,55 @@ haltcpu:
 
 
 
-SECTION .bss
+; macro para guardar los registros para el modulo de registros y cada vez que se relice las excepciones
+; cuando se "llama" a la macro en las funciones se la llama como 'saveRegistersASM regArray"
+;cuando se relizan las excepciones llamar a esta macro para que guarde los registros y cambiar el regChecked a 1
+; orden en que se guardan : rax, rbx, rcx, rdx, rsi, rdi, rbp, rsp, r8, r9, r10, r11, r12, r13, r14, r15, rip, rflags
+
+%macro saveRegistersASM 1
+
+	mov [%1  + 8*0 ], rax
+	mov [%1 +8*1], rbx
+	mov [%1 +8*2], rcx
+	mov [%1 +8*3], rdx
+	mov [%1 +8*4], rsi
+	mov [%1 +8*5], rdi
+	mov [%1 +8*6], rbp
+	mov [%1 +8*8], r8
+	mov [%1 +8*9], r9
+	mov [%1 +8*10], r10
+	mov [%1 +8*11], r11
+	mov [%1 +8*12], r12
+	mov [%1 +8*13], r13
+	mov [%1 +8*14], r14
+	mov [%1 +8*15], r15
+
+	mov rax, rsp 
+	add rax, 160
+	mov [%1 +56], rax  ; se guarda rsp
+	mov rax, [rsp] 
+	mov [%1 +128], rax   ; se guarda rip
+	mov rax, [rsp+8] 
+	mov [%1 +136], rax   ; se guarda las rflags
+
+	mov rdi, %1 
+	call saveRegisters
+
+%endmacro
+
+;luego de que hagamos la excepcion, y llamemos a la macro para guardar el estado de los registros hacer:
+; ...
+; mov byte[regChecked], 1   
+; mov rdi, [regChecked]
+; mov rsi, regArray
+; call saveRegisters
+; ...
+; no estoy segura si es asi pero seria la idea 
+
+section .bss 
 	aux resq 1
+	regArray	resq	18	
+	regChecked resb 1  ; lugar para guardar si ya se se hizo un backup de los registros o no, deberiamos ponerlo 
+						; en 1 cuando se realizan las excepciones y se llama a la macro
+
+	
