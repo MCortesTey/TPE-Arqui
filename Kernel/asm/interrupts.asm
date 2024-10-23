@@ -161,6 +161,7 @@ _irq60Handler:
 ;Zero Division Exception
 _exception0Handler:
 	exceptionHandler 0
+	jmp haltcpu
 
 haltcpu:
 	cli
