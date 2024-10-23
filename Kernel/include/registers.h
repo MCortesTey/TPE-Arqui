@@ -4,9 +4,19 @@
 #include <stdint.h>
 #include <stdio.h>
 
-uint64_t *getRegisters();
-void saveRegisters ( uint64_t * reg , char ok);
-char isChecked();
+
+typedef struct regStruct{
+	uint64_t rax, rbx, rcx, rdx;
+	uint64_t rsi, rdi, rbp, rsp;
+	uint64_t  r8,  r9, r10, r11;
+	uint64_t r12, r13, r14, r15;
+	uint64_t ss, cs, rflags, rip;
+} regStruct;
+
+extern regStruct regBackup;
+
+
+void printRegStatus ( regStruct * regs );
 
 
 #endif

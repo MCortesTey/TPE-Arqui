@@ -12,13 +12,16 @@ GLOBAL _irq02Handler
 GLOBAL _irq03Handler
 GLOBAL _irq04Handler
 GLOBAL _irq05Handler
-
 GLOBAL _irq60Handler
 
 GLOBAL _exception0Handler
+GLOBAL saveRegisters
+GLOBAL printRegStatusASM
 
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
+EXTERN printRegStatus
+
 
 EXTERN sysCaller
 
@@ -167,55 +170,107 @@ haltcpu:
 
 
 
-; macro para guardar los registros para el modulo de registros y cada vez que se relice las excepciones
-; cuando se "llama" a la macro en las funciones se la llama como 'saveRegistersASM regArray"
-;cuando se relizan las excepciones llamar a esta macro para que guarde los registros y cambiar el regChecked a 1
-; orden en que se guardan : rax, rbx, rcx, rdx, rsi, rdi, rbp, rsp, r8, r9, r10, r11, r12, r13, r14, r15, rip, rflags
+; macro para guardar los registros en regBackup (esta en section.bss) en orden en que se los pushean en pushState
 
-%macro saveRegistersASM 1
+%macro saveRegistersASM 0  ;0 porque no recibe argumentos la macro
 
-	mov [%1  + 8*0 ], rax
-	mov [%1 +8*1], rbx
-	mov [%1 +8*2], rcx
-	mov [%1 +8*3], rdx
-	mov [%1 +8*4], rsi
-	mov [%1 +8*5], rdi
-	mov [%1 +8*6], rbp
-	mov [%1 +8*8], r8
-	mov [%1 +8*9], r9
-	mov [%1 +8*10], r10
-	mov [%1 +8*11], r11
-	mov [%1 +8*12], r12
-	mov [%1 +8*13], r13
-	mov [%1 +8*14], r14
-	mov [%1 +8*15], r15
+    mov [regBackup.r_rbp], rbp  ; Guarda el valor de rbp
 
-	mov rax, rsp 
-	add rax, 160
-	mov [%1 +56], rax  ; se guarda rsp
-	mov rax, [rsp] 
-	mov [%1 +128], rax   ; se guarda rip
-	mov rax, [rsp+8] 
-	mov [%1 +136], rax   ; se guarda las rflags
+    mov rbp, [rsp]              ; rbp
+    mov [regBackup.r_r15], rbp
 
-	mov rdi, %1 
-	call saveRegisters
+    mov rbp, [rsp + 8]          ; r15
+    mov [regBackup.r_r14], rbp
+
+    mov rbp, [rsp + 16]         ; r14
+    mov [regBackup.r_r13], rbp
+
+    mov rbp, [rsp + 24]         ; r13
+    mov [regBackup.r_r12], rbp
+
+    mov rbp, [rsp + 32]         ; r12
+    mov [regBackup.r_r11], rbp
+
+    mov rbp, [rsp + 40]         ; r11
+    mov [regBackup.r_r10], rbp
+
+    mov rbp, [rsp + 48]         ; r10
+    mov [regBackup.r_r9], rbp
+
+    mov rbp, [rsp + 56]         ; r9
+    mov [regBackup.r_r8], rbp
+
+    mov rbp, [rsp + 64]         ; rsi
+    mov [regBackup.r_rsi], rbp
+
+    mov rbp, [rsp + 72]         ; rdi
+    mov [regBackup.r_rdi], rbp
+
+    mov rbp, [rsp + 88]         ; rdx
+    mov [regBackup.r_rdx], rbp
+
+    mov rbp, [rsp + 96]         ; rcx
+    mov [regBackup.r_rcx], rbp
+
+    mov rbp, [rsp + 104]        ; rbx
+    mov [regBackup.r_rbx], rbp
+
+    mov rbp, [rsp + 112]        ; rax
+    mov [regBackup.r_rax], rbp
+
+    mov rbp, [rsp + 120]        ; rip
+    mov [regBackup.r_rip], rbp
+
+    mov rbp, [rsp + 128]        ; cs
+    mov [regBackup.r_rcs], rbp
+
+    mov rbp, [rsp + 136]        ; rflags
+    mov [regBackup.r_rflags], rbp
+
+    mov rbp, [rsp + 144]        ; rsp
+    mov [regBackup.r_rsp], rbp
+
+    mov rbp, [rsp + 152]        ; ss
+    mov [regBackup.r_rss], rbp
+
+    mov rbp, [regBackup.r_rbp]  ; Restaura el valor original de rbp
 
 %endmacro
 
-;luego de que hagamos la excepcion, y llamemos a la macro para guardar el estado de los registros hacer:
-; ...
-; mov byte[regChecked], 1   
-; mov rdi, [regChecked]
-; mov rsi, regArray
-; call saveRegisters
-; ...
-; no estoy segura si es asi pero seria la idea 
+
+saveRegisters:
+	push pushState
+	saveRegistersASM
+	popState
+	ret
+
+;printRegStatusASM:
+;	mov qword rdi, regBackup
+;	call printRegStatus
+;	ret
 
 section .bss 
-	aux resq 1
-	regArray	resq	18	
-	regChecked resb 1  ; lugar para guardar si ya se se hizo un backup de los registros o no, deberiamos ponerlo 
-						; en 1 cuando se realizan las excepciones y se llama a la macro
-
+	aux resq 1	
 	
+	GLOBAL regBackup
+	regBackup:
+	.r_rax resq 1
+	.r_rbx resq 1
+	.r_rcx resq 1
+	.r_rdx resq 1
+	.r_rsi resq 1
+	.r_rdi resq 1
+	.r_rsp resq 1
+	.r_rbp resq 1 
+	.r_r8 resq 1
+	.r_r9 resq 1
+	.r_r10 resq 1
+	.r_r11 resq 1
+	.r_r12 resq 1
+	.r_r13 resq 1
+	.r_r14 resq 1
+	.r_r15 resq 1
+	.r_rss resq 1
+	.r_rcs resq 1
+	.r_rip resq 1
+	.r_rflags resq 1
