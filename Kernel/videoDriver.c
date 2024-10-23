@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include <font.h>
 
-#define MARGIN 10
 
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
@@ -50,6 +49,7 @@ uint32_t posY = MARGIN;
 int cursor_pos = 0;
 int size = 1;
 
+
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
     uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
     uint64_t offset = (x * ((VBE_mode_info->bpp)/8)) + (y * VBE_mode_info->pitch);
@@ -57,6 +57,7 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
     framebuffer[offset+1]   =  (hexColor >> 8) & 0xFF; 
     framebuffer[offset+2]   =  (hexColor >> 16) & 0xFF;
 }
+
 
 void vdPrintCharColor(char c, uint64_t fcolor, uint64_t bcolor) {
     // Comprueba si la posición actual está cerca del borde de la pantalla y mueve la pantalla si es necesario
@@ -113,18 +114,30 @@ void vdPrintCharColor(char c, uint64_t fcolor, uint64_t bcolor) {
     posX += 10*size;
 }
 
-void vdPrintColor(char * string, uint64_t fColor, uint64_t bColor){
-    for(int i = 0; string[i] != 0; i++){
-        vdPrintCharColor(string[i], fColor, bColor);
-    }
-
-}
 
 void vdPrintColorLen(char * string, uint64_t fcolor, uint64_t bcolor, int len){
     for(int i = 0; i < len && string[i] != 0; i++){
         vdPrintCharColor(string[i], fcolor, bcolor );
     }
 }
+
+
+void vdPrintColor(char * string, uint64_t fColor, uint64_t bColor){
+    for(int i = 0; string[i] != 0; i++){
+        vdPrintCharColor(string[i], fColor, bColor);
+    }
+}//podriamos hacerla llamando a vdPrintColorLen calculando la length antes de llamar
+
+
+void vdPrint(char * string){
+    vdPrintColor(string, WHITE, BLACK);
+}
+
+
+void vdPrintError(char *string){
+    vdPrintColor(string, RED, BLACK);
+}
+
 
 void vdDelete(){
     // Si la posición actual está en el borde superior izquierdo de la pantalla, no hay nada que borrar
@@ -155,6 +168,8 @@ void vdDelete(){
     // Ajusta la posición del cursor después de borrar el carácter
     posX -= 10*size;
 }
+
+
 void backspaceMove() {
     // Puntero al framebuffer para acceder a los píxeles
     uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
