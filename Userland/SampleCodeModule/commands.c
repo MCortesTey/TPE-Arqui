@@ -1,17 +1,30 @@
 #include "commands.h"
+#include "functions.h"
 
-static char* commands[]={
-    "help",
-    "exit"
+#define COMMAND_COUNT sizeof(commands) / sizeof(commands[0]) // Ajustado para calcular correctamente el número de comandos
+
+
+static char * commands[][2] = {
+        {"clear", "Clears the screen."},
+        {"exit", "Exits the shell."},
+        {"help", "Shows the available commands."},
+        {"invalid opcode exception", "Test for the Invalid Opcode Exception"},
+        {"zero exception", "Test for the Zero Division Exception"},
+        {"inforeg", "Shows the registers values."},
+        {"snakes", "Starts the Snakes game."},
+        {"time", "Shows the current time."}
 };
-
-#define COMMAND_COUNT sizeof(commands)
 
 static int (*commandsFunctions[])(int argc, char* argv[]) = {
+    clearCommand,
+    exitCommand,
     helpCommand,
-    exitCommand
+    invalidOp_exceptionCommand,
+    zero_exceptionCommand,
+    show_registersCommand,
+    snakesCommand,
+    timeCommand,
 };
-
 
 
 //recibe el string del comando y retorna la funcion del comando
@@ -28,7 +41,7 @@ int CommandParse(char *commandInput){
         return INPUT_ERROR;
 
     for(int i=0; i<COMMAND_COUNT; i++){
-        if(strcmp(command, commands[i]) == 0) { // Comparar correctamente
+        if(strcmp_s(command, commands[i][0]) == 0) { // Comparar correctamente
             return commandsFunctions[i](argsCount, args);
         }
     }
@@ -56,3 +69,10 @@ static char* fillCommandAndArgs(char* args[], char *commandInput, int *argsCount
     return finalCommand;
 }
 
+static int helpCommand(int argc, char * argv[] ){
+    for (int i=0; i<COMMAND_COUNT; i++)
+    {
+        printf_s("%s: %s", commands[i][0], commands[i][1]);
+    }
+    return 1;
+}
