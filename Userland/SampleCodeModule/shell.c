@@ -2,52 +2,47 @@
 #include "functions.h"
 #include "syscalls_shell.h"
 #define INPUT_MAX 1000
+#define MSG "Welcome to our shell! Type 'help for a list of commands\n "
 
-static char *instructions[] = {"help", "zero_division", "invalid_opcode", "time", "registers",  "snakes", 0};
-static int functionId(char *buffer);
+static void getBuffer(char * input);
 
 int startShell() 
 {
-    char *msg = "Welcome to our shell! Type 'help' for a list of commands.\n";
+
     printf_s(msg);
-    
+    char input[INPUT_MAX] = {0};
+    char copy[INPUT_MAX] = {0};
     int exit = 0 ;
-    char buffer[INPUT_MAX] = {0};
+    int command;
 
     while (!exit){
         printf_s("$>");
-        int id = functionId(buffer);
-        functionsHandler(id);
+        getBuffer(input);
+
+        if (input[0] != 0 ) { // chequeo si el usuario ingreso algo
+            strcpy(copy, buffer);
+            command = CommandParse(copy);
+        } 
     }
     return 0;
 }
 
-void functionsHandler(int id){
-
-}
-
-static int functionId(char *buffer){ //recibe el buffer y devuelve el indice de la funcion q ingreso el usuario 
-    char functionInput[INPUT_MAX] = {0};  // solo va a guardar el modulo que el usuario le pide, no los argumentos tmb
+static void getBuffer(char * input) { // lee lo que escribio el usuario y lo almacena en input
+    char c; 
     int i = 0;
 
-    while(i < INPUT_MAX && buffer[i] != 0 && buffer[i] != ' ' && buffer[i] != '\t' )
-    {
-        functionInput[i] = buffer[i];
-        lowerCase(functionInput);
-        i++;
-    }
-    if ( i == INPUT_MAX && functionInput[i] != 0 ) // verifica si el usuario ingreso un comando mas largo del esperado
-    {
-        return -1;
-    }
-    i = 0;
-    while (instructions[i] != 0)
-    {
-        if (strcmp_s(functionInput, instructions[i]) == 0)   // se fija si lo que ingreso el usuario es alguna de las instrucciones posibles
-        {
-            return i; 
+    while ((c = getchar()) != '\n') {
+        if (c == '\b') {
+            if (i > 0) {
+                i--;
+            }
         }
-        i++;
+        else if (c != ESC) {
+            if (i < (MAX_COMMAND_SIZE - 1)) {
+                input[i++] = c;
+            }
+        }
     }
-    
+    input[i] = 0;
 }
+
