@@ -10,7 +10,8 @@ typedef enum{
 } FDS;
 
 
-void sysCaller(uint64_t rax, ...);
-size_t sys_write(FDS fd, const char *buf, size_t count);
+void sys_write(char * buffer, int len, int fd);
+void sys_read(char * buff, int len, int fds);
+int getShiftVal();
 
 #endif

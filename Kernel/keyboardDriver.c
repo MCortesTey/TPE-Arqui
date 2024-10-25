@@ -2,7 +2,7 @@
 #include <naiveConsole.h>
 #include <lib.h>
 #include <videoDriver.h>
-#include <sysCaller.h>
+#include <sysCalls.h>
 
 // Definiciones de constantes
 #define TOTAL_KEYS 58 // Número total de teclas definidas
@@ -176,7 +176,7 @@ static unsigned char asccCode[58][2] = {
  	case TAB_KEY:
  		vdPrintColor("    ", 0x00000000, 0x00000000); // Retornar el carácter de tabulación
  	case ENTER_KEY:
- 		//vdNewLine(); // Retornar el carácter de nueva línea
+ 		vdNewline(); // Retornar el carácter de nueva línea
  	case BACKSPACE_KEY:
  		vdDelete(); // Retornar el carácter de retroceso
  	}

@@ -133,6 +133,16 @@ void vdPrint(char * string){
     vdPrintColor(string, WHITE, BLACK);
 }
 
+void vdPrintColorUpto(char * string, uint64_t fcolor, uint64_t bcolor, int len){
+    for(int i = 0; i < len && string[i] != 0; i++){
+        vdPrintCharColor(string[i], fcolor, bcolor );
+    }
+}
+
+void vdPrintUpto(char * string, int len){
+    vdPrintColorUpto(string, WHITE, BLACK, len);
+}
+
 
 void vdPrintError(char *string){
     vdPrintColor(string, RED, BLACK);
@@ -204,6 +214,15 @@ void backspaceMove() {
 
         }
     }
+}
+void vdNewline() {
+    //cursorOff();
+    cursor_pos = 0;
+    // if (posY >= VBE_mode_info->height-(32*size)-MARGIN) {
+    //     moveScreen();
+    // }
+    posX = MARGIN;
+    posY += 16*size;
 }
 
 

@@ -17,9 +17,12 @@ void vdPrintCharColor(char c, uint64_t fcolor, uint64_t bcolor);
 void vdPrintColorLen(char * string, uint64_t fcolor, uint64_t bcolor, int len);
 void vdPrintRegister(const char *regName, uint64_t regValue);
 void vdPrintColor(char * string, uint64_t fColor, uint64_t bColor);
+void vdPrintColorUpto(char * string, uint64_t fcolor, uint64_t bcolor, int len);
+void vdPrintUpto(char * string, int len);
 void vdPrint(char * string);
 void vdPrintError(char * string);
 void vdDelete();
+void vdNewline();
 void backspaceMove();
 
 
