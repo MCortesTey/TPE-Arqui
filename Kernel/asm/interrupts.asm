@@ -12,7 +12,7 @@ GLOBAL _irq02Handler
 GLOBAL _irq03Handler
 GLOBAL _irq04Handler
 GLOBAL _irq05Handler
-GLOBAL _irq60Handler
+GLOBAL _irq80Handler
 
 GLOBAL _exception0Handler
 GLOBAL saveRegisters
@@ -149,7 +149,7 @@ _irq05Handler:
 
 ;SysCaller
 ; para maneja las interrupciones del sistema
-_irq60Handler: 
+_irq80Handler: 
 	pushState
 
 	mov rdi, rax
