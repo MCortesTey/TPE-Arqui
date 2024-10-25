@@ -5,6 +5,7 @@
 #include <stdarg.h>
 
 
+
 void sys_write(char * buff, int count, int fd){
     switch(fd){
         case STDOUT:
@@ -16,18 +17,5 @@ void sys_write(char * buff, int count, int fd){
     }
     //CASO INVALID FD
 }
-
-void sysCaller(uint64_t rax, ...) { //funcion para manejar diferentes syscall
-    // va_list args;
-    // va_start(args, rax);
-    // switch(rax){
-    //     case 4:; //sys_write
-    //         FDS fd = va_arg(args, FDS);
-    //         const char* buf = va_arg(args, const char*);
-    //         size_t count = va_arg(args, size_t);
-    //         sys_write(fd, buf, count);
-    //         break;
-    // }
-    // va_end(args);
-    return;
+void sys_read(char * c, int len, int fd){
 }

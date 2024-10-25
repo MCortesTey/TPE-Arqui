@@ -20,12 +20,12 @@ void exceptionDispatcher(int exception) {
 static void zero_division() {
 	// Activar isChecked si no se hizo antes
 	vdPrintError("Error: Division by cero is not permitted");
-	//new Line
+	vdNewline();
 
 }
 
 void invalidOperation(){
 	// Activar isChecked si no se hizo antes
 	vdPrintError("Error: Invalid Operation");
-	//newLine	
+	vdNewline();
 }

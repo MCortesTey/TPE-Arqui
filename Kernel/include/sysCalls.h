@@ -6,12 +6,12 @@
 
 typedef enum{
     STDOUT = 1,
-    STDERR
+    STDERR,
+    STDIN
 } FDS;
 
 
 void sys_write(char * buffer, int len, int fd);
 void sys_read(char * buff, int len, int fds);
-int getShiftVal();
 
 #endif
