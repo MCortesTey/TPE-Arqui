@@ -174,7 +174,7 @@ static unsigned char asccCode[58][2] = {
  	switch (key)
  	{
  	case TAB_KEY:
- 		vdPrintColor("    ", 0x00000000, 0x00000000); // Retornar el carácter de tabulación
+ 		vdPrint("    "); // Retornar el carácter de tabulación
  	case ENTER_KEY:
  		vdNewline(); // Retornar el carácter de nueva línea
  	case BACKSPACE_KEY:
