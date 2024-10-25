@@ -1,17 +1,28 @@
 #include "commands.h"
 
 static char* commands[]={
+    "clear",
+    "exit",
     "help",
-    "exit"
+    "invalidOp_exception",
+    "show_registers",
+    "snake",
+    "time",
+    "zero_exception"
 };
 
-#define COMMAND_COUNT sizeof(commands)
+#define COMMAND_COUNT sizeof(commands) / sizeof(commands[0]) // Ajustado para calcular correctamente el número de comandos
 
 static int (*commandsFunctions[])(int argc, char* argv[]) = {
+    clearCommand,
+    exitCommand,
     helpCommand,
-    exitCommand
+    invalidOp_exceptionCommand,
+    show_registersCommand,
+    snakesCommand,
+    timeCommand,
+    zero_exceptionCommand
 };
-
 
 
 //recibe el string del comando y retorna la funcion del comando
