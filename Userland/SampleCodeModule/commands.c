@@ -62,14 +62,15 @@ static char* fillCommandAndArgs(char* args[], char *commandInput, int *argsCount
                 args[*argsCount] = current + 1;
                 (*argsCount)++;
 
-        }
+            }
 
-    current++;
-    }
+        current++;
+        }
     return finalCommand;
+    }
 }
 
-static int helpCommand(int argc, char * argv[] ){
+int helpCommand(int argc, char * argv[] ){
     for (int i=0; i<COMMAND_COUNT; i++)
     {
         printf_s("%s: %s", commands[i][0], commands[i][1]);

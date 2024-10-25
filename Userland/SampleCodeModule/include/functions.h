@@ -4,10 +4,11 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-void printf_s(char *fmt, ... );
-void putChar_s(char c);
-char getChar_s ();
-void lowerCase(char *str);
-int strcmp_s(char *s1, char *s2);
+void printf(char *fmt, ... );
+void putchar(char c);
+void putcharColor(char c, uint32_t color);
+char getchar();
+void lowercase(char *str);
+int strcmp(char *s1, char *s2);
 
 #endif

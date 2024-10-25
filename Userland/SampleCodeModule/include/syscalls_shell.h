@@ -1,4 +1,4 @@
-/*
+
 #ifndef SYSCALLS_H
 #define SYSCALLS_H
 
@@ -9,7 +9,6 @@
 #define STDERR 2
 
 
-void syscall_write(char *buf, int size, int fd);
-
+void syscall_write(int fd, char *buf, int size, uint32_t color);
+void syscall_read(char * c, int size, int fd);
 #endif
-*/
