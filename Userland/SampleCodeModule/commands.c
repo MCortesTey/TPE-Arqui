@@ -41,7 +41,7 @@ int CommandParse(char *commandInput){
         return INPUT_ERROR;
 
     for(int i=0; i<COMMAND_COUNT; i++){
-        if(strcmp_s(command, commands[i][0]) == 0) { // Comparar correctamente
+        if(strcmp(command, commands[i][0]) == 0) { // Comparar correctamente
             return commandsFunctions[i](argsCount, args);
         }
     }
@@ -73,7 +73,7 @@ static char* fillCommandAndArgs(char* args[], char *commandInput, int *argsCount
 int helpCommand(int argc, char * argv[] ){
     for (int i=0; i<COMMAND_COUNT; i++)
     {
-        printf_s("%s: %s", commands[i][0], commands[i][1]);
+        printf("%s: %s", commands[i][0], commands[i][1]);
     }
     return 1;
 }

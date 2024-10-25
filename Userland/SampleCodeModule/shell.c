@@ -1,7 +1,9 @@
 #include "shell.h"
 #include "functions.h"
 #include "syscalls_shell.h"
+#include "commands.h"
 #define INPUT_MAX 1000
+#define ESC 
 #define MSG "Welcome to our shell! Type 'help for a list of commands\n "
 
 static void getBuffer(char * input);
@@ -9,18 +11,18 @@ static void getBuffer(char * input);
 int startShell() 
 {
 
-    printf_s(msg);
+    printf(MSG);
     char input[INPUT_MAX] = {0};
     char copy[INPUT_MAX] = {0};
     int exit = 0 ;
     int command;
 
     while (!exit){
-        printf_s("$>");
+        printf("$>");
         getBuffer(input);
 
         if (input[0] != 0 ) { // chequeo si el usuario ingreso algo
-            strcpy(copy, buffer);
+            strcpy(copy, input);
             command = CommandParse(copy);
         } 
     }

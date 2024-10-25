@@ -10,5 +10,6 @@ void putcharColor(char c, uint32_t color);
 char getchar();
 void lowercase(char *str);
 int strcmp(char *s1, char *s2);
+void strcpy(char *dest, const char *src);
 
 #endif
