@@ -12,20 +12,20 @@ void exceptionDispatcher(int exception) {
 		invalidOperation();
 	}
 	//hago print de registros
-	vdPrint("Presione una tecla para continuar");
+	vdPrint("Press keyboard to continue");
 	//leer ese caracter pero no escribirlo en pantalla, solo leerlo para poder 
 	// rectivar el cursor
 }
 
 static void zero_division() {
 	// Activar isChecked si no se hizo antes
-	vdPrintError("Error: División por cero no es posible");
+	vdPrintError("Error: Division by cero is not permitted");
 	//new Line
 
 }
 
 void invalidOperation(){
 	// Activar isChecked si no se hizo antes
-	vdPrintError("Error: Operación Inválida");
+	vdPrintError("Error: Invalid Operation");
 	//newLine	
 }

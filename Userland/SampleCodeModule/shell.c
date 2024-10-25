@@ -10,6 +10,7 @@ int startShell()
 {
     char *msg = "Welcome to our shell! Type 'help' for a list of commands.\n";
     printf_s(msg);
+    
     int exit = 0 ;
     char buffer[INPUT_MAX] = {0};
 
