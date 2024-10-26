@@ -113,9 +113,9 @@ static unsigned char asccCode[58][2] = {
  }
 
  // Búfer de teclado
- static char buffer[KEYBOARD_BUFFER_SIZE] = {0};
+ //static char buffer[KEYBOARD_BUFFER_SIZE] = {0};
  static int currentKey = 0; // Índice actual de la tecla en el búfer
- static int nextToRead = 0; // Índice de la próxima tecla a leer del búfer
+ //static int nextToRead = 0; // Índice de la próxima tecla a leer del búfer
  int shift = 0; // Estado de la tecla shift
  int capsLock = 0; // Estado del bloqueo de mayúsculas
  int registerPressed = 0; // Estado de la tecla de registro

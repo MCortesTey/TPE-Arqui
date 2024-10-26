@@ -1,7 +1,18 @@
 #include "commands.h"
 #include "functions.h"
 
+
 #define COMMAND_COUNT sizeof(commands) / sizeof(commands[0]) // Ajustado para calcular correctamente el número de comandos
+
+static char* fillCommandAndArgs(char* args[], char *commandInput, int *argsCount);
+static int clearCommand(int argc, char * argv[]);
+static int exitCommand(int argc, char * argv[]);
+static int helpCommand(int argc, char * argv[]);
+static int invalidOp_exceptionCommand(int argc, char* argv[]);
+static int show_registersCommand(int argc, char* argv[]);
+static int snakesCommand(int argc, char* argv[]);
+static int timeCommand(int argc, char* argv[]);
+static int zero_exceptionCommand(int argc, char * argv[]);
 
 
 static char * commands[][2] = {
@@ -41,7 +52,7 @@ int CommandParse(char *commandInput){
         return INPUT_ERROR;
 
     for(int i=0; i<COMMAND_COUNT; i++){
-        if(strcmp(command, commands[i][0]) == 0) { // Comparar correctamente
+        if(strcmp_s(command, commands[i][0]) == 0) { // Comparar correctamente
             return commandsFunctions[i](argsCount, args);
         }
     }
@@ -66,14 +77,43 @@ static char* fillCommandAndArgs(char* args[], char *commandInput, int *argsCount
 
         current++;
         }
-    return finalCommand;
     }
+    return finalCommand;
 }
 
 int helpCommand(int argc, char * argv[] ){
     for (int i=0; i<COMMAND_COUNT; i++)
     {
-        printf("%s: %s", commands[i][0], commands[i][1]);
+        printf_s("%s: %s", commands[i][0], commands[i][1]);
     }
     return 1;
+}
+
+
+static int clearCommand(int argc, char *argv[]) {
+    return 0;
+}
+
+static int exitCommand(int argc, char *argv[]) {
+    return 0;  
+}
+
+static int invalidOp_exceptionCommand(int argc, char* argv[]) {
+    return 1;  
+}
+
+static int show_registersCommand(int argc, char* argv[]) {
+    return 0; 
+}
+
+static int snakesCommand(int argc, char* argv[]) {
+    return 0;  
+}
+
+static int timeCommand(int argc, char* argv[]) {
+    return 0; 
+}
+
+static int zero_exceptionCommand(int argc, char *argv[]) {
+    return 0; 
 }

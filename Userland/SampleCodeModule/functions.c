@@ -1,5 +1,6 @@
 #include <stdarg.h>
 //#include <stdio.h>
+#include <stdint.h>
 #include "functions.h"
 #include "syscalls_shell.h"
 
@@ -7,39 +8,48 @@
 #define WHITE 0xFFFFFFFF
 #define BUFFER_SIZE 256
 
-
+/*
 void putcharColor(char c, uint32_t color) {
-    syscall_write(STDOUT, &c, 1, color);
+    syscall_write(&c, 1, STDOUT, color);
 }
 
-void putchar(char c) {
+void putchar_s(char c) {
     putcharColor(c, WHITE);
 }
+*/
 
-void printf(char *fmt, ... ){
+void putchar_s(char c){
+    //syscall_write(&c, 1, STDOUT);
+}
+
+void printf_s(char *fmt, ... ){
     va_list args;  
     va_start(args, fmt);  // inicializa args con los argumentos q estan despues del parametro fijo osea fmt
 
-    char buffer[BUFFER_SIZE];
+    //char buffer[BUFFER_SIZE];
     while ( *fmt != '\0'){
         if ( *fmt == '%'){
             fmt++;
             switch (*fmt)
             {
-            case 's':
+            case 's':{
                 char * str = va_arg(args, char *); // la primera vez que se llama a va_arg me devuelve el primer arg, en la segunda vez el segundo arg y asi
-                putchar(fmt);
+                for (int j=0; str[j] != '\0'; j++) {
+                        putchar_s(str[j]);
+                    }
                 break;
-            
-            case 'd':
-                int d = va_arg(args, int *);
+            }
+            case 'd':{
+                //int d = va_arg(args, int );
                 // hacer funcion para pasar de int a str y guardar en buffer
-                putchar(fmt);
+                // putchar de cada caracter del string q esta en buffer
                 break;
-            case 'c':
+            }
+            case 'c':{
                 char c = va_arg(args, int);
-                putchar(fmt);
+                putchar_s(c);
                 break;
+            }
             }
         }
         else {
@@ -51,14 +61,14 @@ void printf(char *fmt, ... ){
     return;
 }
 
-char getchar(){
+char getchar_s(){
     char c;
-    syscall_read(&c, 1, STDIN);
+    //syscall_read(&c, 1, STDIN);
     return c;
 }
 
 
-int strcmp(char *s1, char *s2)
+int strcmp_s(char *s1, char *s2)
 {
     int i, toReturn = 0, checked = 0;
     for (i = 0; s1[i] && s2[i]; i++)
@@ -78,4 +88,13 @@ int strcmp(char *s1, char *s2)
         toReturn = s2[i];
     }
     return toReturn;
+}
+
+void strcpy_s(char *dest, const char *src) {
+    size_t i = 0;
+    while(src[i] != 0) {
+        dest[i] = src[i];
+        i++;
+    }
+    dest[i] = '\0';
 }

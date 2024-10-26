@@ -5,7 +5,7 @@
 
 static void int_20();
 static void int_21();
-static uint64_t int_80(uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t r10);
+//static uint64_t int_80(uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t r10);
 static void (*interrupt_arr[])(void) = {int_20,int_21};
 
 void irqDispatcher(uint64_t irq) {
@@ -25,9 +25,9 @@ uint64_t int_80(uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t
 		case 1: 
 				sys_write((char *)rdi, rsi, rdx);
 				break;
-		case 2:
-				sys_read((char *)rdi, rsi, rdx);
-				break;
+		//case 2:
+		//		sys_read((char *)rdi, rsi, rdx);
+		//		break;
 		// case 3: 
 		// 		TimeClock((char *)rdi); 
 		// 		break;

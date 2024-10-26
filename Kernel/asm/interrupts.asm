@@ -19,6 +19,7 @@ GLOBAL saveRegisters
 GLOBAL printRegStatusASM
 
 EXTERN irqDispatcher
+EXTERN sysDispatcher
 EXTERN exceptionDispatcher
 EXTERN printRegStatus
 
@@ -152,11 +153,8 @@ _irq05Handler:
 _irq80Handler: 
 	pushState
 
-	mov rdi, rax
-	mov rsi, rbx
-	mov rdx, rcx
-	
-	call sysCaller
+	mov r9, rax
+	call sysDispatcher
 
 	popState ; Restaura el estado guardado
 	iretq ; Retorna de la interrupción
