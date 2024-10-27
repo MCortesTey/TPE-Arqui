@@ -111,8 +111,8 @@ int main()
 	//pressKey();
 	while(1);
 	ncPrint("[Finished]");
-	//return (EntryPoint)sampleCodeModuleAddress;
+	return (EntryPoint)sampleCodeModuleAddress;
 	*/
-	return 0;
+	return ((EntryPoint)sampleCodeModuleAddress)();
 	
 }
