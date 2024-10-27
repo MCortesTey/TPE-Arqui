@@ -5,11 +5,25 @@
 
 static void int_20();
 static void int_21();
-//static uint64_t int_80(uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t r10);
-static void (*interrupt_arr[])(void) = {int_20,int_21};
+static uint64_t int_80(uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t r10);
+typedef void (*InterruptHandler)(uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t r10);
 
-void irqDispatcher(uint64_t irq) {
-	interrupt_arr[irq]();
+
+void irqDispatcher(uint64_t irq, uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t r10) {
+	// Se declara un arreglo de punteros a funciones de tipo InterruptHandler, con espacio para 256 funciones.
+    InterruptHandler interruptions[256] = {0};
+    // Se asignan funciones específicas a índices específicos del arreglo.
+    interruptions[0] = &int_20; // int_20 se asigna al índice 0
+    interruptions[1] = &int_21; // int_21 se asigna al índice 1
+    interruptions[96] = (InterruptHandler)int_80; // int_80 se asigna al índice 96, con un cast a InterruptHandler
+
+    // Se verifica si el valor de irq es válido (entre 0 y 255) y si hay una función asignada al índice irq.
+    if(irq >= 0 && irq < 256 && interruptions[irq] != 0 ){
+        // Si se cumple la condición, se obtiene el puntero a la función correspondiente.
+        InterruptHandler handler = interruptions[irq];
+        // Se llama a la función correspondiente, pasando los parámetros rax, rdi, rsi, rdx, r10.
+        handler(rax, rdi, rsi, rdx, r10);
+    }
 }
 
 void int_20() {

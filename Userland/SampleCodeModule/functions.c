@@ -19,7 +19,7 @@ void putchar_s(char c) {
 */
 
 void putchar_s(char c){
-    //syscall_write(&c, 1, STDOUT);
+    syscall_write(&c, 1, STDOUT);
 }
 
 void printf_s(char *fmt, ... ){
@@ -53,7 +53,7 @@ void printf_s(char *fmt, ... ){
             }
         }
         else {
-            //syscall_write(fmt, 1, STDOUT);
+            syscall_write(fmt, 1, STDOUT);
         }
         fmt++;
     }

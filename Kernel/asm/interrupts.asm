@@ -151,13 +151,32 @@ _irq05Handler:
 ;SysCaller
 ; para maneja las interrupciones del sistema
 _irq80Handler: 
-	pushState
+	push rbp
+	mov rbp, rsp
+	push rbx
+	push r12
+	push r13
+	push r14
+	push r15
+	
 
-	mov r9, rax
-	call sysDispatcher
 
-	popState ; Restaura el estado guardado
-	iretq ; Retorna de la interrupción
+	mov r9, rcx
+	mov r8, rdx
+	mov rcx, rsi
+	mov rdx, rdi
+	mov rsi, rax
+	mov rdi, 60h
+	call irqDispatcher
+
+	pop r15
+	pop r14
+	pop r13
+	pop r12
+	pop rbx
+	mov rsp, rbp
+	pop rbp
+	iretq
 
 ;Zero Division Exception
 _exception0Handler:

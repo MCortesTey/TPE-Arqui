@@ -3,7 +3,7 @@ GLOBAL syscall_read
 
 section .text
 
-%macro syscall_entry 1 // recibe un argumento que seria numero de syscall 
+%macro syscall_entry 1 ; recibe un argumento que seria numero de syscall 
     push rbp
     mov rbp, rsp
     mov rax, %1
@@ -17,4 +17,4 @@ syscall_write:
     syscall_entry 1
 
 syscall_read:
-    syscall_read 2 
+    syscall_entry2 

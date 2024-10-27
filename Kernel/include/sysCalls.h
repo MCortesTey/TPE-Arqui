@@ -4,14 +4,12 @@
 #include <stdint.h> 
 #include <stdlib.h>
 
-typedef enum{
-    STDOUT = 1,
-    STDERR,
-    STDIN
-} FDS;
+#define STDIN 0
+#define STDOUT 1
+#define STDERR 2
 
 
 void sys_write(char * buff, int count, int fd);
-//void sys_read(char * buff, int len, int fds);
+void sys_read(char * buff, int len, int fds);
 
 #endif
