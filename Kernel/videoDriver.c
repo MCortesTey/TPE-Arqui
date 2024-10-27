@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include <font.h>
 
-
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
 	uint8_t window_a;			// deprecated
@@ -114,17 +113,48 @@ void vdPrintCharColor(char c, uint64_t fcolor, uint64_t bcolor) {
     posX += 10*size;
 }
 
+void checkChar(char character, uint64_t fcolor, uint64_t bcolor){
+    switch(character){
+        case '\b':
+             vdDelete();
+             return;
+        case '\n':
+            vdNewline();
+            return;
+        case '\t':
+            vdTab();
+            return;
+        default:
+            vdPrintCharColor(character, fcolor, bcolor);
+            return;
+
+    }//HACER LOS CASOS DE ACA ABAJO COMO CASES
+    
+    // if (character == 0x7C) {
+    //     moveLeft();
+    //     return;
+    // }
+    // if (character == 0x7D) {
+    //     moveRight();
+    //     return;
+    // }
+    // if (character == 0x7F || character == 0x7B) {
+    //     cursor_pos = 0;
+    //     return;
+    // }
+}
+
 
 void vdPrintColorLen(char * string, uint64_t fcolor, uint64_t bcolor, int len){
     for(int i = 0; i < len && string[i] != 0; i++){
-        vdPrintCharColor(string[i], fcolor, bcolor );
+        checkChar(string[i], fcolor, bcolor );
     }
 }
 
 
 void vdPrintColor(char * string, uint64_t fColor, uint64_t bColor){
     for(int i = 0; string[i] != 0; i++){
-        vdPrintCharColor(string[i], fColor, bColor);
+        checkChar(string[i], fColor, bColor);
     }
 }//podriamos hacerla llamando a vdPrintColorLen calculando la length antes de llamar
 
@@ -135,7 +165,7 @@ void vdPrint(char * string){
 
 void vdPrintColorUpto(char * string, uint64_t fcolor, uint64_t bcolor, int len){
     for(int i = 0; i < len && string[i] != 0; i++){
-        vdPrintCharColor(string[i], fcolor, bcolor );
+        checkChar(string[i], fcolor, bcolor );
     }
 }
 
@@ -223,6 +253,11 @@ void vdNewline() {
     // }
     posX = MARGIN;
     posY += 16*size;
+}
+
+void vdTab(){
+    vdPrint("    ");
+    return;
 }
 
 

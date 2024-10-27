@@ -8,15 +8,15 @@
 #define WHITE 0xFFFFFFFF
 #define BUFFER_SIZE 256
 
-/*
-void putcharColor(char c, uint32_t color) {
-    syscall_write(&c, 1, STDOUT, color);
-}
 
-void putchar_s(char c) {
-    putcharColor(c, WHITE);
-}
-*/
+// void putcharColor(char c, uint32_t color) { //puede que esta no la necesitemos 
+//     syscall_write(&c, 1, STDOUT, color);
+// }
+
+// void putchar_s(char c) {
+//     putcharColor(c, WHITE);
+// }
+
 
 void putchar_s(char c){
     syscall_write(&c, 1, STDOUT);

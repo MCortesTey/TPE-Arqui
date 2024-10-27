@@ -24,6 +24,8 @@ void vdPrintError(char * string);
 void vdDelete();
 void vdNewline();
 void backspaceMove();
+void vdTab();
+void checkChar(char character, uint64_t fcolor, uint64_t bcolor);
 
 
 #endif // VIDEO_DRIVER_H

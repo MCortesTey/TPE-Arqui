@@ -4,7 +4,7 @@
 #include "commands.h"
 #define INPUT_MAX 1000
 #define ESC 27
-#define MSG "Welcome to our shell! Type 'help for a list of commands\n "
+#define MSG "Welcome to our shell! Type 'help' for a list of commands\n"
 
 static void getBuffer(char * input);
 
