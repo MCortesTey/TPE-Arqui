@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <keyboardDriver.h>
 #include <sysCalls.h>
+#include <videoDriver.h>
 
 static void int_20();
 static void int_21();
@@ -54,9 +55,9 @@ uint64_t int_80(uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t
 		// case 6: 
 		// 		sizeDown();
 		// 		break;
-		// case 7: 
-		// 		clear();
-		// 		break;
+			case 7: 
+				clear();
+		 		break;
 		// case 8:
 		// 		fontSize();
 		// 		break;

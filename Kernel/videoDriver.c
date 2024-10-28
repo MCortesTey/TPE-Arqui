@@ -269,3 +269,15 @@ void vdPrintRegister(char *regName, uint64_t regValue) { // le paso el nombre y 
     vdPrint(buffer);
     // imprimo nueva linea 
 }
+
+
+void clear() {
+    int i, j;
+    for (i = 0; i < VBE_mode_info->height; i++) {
+        for (j = 0; j < VBE_mode_info->width; j++) {
+            putPixel(0,j, i);
+        }
+    }
+    posX = MARGIN;
+    posY = MARGIN;
+}

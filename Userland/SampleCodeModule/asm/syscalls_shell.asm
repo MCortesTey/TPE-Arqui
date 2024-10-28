@@ -1,5 +1,6 @@
 GLOBAL syscall_write
 GLOBAL syscall_read
+GLOBAL syscall_clear
 
 section .text
 
@@ -17,4 +18,7 @@ syscall_write:
     syscall_entry 1
 
 syscall_read:
-    syscall_entry2 
+    syscall_entry 2 
+
+syscall_clear:
+    syscall_entry 7

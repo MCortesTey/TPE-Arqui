@@ -91,7 +91,8 @@ int helpCommand(int argc, char * argv[] ){
 
 
 static int clearCommand(int argc, char *argv[]) {
-    return 0;
+    clearScreen();
+    return 1;
 }
 
 static int exitCommand(int argc, char *argv[]) {
@@ -103,7 +104,7 @@ static int invalidOp_exceptionCommand(int argc, char* argv[]) {
 }
 
 static int show_registersCommand(int argc, char* argv[]) {
-    return 0; 
+    return 1;
 }
 
 static int snakesCommand(int argc, char* argv[]) {

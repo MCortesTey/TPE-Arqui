@@ -98,3 +98,7 @@ void strcpy_s(char *dest, const char *src) {
     }
     dest[i] = '\0';
 }
+
+void clearScreen(){
+    syscall_clear();
+}

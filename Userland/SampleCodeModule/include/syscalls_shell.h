@@ -11,4 +11,5 @@
 
 void syscall_write(char *buf, int size, int fd);
 void syscall_read(char * c, int size, int fd);
+void syscall_clear();
 #endif
