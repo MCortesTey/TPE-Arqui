@@ -36,6 +36,7 @@ static void getBuffer(char * input) { // lee lo que escribio el usuario y lo alm
     int i = 0;
 
     while ((c = getchar_s()) != '\n') {
+        putchar_s(c);
         if (c == '\b') {
             if (i > 0) {
                 i--;

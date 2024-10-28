@@ -63,7 +63,7 @@ void printf_s(char *fmt, ... ){
 
 char getchar_s(){
     char c;
-    //syscall_read(&c, 1, STDIN);
+    syscall_read(&c, 1, STDIN);
     return c;
 }
 

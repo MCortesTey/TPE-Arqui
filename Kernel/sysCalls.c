@@ -1,8 +1,10 @@
 #include <sysCalls.h>
 #include <naiveConsole.h>
 #include <videoDriver.h>
+#include <keyboardDriver.h>
 #include <stdint.h>
 #include <stdarg.h>
+#include <interrupts.h>
 
 
 
@@ -12,11 +14,27 @@ void sys_write(char * buff, int count, int fd){
             vdPrintUpto(buff, count);
             break;
         case STDERR:
-            ncPrintStyle(buff, 0x04);
+            vdPrintColorUpto(buff, 0x00FF0000, 0x00000000, count);
+            //ncPrintStyle(buff, 0x04);
             break;
     }
     //CASO INVALID FD
 }
 void sys_read(char * c, int len, int fd){
-}
+    
+    int i;
 
+    if (fd == STDIN) {
+        char aux = 0;
+        for (i = 0; i < len;) {
+            _hlt();
+            aux = getBuffAtCurrent();
+            c[i++] = aux;
+            buffNext();
+        }
+    }
+    return;
+    // else{
+    //     invalidFD();
+    // }
+}

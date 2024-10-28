@@ -259,7 +259,7 @@ haltcpu:
 
 
 saveRegisters:
-	push pushState
+	pushState
 	saveRegistersASM
 	popState
 	ret

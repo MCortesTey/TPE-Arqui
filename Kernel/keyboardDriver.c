@@ -26,91 +26,30 @@
 #define CTRL_PRESS 0x1D // Tecla de control presionada
 #define CTRL_RELEASE 0x9D // Tecla de control liberada
 
-static unsigned char asccCode[58][2] = {
- 	{0, 0},
- 	{27, 27},
- 	{'1', '!'},
- 	{'2', '@'},
- 	{'3', '#'},
- 	{'4', '$'},
- 	{'5', '%'},
- 	{'6', '^'},
- 	{'7', '&'},
- 	{'8', '*'},
- 	{'9', '('},
- 	{'0', ')'},
- 	{'-', '_'},
- 	{'=', '+'},
- 	{8, 8},
- 	{9, 9},
- 	{'q', 'Q'},
- 	{'w', 'W'},
- 	{'e', 'E'},
- 	{'r', 'R'},
- 	{'t', 'T'},
- 	{'y', 'Y'},
- 	{'u', 'U'},
- 	{'i', 'I'},
- 	{'o', 'O'},
- 	{'p', 'P'},
- 	{'[', '{'},
- 	{']', '}'},
- 	{13, 13},
- 	{0, 0},
- 	{'a', 'A'},
- 	{'s', 'S'},
- 	{'d', 'D'},
- 	{'f', 'F'},
- 	{'g', 'G'},
- 	{'h', 'H'},
- 	{'j', 'J'},
- 	{'k', 'K'},
- 	{'l', 'L'},
- 	{';', ':'},
- 	{39, 34},
- 	{'`', '~'},
- 	{0, 0},
- 	{'\\', '|'},
- 	{'z', 'Z'},
- 	{'x', 'X'},
- 	{'c', 'C'},
- 	{'v', 'V'},
- 	{'b', 'B'},
- 	{'n', 'N'},
- 	{'m', 'M'},
- 	{',', '<'},
- 	{'.', '>'},
- 	{'/', '?'},
- 	{0, 0},
- 	{0, 0},
- 	{0, 0},
- 	{' ', ' '},
- };
 
- struct kbuff {
-     int pos;
-     int len;
-     uint16_t buffer[KEYBOARD_BUFFER_SIZE];
- };
- typedef struct kbuff * buffer_ptr;
+struct kbuff {
+    int pos;
+    int len;
+    uint16_t buffer[KEYBOARD_BUFFER_SIZE];
+};
+typedef struct kbuff * buffer_ptr;
 
 
- static struct kbuff buff = {0, 0, {'\0'}}; // Inicializa el buffer de teclado
- static buffer_ptr ptr = &buff; // Puntero al buffer de teclado
+static struct kbuff buff = {0, 0, {'\0'}}; // Inicializa el buffer de teclado
+static buffer_ptr ptr = &buff; // Puntero al buffer de teclado
+int buffer_pos = 0; // Posición actual en el buffer
 
- int buffer_pos = 0; // Posición actual en el buffer
-
- void bufferAppend(char c) { // Añade un carácter al buffer
-     if (ptr->pos < KEYBOARD_BUFFER_SIZE-1) { // Si no se ha alcanzado el límite del buffer
-         ptr->buffer[ptr->pos] = c; // Añade el carácter al buffer
-         ptr->pos += 1; // Avanza la posición en el buffer
-         ptr->buffer[ptr->pos] = 0; // Asegura que el buffer termine con '\0'
-     }
-     else{ // Si se ha alcanzado el límite del buffer
-         ptr->pos = 0; // Resetea la posición al principio del buffer
-         ptr->buffer[ptr->pos] = 0; // Asegura que el buffer termine con '\0'
-     }
- }
+void bufferAppend(char c) { // Añade un carácter al buffer
+    if (ptr->pos < KEYBOARD_BUFFER_SIZE-1) { // Si no se ha alcanzado el límite del buffer
+        ptr->buffer[ptr->pos] = c; // Añade el carácter al buffer
+        ptr->pos += 1; // Avanza la posición en el buffer
+        ptr->buffer[ptr->pos] = 0; // Asegura que el buffer termine con '\0'
+    }
+    else{ // Si se ha alcanzado el límite del buffer
+        ptr->pos = 0; // Resetea la posición al principio del buffer
+        ptr->buffer[ptr->pos] = 0; // Asegura que el buffer termine con '\0'
+    }
+}
 
  // Búfer de teclado
  //static char buffer[KEYBOARD_BUFFER_SIZE] = {0};
@@ -121,16 +60,12 @@ static unsigned char asccCode[58][2] = {
  int registerPressed = 0; // Estado de la tecla de registro
 
  void keyboard_handler(){	
- 	unsigned int key = keyHandler(getKeyPressed()); // Obtener la tecla presionada
-
- 	// keyHandler(key); // Delegar el manejo de la tecla a keyHandler
-
- 	// unsigned char toInsert = keyHandler(key); // Obtener la tecla a insertar
+ 	unsigned int key = keyHandler(getKeyPressed()); // Filtrar la tecla y obtener el caracter
 
  	if (key) // Si no es una tecla especial
  	{
  		bufferAppend(key); // Escribir en el búfer
-		vdPrintCharColor(key, 0xFFFFFF, 0x000000);
+		//vdPrintCharColor(key, 0xFFFFFF, 0x000000);
  	}
 
  	currentKey %= KEYBOARD_BUFFER_SIZE; // Asegurarse de no sobrepasar el tamaño del búfer
@@ -138,8 +73,7 @@ static unsigned char asccCode[58][2] = {
  	
  }
 
- unsigned char keyHandler(unsigned int key)
- {
+unsigned char keyHandler(unsigned int key){
  	switch (key)
  	{
  	case RIGHT_SHIFT_PRESS:
@@ -197,6 +131,21 @@ static unsigned char asccCode[58][2] = {
  		   key == CAPS_LOCK_PRESS || key == ALT_PRESS || isFKey(key) || key == ESCAPE_KEY ||
  		   key == BACKSPACE_KEY || key == ENTER_KEY || key == TAB_KEY;
  }
+
+ char getBuffAtCurrent() { // Retorna el carácter en la posición actual del buffer
+    if (ptr->pos != 0) { // Si la posición actual no es el principio del buffer
+        return ptr->buffer[buff.pos - 1]; // Retorna el carácter en la posición actual
+    }
+    return ptr->buffer[KEYBOARD_BUFFER_SIZE-1]; // Retorna el último carácter del buffer si se está al principio
+}
+
+buffNext(){
+	if (ptr->pos < KEYBOARD_BUFFER_SIZE-1) { // Si no se ha alcanzado el límite del buffer
+        ptr->pos += 1; // Avanza la posición en el buffer
+    } else {
+        ptr->pos = 0; // Resetea la posición al principio del buffer si se ha alcanzado el límite
+    }
+}
 
  int bufferLen(){ // Retorna la longitud del buffer
      return ptr->len; // Retorna la longitud actual del buffer
