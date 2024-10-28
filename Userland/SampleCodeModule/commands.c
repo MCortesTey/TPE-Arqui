@@ -86,7 +86,7 @@ int helpCommand(int argc, char * argv[] ){
     {
         printf_s("%s: %s", commands[i][0], commands[i][1]);
     }
-    return 1;
+    return 0;
 }
 
 
@@ -96,7 +96,8 @@ static int clearCommand(int argc, char *argv[]) {
 }
 
 static int exitCommand(int argc, char *argv[]) {
-    return 0;  
+    clearScreen();
+    return EXIT;  
 }
 
 static int invalidOp_exceptionCommand(int argc, char* argv[]) {
@@ -109,13 +110,13 @@ static int show_registersCommand(int argc, char* argv[]) {
 }
 
 static int snakesCommand(int argc, char* argv[]) {
-    return 0;  
+    return 1;  
 }
 
 static int timeCommand(int argc, char* argv[]) {
-    return 0; 
+    return 1; 
 }
 
 static int zero_exceptionCommand(int argc, char *argv[]) {
-    return 0; 
+    return 1; 
 }

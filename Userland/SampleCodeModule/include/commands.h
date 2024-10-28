@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 
+#define EXIT 0
 #define INPUT_ERROR -1
 #define MAX_ARGS 3
 
