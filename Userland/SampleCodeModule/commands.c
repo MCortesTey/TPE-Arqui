@@ -104,6 +104,7 @@ static int invalidOp_exceptionCommand(int argc, char* argv[]) {
 }
 
 static int show_registersCommand(int argc, char* argv[]) {
+    showRegisters();
     return 1;
 }
 

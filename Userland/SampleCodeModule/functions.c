@@ -102,3 +102,7 @@ void strcpy_s(char *dest, const char *src) {
 void clearScreen(){
     syscall_clear();
 }
+
+void showRegisters(){
+    syscall_showRegisters();
+}

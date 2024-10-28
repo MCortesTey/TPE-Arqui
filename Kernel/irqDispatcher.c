@@ -46,9 +46,9 @@ uint64_t int_80(uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t
 		// case 3: 
 		// 		TimeClock((char *)rdi); 
 		// 		break;
-		// case 4:
-		// 		printRegistersASM(); 
-		// 		break;
+		case 4:
+		 		printRegStatusASM(); 
+		 		break;
 		// case 5: 
 		// 		sizeUp();
 		// 		break;

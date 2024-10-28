@@ -264,10 +264,10 @@ saveRegisters:
 	popState
 	ret
 
-;printRegStatusASM:
-;	mov qword rdi, regBackup
-;	call printRegStatus
-;	ret
+printRegStatusASM:
+	mov qword rdi, regBackup
+	call printRegStatus
+	ret
 
 section .bss 
 	aux resq 1	
