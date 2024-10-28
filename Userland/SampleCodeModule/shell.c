@@ -11,6 +11,7 @@ static void getBuffer(char * input);
 
 void startShell() 
 {
+    printf_s("%s", "cacapedopis\n"); //era para probar el %
     printf_s(MSG);
     char input[INPUT_MAX] = {0};
     char copy[INPUT_MAX] = {0};
@@ -19,10 +20,10 @@ void startShell()
     while (!exit){
         printf_s("$>");
         getBuffer(input);
-
+        //printf_s("hola %s",input);
         if (input[0] != 0 ) { // chequeo si el usuario ingreso algo
             strcpy_s(copy, input);
-            exit =CommandParse(copy);
+            exit = CommandParse(copy);
 
             if (exit == INPUT_ERROR) {
                 printf_s(INVALID_MSG);
@@ -36,19 +37,19 @@ static void getBuffer(char * input) { // lee lo que escribio el usuario y lo alm
     int i = 0;
 
     while ((c = getchar_s()) != '\n') {
-        putchar_s(c);
         if (c == '\b') {
             if (i > 0) {
                 i--;
             }
         }
-        else {
-        if (c != ESC) {
+        else if (c != ESC){
             if (i < (INPUT_MAX - 1)) {
                 input[i++] = c;
+                putchar_s(c);
             }
         }
-        }
-    input[i] = 0;
     }
+    //printf_s("no se que pasa\n");
+    // input[++i] = 0;
+    // printf_s("%s",input);
 }

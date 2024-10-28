@@ -62,8 +62,7 @@ void bufferAppend(char c) { // Añade un carácter al buffer
  void keyboard_handler(){	
  	unsigned int key = keyHandler(getKeyPressed()); // Filtrar la tecla y obtener el caracter
 
- 	if (key) // Si no es una tecla especial
- 	{
+ 	if (key){ // Si no es una tecla especial
  		bufferAppend(key); // Escribir en el búfer
 		//vdPrintCharColor(key, 0xFFFFFF, 0x000000);
  	}
@@ -90,6 +89,8 @@ unsigned char keyHandler(unsigned int key){
  	case ESCAPE_KEY:
  		registerPressed = 1; // Activar registro
  		return 0; // No se inserta nada en el búfer
+	case ENTER_KEY:
+		return '\n';
  	}
 
  	// Si no es una tecla especial, retornar la tecla correspondiente
@@ -109,8 +110,6 @@ unsigned char keyHandler(unsigned int key){
  	{
  	case TAB_KEY:
  		vdPrint("    "); // Retornar el carácter de tabulación
- 	case ENTER_KEY:
- 		vdNewline(); // Retornar el carácter de nueva línea
  	case BACKSPACE_KEY:
  		vdDelete(); // Retornar el carácter de retroceso
  	}
@@ -129,7 +128,7 @@ unsigned char keyHandler(unsigned int key){
  {
  	return key == LEFT_SHIFT_PRESS || key == RIGHT_SHIFT_PRESS ||
  		   key == CAPS_LOCK_PRESS || key == ALT_PRESS || isFKey(key) || key == ESCAPE_KEY ||
- 		   key == BACKSPACE_KEY || key == ENTER_KEY || key == TAB_KEY;
+ 		   key == BACKSPACE_KEY || key == TAB_KEY;
  }
 
  char getBuffAtCurrent() { // Retorna el carácter en la posición actual del buffer
