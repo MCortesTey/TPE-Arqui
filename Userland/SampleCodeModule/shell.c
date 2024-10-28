@@ -13,8 +13,8 @@ void startShell()
 {
     printf_s("%s", "cacapedopis\n"); //era para probar el %
     printf_s(MSG);
-    char input[INPUT_MAX] = {0};
-    char copy[INPUT_MAX] = {0};
+    char input[INPUT_MAX] ;
+    char copy[INPUT_MAX];
     int exit = 0 ;
 
     while (!exit){
@@ -35,21 +35,25 @@ void startShell()
 static void getBuffer(char * input) { // lee lo que escribio el usuario y lo almacena en input
     char c; 
     int i = 0;
+    int count = 0;
 
     while ((c = getchar_s()) != '\n') {
         if (c == '\b') {
-            if (i > 0) {
-                i--;
+            if (count > 0) {
+                if(count < INPUT_MAX)
+                    i--;
+                count--;
             }
-        }
-        else if (c != ESC){
+
+        }else if (c != ESC){
             if (i < (INPUT_MAX - 1)) {
                 input[i++] = c;
-                putchar_s(c);
             }
         }
+        putchar_s(c);
+        input[i] = 0;
     }
     //printf_s("no se que pasa\n");
     // input[++i] = 0;
-    // printf_s("%s",input);
+    printf_s("%s",input);
 }

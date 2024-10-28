@@ -91,6 +91,8 @@ unsigned char keyHandler(unsigned int key){
  		return 0; // No se inserta nada en el búfer
 	case ENTER_KEY:
 		return '\n';
+	case BACKSPACE_KEY:
+		return '\b';
  	}
 
  	// Si no es una tecla especial, retornar la tecla correspondiente
@@ -111,11 +113,19 @@ unsigned char keyHandler(unsigned int key){
  	case TAB_KEY:
  		vdPrint("    "); // Retornar el carácter de tabulación
  	case BACKSPACE_KEY:
- 		vdDelete(); // Retornar el carácter de retroceso
+ 		//bsBuffer(); // Retornar el carácter de retroceso
  	}
 
  	return 0; // Retornar 0 si no se debe insertar nada
  }
+
+// void bsBuffer() { // Función para borrar el último carácter del buffer
+//     if (ptr->pos > 0) { // Si hay caracteres en el buffer
+//         ptr->pos -= 1; // Decrementa la posición
+//         ptr->buffer[ptr->pos] = 0; // Limpia el carácter borrado
+//         ptr->len -= 1; // Decrementa la longitud del buffer
+//     }
+// }
 
  // Función para determinar si una tecla es una tecla F
  char isFKey(unsigned int key)
@@ -127,8 +137,7 @@ unsigned char keyHandler(unsigned int key){
  char isSpecialKey(unsigned int key)
  {
  	return key == LEFT_SHIFT_PRESS || key == RIGHT_SHIFT_PRESS ||
- 		   key == CAPS_LOCK_PRESS || key == ALT_PRESS || isFKey(key) || key == ESCAPE_KEY ||
- 		   key == BACKSPACE_KEY || key == TAB_KEY;
+ 		   key == CAPS_LOCK_PRESS || key == ALT_PRESS || isFKey(key) || key == ESCAPE_KEY || key == TAB_KEY;
  }
 
  char getBuffAtCurrent() { // Retorna el carácter en la posición actual del buffer

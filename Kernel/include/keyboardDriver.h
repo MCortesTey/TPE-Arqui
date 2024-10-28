@@ -10,6 +10,7 @@ int bufferLen();
 void bufferClearAll();
 char getBuffAtCurrent();
 void buffNext();
+//void bsBuffer();
 
 static unsigned char asccCode[58][2] = {
  	{0, 0},

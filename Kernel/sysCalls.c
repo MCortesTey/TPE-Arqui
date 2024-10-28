@@ -26,10 +26,10 @@ void sys_read(char * c, int len, int fd){
 
     if (fd == STDIN) {
         char aux = 0;
-        for (i = 0; i < len;) {
-            _hlt();
+        for (i = 0; i < len; i++) {
+            _hlt(); //no avanzo hasta que haya otra interrupcion
             aux = getBuffAtCurrent();
-            c[i++] = aux;
+            c[i] = aux;
             buffNext();
         }
     }
