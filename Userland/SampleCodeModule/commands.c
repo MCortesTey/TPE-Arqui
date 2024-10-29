@@ -103,7 +103,7 @@ int helpCommand(int argc, char * argv[] ){
 
 static int clearCommand(int argc, char *argv[]) {
     clearScreen();
-    return 1;
+    return 0;
 }
 
 static int exitCommand(int argc, char *argv[]) {
@@ -112,23 +112,23 @@ static int exitCommand(int argc, char *argv[]) {
 }
 
 static int invalidOp_exceptionCommand(int argc, char* argv[]) {
-    return 1;  
+    return 0;  
 }
 
 static int show_registersCommand(int argc, char* argv[]) {
     showRegisters();
-    return 1;
+    return 0;
 }
 
 static int snakesCommand(int argc, char* argv[]) {
-    return 1;  
+    return 0;  
 }
 
 static int timeCommand(int argc, char* argv[]) {
     showTime();
-    return 1; 
+    return 0; 
 }
 
 static int zero_exceptionCommand(int argc, char *argv[]) {
-    return 1; 
+    return 0; 
 }

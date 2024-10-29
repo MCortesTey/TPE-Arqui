@@ -15,9 +15,9 @@ void startShell()
     char input[INPUT_MAX] ;
     char copy[INPUT_MAX];
     int exit = 0 ;
-
+    printf_s("$>");
     while (!exit){
-        printf_s("$>");
+        
         getBuffer(input);
 
         if (input[0] != 0 ) { // chequeo si el usuario ingreso algo
@@ -27,6 +27,7 @@ void startShell()
                 printf_s(INVALID_MSG);
             }
         } 
+        printf_s("$>");
     }
 }
 
