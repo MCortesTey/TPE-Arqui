@@ -60,22 +60,33 @@ int CommandParse(char *commandInput){
     return INPUT_ERROR;
 }
 
+
 static char* fillCommandAndArgs(char* args[], char *commandInput, int *argsCount){
     *argsCount = 0;
     char *current = commandInput;
-    char *finalCommand= current;
+    char *finalCommand = current;
+
+    while(*current == ' ') {
+        current++;
+    }
+    finalCommand = current;
 
     while(*current != 0 && *argsCount < MAX_ARGS){
         if(*current == ' '){
             *current = 0;
-
-            if(*(current + 1) != 0 && *(current + 1) != ' ') {
-                args[*argsCount] = current + 1;
-                (*argsCount)++;
-
+            current++;
+            
+            // Saltamos espacios múltiples
+            while(*current == ' ') {
+                current++;
             }
 
-        current++;
+            if(*current != 0) {
+                args[*argsCount] = current;
+                (*argsCount)++;
+            }
+        } else {
+            current++; 
         }
     }
     return finalCommand;
@@ -84,7 +95,7 @@ static char* fillCommandAndArgs(char* args[], char *commandInput, int *argsCount
 int helpCommand(int argc, char * argv[] ){
     for (int i=0; i<COMMAND_COUNT; i++)
     {
-        printf_s("%s: %s", commands[i][0], commands[i][1]);
+        printf_s("%s: %s\n", commands[i][0], commands[i][1]);
     }
     return 0;
 }
