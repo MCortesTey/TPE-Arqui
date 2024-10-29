@@ -25,6 +25,7 @@ void startShell()
             exit = CommandParse(copy);
             if (exit == INPUT_ERROR) {
                 printf_s(INVALID_MSG);
+                exit = 0;
             }
         } 
         printf_s("$>");

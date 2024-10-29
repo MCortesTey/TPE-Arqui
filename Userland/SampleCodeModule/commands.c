@@ -19,8 +19,8 @@ static char * commands[][2] = {
         {"clear", "Clears the screen."},
         {"exit", "Exits the shell."},
         {"help", "Shows the available commands."},
-        {"invalid opcode exception", "Test for the Invalid Opcode Exception"},
-        {"zero exception", "Test for the Zero Division Exception"},
+        {"invalidOpcode", "Test for the Invalid Opcode Exception"},
+        {"zero", "Test for the Zero Division Exception"},
         {"inforeg", "Shows the registers values."},
         {"snakes", "Starts the Snakes game."},
         {"time", "Shows the current time."}
