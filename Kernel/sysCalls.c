@@ -21,20 +21,18 @@ void sys_write(char * buff, int count, int fd){
     //CASO INVALID FD
 }
 void sys_read(char * c, int len, int fd){
-    
-    int i;
-
     if (fd == STDIN) {
-        char aux = 0;
-        for (i = 0; i < len; i++) {
-            _hlt(); //no avanzo hasta que haya otra interrupcion
-            aux = getBuffAtCurrent();
-            c[i] = aux;
-            buffNext();
+        for (int i = 0; i < len; i++) {
+            while(1) {
+                _hlt();
+                char aux = getBuffAtCurrent();
+                if (aux != 0) {
+                    c[i] = aux;
+                    buffNext();
+                    break;
+                }
+            }
         }
     }
     return;
-    // else{
-    //     invalidFD();
-    // }
 }

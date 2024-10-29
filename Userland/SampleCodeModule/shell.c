@@ -23,7 +23,6 @@ void startShell()
         if (input[0] != 0 ) { // chequeo si el usuario ingreso algo
             strcpy_s(copy, input);
             exit = CommandParse(copy);
-
             if (exit == INPUT_ERROR) {
                 printf_s(INVALID_MSG);
             }
@@ -34,21 +33,24 @@ void startShell()
 static void getBuffer(char * input) {
     char c;
     int i = 0;
-    
-    while ((c = getchar_s()) != '\n') {
-        if (c == '\b') {  // Backspace handling
+
+    // Limpiamos el buffer antes de comenzar
+    for(int j = 0; j < INPUT_MAX; j++) {
+        input[j] = 0;
+    }
+
+    while ((c = getchar_s()) != '\n' && i < INPUT_MAX - 1) {  // Agregamos verificación de límite
+        if (c == '\b') {
             if (i > 0) {
                 i--;
-                putchar_s('\b'); 
-            }
-        } else if (c != ESC) {
-            if (i < (INPUT_MAX - 1)) {
-                input[i++] = c;
                 putchar_s(c);
             }
+        } else {
+            input[i] = c;
+            i++;
+            putchar_s(c);
         }
     }
-    
-    input[i] = 0; 
+    input[i] = 0;
     putchar_s('\n');
 }

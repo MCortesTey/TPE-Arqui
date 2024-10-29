@@ -39,15 +39,11 @@ static struct kbuff buff = {0, 0, {'\0'}}; // Inicializa el buffer de teclado
 static buffer_ptr ptr = &buff; // Puntero al buffer de teclado
 int buffer_pos = 0; // Posición actual en el buffer
 
-void bufferAppend(char c) { // Añade un carácter al buffer
-    if (ptr->pos < KEYBOARD_BUFFER_SIZE-1) { // Si no se ha alcanzado el límite del buffer
-        ptr->buffer[ptr->pos] = c; // Añade el carácter al buffer
-        ptr->pos += 1; // Avanza la posición en el buffer
-        ptr->buffer[ptr->pos] = 0; // Asegura que el buffer termine con '\0'
-    }
-    else{ // Si se ha alcanzado el límite del buffer
-        ptr->pos = 0; // Resetea la posición al principio del buffer
-        ptr->buffer[ptr->pos] = 0; // Asegura que el buffer termine con '\0'
+void bufferAppend(char c) {
+    if (ptr->len < KEYBOARD_BUFFER_SIZE) {
+        int writePos = (ptr->pos + ptr->len) % KEYBOARD_BUFFER_SIZE;
+        ptr->buffer[writePos] = c;
+        ptr->len++;
     }
 }
 
@@ -141,17 +137,17 @@ unsigned char keyHandler(unsigned int key){
  }
 
  char getBuffAtCurrent() { // Retorna el carácter en la posición actual del buffer
-    if (ptr->pos != 0) { // Si la posición actual no es el principio del buffer
-        return ptr->buffer[buff.pos - 1]; // Retorna el carácter en la posición actual
+    if (ptr->len > 0) {
+        char c = ptr->buffer[ptr->pos];
+        return c;
     }
-    return ptr->buffer[KEYBOARD_BUFFER_SIZE-1]; // Retorna el último carácter del buffer si se está al principio
+    return 0;
 }
 
-buffNext(){
-	if (ptr->pos < KEYBOARD_BUFFER_SIZE-1) { // Si no se ha alcanzado el límite del buffer
-        ptr->pos += 1; // Avanza la posición en el buffer
-    } else {
-        ptr->pos = 0; // Resetea la posición al principio del buffer si se ha alcanzado el límite
+buffNext() {
+    if (ptr->len > 0) {
+        ptr->pos = (ptr->pos + 1) % KEYBOARD_BUFFER_SIZE;
+        ptr->len--;
     }
 }
 
