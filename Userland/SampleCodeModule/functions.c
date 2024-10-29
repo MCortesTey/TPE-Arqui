@@ -61,12 +61,13 @@ void printf_s(char *fmt, ... ){
     return;
 }
 
-char getchar_s(){
-    char c;
-    syscall_read(&c, 1, STDIN);
+char getchar_s() {
+    char c = 0;
+    while(c == 0) { 
+        syscall_read(&c, 1, STDIN);
+    }
     return c;
 }
-
 
 int strcmp_s(char *s1, char *s2)
 {
@@ -98,6 +99,7 @@ void strcpy_s(char *dest, const char *src) {
     }
     dest[i] = '\0';
 }
+
 
 void clearScreen(){
     syscall_clear();
