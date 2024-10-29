@@ -14,4 +14,6 @@ int strcmp_s(char *s1, char *s2);
 void strcpy_s(char *dest, const char *src);
 void clearScreen();
 void showRegisters();
+void showTime();
+
 #endif

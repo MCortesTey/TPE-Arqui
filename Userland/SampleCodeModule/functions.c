@@ -108,3 +108,13 @@ void clearScreen(){
 void showRegisters(){
     syscall_showRegisters();
 }
+
+void showTime(){
+    char buff[50];
+    syscall_time(buff);
+    char c;
+    for(int i = 0; (c = buff[i]) != 0; i++){
+        putchar_s(c);
+    }
+    putchar_s('\n');
+}

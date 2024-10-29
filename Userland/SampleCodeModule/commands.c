@@ -125,6 +125,7 @@ static int snakesCommand(int argc, char* argv[]) {
 }
 
 static int timeCommand(int argc, char* argv[]) {
+    showTime();
     return 1; 
 }
 
