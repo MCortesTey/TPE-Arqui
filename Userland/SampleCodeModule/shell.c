@@ -5,7 +5,7 @@
 #define INPUT_MAX 1000
 #define ESC 27
 #define MSG "Welcome to our shell! Type 'help' for a list of commands\n"
-#define INVALID_MSG "Invalid command. Type 'help' for a list of commands\n"
+#define INVALID_MSG "Command '%s' not found, Type 'help' for a list of commands\n"
 
 static void getBuffer(char * input);
 
@@ -15,21 +15,21 @@ void startShell()
     char input[INPUT_MAX] ;
     char copy[INPUT_MAX];
     int exit = 0 ;
-    printf_s("$>");
-    while (!exit){
-        
+    do{
+        printf_s("$>");
         getBuffer(input);
 
         if (input[0] != 0 ) { // chequeo si el usuario ingreso algo
             strcpy_s(copy, input);
             exit = CommandParse(copy);
             if (exit == INPUT_ERROR) {
-                printf_s(INVALID_MSG);
+                printf_s(INVALID_MSG, input);
                 exit = 0;
             }
         } 
-        printf_s("$>");
-    }
+
+    }while(!exit);
+    //mensaje de despedida
 }
 
 static void getBuffer(char * input) {
