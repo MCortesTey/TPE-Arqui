@@ -264,7 +264,7 @@ void vdTab(){
 void vdPrintRegister(char *regName, uint64_t regValue) { // le paso el nombre y el estado del registro en uint64
     char buffer[256] = {0}; 
     vdPrint(regName);  // puse blanco y negro para que quede puesto pero hay que definirlos 
-    vdPrint(": "); 
+    vdPrint(": \n"); 
     //uintToBase(regValue, buffer, 16);  // pasa el estado a hexa 
     vdPrint(buffer);
     // imprimo nueva linea 

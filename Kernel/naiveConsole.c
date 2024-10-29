@@ -1,4 +1,5 @@
 #include <naiveConsole.h>
+#include <stddef.h>
 
 static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
@@ -125,3 +126,61 @@ void ncDelete()
 	currentVideo -= 2;
 }
 
+int getHours();
+int getMinutes();
+int getSeconds();
+
+// Arma un string con la hora actual en formato HH:MM:SS
+char * TimeClock(char * buffer) {
+    int hours = getHours();
+    int minutes = getMinutes();
+    int seconds = getSeconds();
+
+    // Los valores vienen en BCD, hay que pasarlos a decimal
+    hours = ((hours & 0xF0) >> 4) * 10 + (hours & 0x0F);
+    minutes = ((minutes & 0xF0) >> 4) * 10 + (minutes & 0x0F);
+    seconds = ((seconds & 0xF0) >> 4) * 10 + (seconds & 0x0F);
+
+    convertToGMTMinus3(&hours);
+    minutes = minutes % 60;
+    seconds = seconds % 60;
+
+    int digits = 0;
+    
+    // si hora mins o segs son menors a 10 le agregamos un 0 adelante
+    if (hours < 10) {
+        buffer[digits++] = '0';
+        digits += uintToBase(hours, buffer + digits, 10);
+    } else {
+        digits += uintToBase(hours, buffer + digits, 10);
+    }
+    
+    buffer[digits++] = ':';
+    
+    if (minutes < 10) {
+        buffer[digits++] = '0';
+        digits += uintToBase(minutes, buffer + digits, 10);
+    } else {
+        digits += uintToBase(minutes, buffer + digits, 10);
+    }
+    
+    buffer[digits++] = ':';
+    
+    if (seconds < 10) {
+        buffer[digits++] = '0';
+        digits += uintToBase(seconds, buffer + digits, 10);
+    } else {
+        digits += uintToBase(seconds, buffer + digits, 10);
+    }
+    
+    buffer[digits] = 0; 
+    return buffer;
+}
+
+
+void convertToGMTMinus3(int *hours) {
+    *hours -= 3;
+    if (*hours < 0) {
+        *hours += 24; 
+    }
+}
