@@ -55,7 +55,7 @@ int CommandParse(char *commandInput){
 }
 
 
-static char* fillCommandAndArgs(char* args[], char *commandInput, int *argsCount){
+char* fillCommandAndArgs(char* args[], char *commandInput, int *argsCount){
     *argsCount = 0;
     char *current = commandInput;
     char *finalCommand = current;
@@ -95,46 +95,46 @@ int helpCommand(int argc, char * argv[] ){
 }
 
 
-static int clearCommand(int argc, char *argv[]) {
+int clearCommand(int argc, char *argv[]) {
     clearScreen();
     return 0;
 }
 
-static int exitCommand(int argc, char *argv[]) {
+int exitCommand(int argc, char *argv[]) {
     clearScreen();
     return EXIT;  
 }
 
-static int invalidOp_exceptionCommand(int argc, char* argv[]) {
+int invalidOp_exceptionCommand(int argc, char* argv[]) {
     return 0;  
 }
 
-static int show_registersCommand(int argc, char* argv[]) {
+int show_registersCommand(int argc, char* argv[]) {
     showRegisters();
     return 0;
 }
 
-static int snakesCommand(int argc, char* argv[]) {
+int snakesCommand(int argc, char* argv[]) {
     clearScreen();
     snakes();
     return 0;  
 }
 
-static int timeCommand(int argc, char* argv[]) {
+int timeCommand(int argc, char* argv[]) {
     showTime();
     return 0; 
 }
 
-static int zero_exceptionCommand(int argc, char *argv[]) {
+int zero_exceptionCommand(int argc, char *argv[]) {
     return 0; 
 }
 
-static int size_up(int argc, char *argv[]) {
+int size_up(int argc, char *argv[]) {
     changeSize(1);
     clearScreen();
     return 0;
 }
-static int size_down(int argc, char *argv[]) {
+int size_down(int argc, char *argv[]) {
     changeSize(-1);
     clearScreen();
     return 0;
