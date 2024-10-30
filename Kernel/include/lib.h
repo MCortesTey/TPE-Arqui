@@ -13,5 +13,7 @@ uint8_t getMinutes();
 uint8_t getHours();
 uint8_t getKeyPressed();
 char * TimeClock(char * buffer);
+void printRegStatusASM();
+void saveRegisters();
 
 #endif

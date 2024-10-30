@@ -81,7 +81,7 @@ void vdPrintCharColor(char c, uint64_t fcolor, uint64_t bcolor) {
     // Recorre cada fila del carácter
     for (cy = 0; cy < 16; cy++) {
         int maskCheck = 0x01; // Inicializa una máscara para comprobar cada bit en el array de fuentes
-        int maskCheck2 = 0x01; // Otra máscara para el segundo byte de cada fila (no utilizada en esta implementación)
+        //int maskCheck2 = 0x01; // Otra máscara para el segundo byte de cada fila (no utilizada en esta implementación)
         // Recorre cada columna del carácter
         for (cx = 0; cx < 10; cx++) {
             // Comprueba si el píxel actual del carácter está configurado (1) o no (0)

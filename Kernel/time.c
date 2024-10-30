@@ -21,9 +21,9 @@ int seconds_elapsed() {
 
 // Arma un string con la hora actual en formato HH:MM:SS
 char * TimeClock(char * buffer) {
-    int hours = getHours();
-    int minutes = getMinutes();
-    int seconds = getSeconds();
+    int hours = (int)getHours();
+    int minutes = (int)getMinutes();
+    int seconds = (int)getSeconds();
 
     // Los valores vienen en BCD, hay que pasarlos a decimal
     hours = ((hours & 0xF0) >> 4) * 10 + (hours & 0x0F);
