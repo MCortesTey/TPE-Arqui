@@ -118,3 +118,8 @@ void showTime(){
     }
     putchar_s('\n');
 }
+
+void changeSize(int a){
+    clearScreen();
+    syscall_changesize(a);
+}

@@ -27,6 +27,7 @@ void backspaceMove();
 void vdTab();
 void checkChar(char character, uint64_t fcolor, uint64_t bcolor);
 void clear();
+void changeSize(int a);
 
 
 #endif // VIDEO_DRIVER_H
