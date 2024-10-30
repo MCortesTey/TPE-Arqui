@@ -1,5 +1,6 @@
 #include "snakes.h"
 #include "functions.h"
+#include "syscalls_shell.h"
 
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 760
@@ -15,7 +16,7 @@
 #define B_COLOR2 0xCDA360
 #define BORDER_COLOR 0x8B8589
 
-#define MENU_FONT 4
+#define MENU_FONT 3
 
 
 static int PLAYERS = 1;
@@ -27,6 +28,7 @@ uint64_t board[SCREEN_WIDTH][SCREEN_HEIGHT];
 int snakes(){
     // Animación
     clearScreen();
+    setSize(MENU_FONT);
     printf_s(START_MSG, PLAYERS, SPEED);
     menu();
     clearScreen();
@@ -40,6 +42,9 @@ int snakes(){
     //     gameLoop(option);
     // }
     // exit = 0;
+    syscall_sleep(5000);
+    clearScreen();
+    resetSize();
     return 0;
 }
 /*

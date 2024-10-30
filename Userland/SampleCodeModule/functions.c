@@ -128,8 +128,8 @@ void showTime(){
     putchar_s('\n');
 }
 
-void changeSize(int a){
-    syscall_changesize(a);
+void changeSize(int size){
+    syscall_changesize(size);
 }
 void setSize(int size){
     changeSize(size);
