@@ -285,7 +285,7 @@ void clear() {
 
 void changeSize(int a){
     if (a != 0) {
-        size++;
+        size += size;
     } else if(size > 1){
         size--;
     }

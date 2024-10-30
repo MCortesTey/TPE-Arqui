@@ -1,5 +1,6 @@
 #include "commands.h"
 #include "functions.h"
+#include "snakes.h"
 
 
 #define COMMAND_COUNT sizeof(commands) / sizeof(commands[0]) // Ajustado para calcular correctamente el número de comandos
@@ -127,6 +128,7 @@ static int show_registersCommand(int argc, char* argv[]) {
 }
 
 static int snakesCommand(int argc, char* argv[]) {
+    snakes();
     return 0;  
 }
 
@@ -141,9 +143,11 @@ static int zero_exceptionCommand(int argc, char *argv[]) {
 
 static int size_up(int argc, char *argv[]) {
     changeSize(1);
+    clearScreen();
     return 0;
 }
 static int size_down(int argc, char *argv[]) {
     changeSize(0);
+    clearScreen();
     return 0;
 }

@@ -120,6 +120,8 @@ void showTime(){
 }
 
 void changeSize(int a){
-    clearScreen();
     syscall_changesize(a);
+}
+void setSize(int size){
+    changeSize(size);
 }
