@@ -125,3 +125,11 @@ void changeSize(int a){
 void setSize(int size){
     changeSize(size);
 }
+
+void resetSize(){
+    setSize(0);
+}
+
+void drawSquare(uint64_t x, uint64_t y, uint32_t size, uint64_t color){
+    syscall_drawsquare(x,y,size,color);
+}

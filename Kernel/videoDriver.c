@@ -307,10 +307,12 @@ void moveScreenUpIfFull() {
 
 
 void changeSize(int a){
-    if (a != 0) {
-        size += size;
-    } else if(size > 1){
-        size--;
+    if(a == 0){ // Reducir el tamaño a 1 si se pasa 0
+        size = 1;
+    }else if(a > 0){ // Si se pasa un valor positivo, establecer el tamaño directamente o incrementar en 1 si a es 1
+        size = a == 1 ? size + 1 : a;
+    }else if(size + a > 0){ // Si se pasa un valor negativo, restar del tamaño actual
+        size += a;
     }
 }
 

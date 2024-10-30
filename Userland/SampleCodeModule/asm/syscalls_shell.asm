@@ -3,8 +3,8 @@ GLOBAL syscall_read
 GLOBAL syscall_clear
 GLOBAL syscall_showRegisters
 GLOBAL syscall_time
-
 global syscall_changesize
+global syscall_drawsquare
 
 section .text
 
@@ -36,6 +36,6 @@ syscall_clear:
 syscall_changesize:
     syscall_entry 5
 
-syscall_drawSquare:
+syscall_drawsquare:
     syscall_entry 12
 

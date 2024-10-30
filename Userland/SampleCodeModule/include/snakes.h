@@ -18,6 +18,7 @@ int twoPlayer();
 int collision();
 int getMove();
 void displayBackground();
+void displayLayout();
 void displayMenu();
 void updateSnakes();
 void pause();

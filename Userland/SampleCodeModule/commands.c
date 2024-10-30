@@ -115,6 +115,7 @@ static int show_registersCommand(int argc, char* argv[]) {
 }
 
 static int snakesCommand(int argc, char* argv[]) {
+    clearScreen();
     snakes();
     return 0;  
 }
@@ -134,7 +135,7 @@ static int size_up(int argc, char *argv[]) {
     return 0;
 }
 static int size_down(int argc, char *argv[]) {
-    changeSize(0);
+    changeSize(-1);
     clearScreen();
     return 0;
 }
