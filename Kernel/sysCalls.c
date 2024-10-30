@@ -4,6 +4,7 @@
 #include <keyboardDriver.h>
 #include <stdint.h>
 #include <stdarg.h>
+#include <time.h>
 #include <interrupts.h>
 
 
@@ -35,4 +36,15 @@ void sys_read(char * c, int len, int fd){
         }
     }
     return;
+}
+
+void sys_sleep(uint64_t millis) {
+    unsigned long long initial_time = ms_elapsed(); // tiempo
+    unsigned long long currentTime = initial_time;
+    _sti();// Habilito interrupciones para permitir que el sistema siga funcionando
+    while ((currentTime - initial_time) <= millis) { //espero transcurra lo especificado
+        currentTime = ms_elapsed();
+    }
+    
+    _cli();// Deshabilito interrupciones para asegurar que el sistema no se interrumpa
 }

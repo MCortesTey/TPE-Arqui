@@ -11,5 +11,5 @@
 
 void sys_write(char * buff, int count, int fd);
 void sys_read(char * buff, int len, int fds);
-
+void sys_sleep(uint64_t millis);
 #endif

@@ -52,9 +52,9 @@ uint64_t int_80(uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t
 		case 5: 
 			changeSize(rdi);
 			break;
-		// case 6: 
-		// 		sizeDown();
-		// 		break;
+		case 6: 
+			sys_sleep(rdi);
+			break;
 		case 7: 
 			clear();
 	 		break;

@@ -5,6 +5,7 @@ GLOBAL syscall_showRegisters
 GLOBAL syscall_time
 global syscall_changesize
 global syscall_drawsquare
+global syscall_sleep
 
 section .text
 
@@ -29,6 +30,9 @@ syscall_time:
 
 syscall_showRegisters:
     syscall_entry 4
+
+syscall_sleep:
+    syscall_entry 6
 
 syscall_clear:
     syscall_entry 7

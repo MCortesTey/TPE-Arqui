@@ -17,7 +17,6 @@ void startShell()
     int exit = 0 ;
 
     do{
-        
         printf_s("$>");
         getBuffer(input);
 
