@@ -15,22 +15,29 @@ void startShell()
     char input[INPUT_MAX] ;
     char copy[INPUT_MAX];
     int exit = 0 ;
+
     do{
+        
         printf_s("$>");
         getBuffer(input);
+
 
         if (input[0] != 0 ) { // chequeo si el usuario ingreso algo
             strcpy_s(copy, input);
             exit = CommandParse(copy);
             if (exit == INPUT_ERROR) {
+
                 printf_s(INVALID_MSG, input);
                 exit = 0;
             }
-        } 
+
+        }
+        
 
     }while(!exit);
     //mensaje de despedida
 }
+
 
 static void getBuffer(char * input) {
     char c;

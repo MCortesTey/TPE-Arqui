@@ -5,19 +5,6 @@
 
 #define COMMAND_COUNT sizeof(commands) / sizeof(commands[0]) // Ajustado para calcular correctamente el número de comandos
 
-static char* fillCommandAndArgs(char* args[], char *commandInput, int *argsCount);
-static int clearCommand(int argc, char * argv[]);
-static int exitCommand(int argc, char * argv[]);
-static int helpCommand(int argc, char * argv[]);
-static int invalidOp_exceptionCommand(int argc, char* argv[]);
-static int show_registersCommand(int argc, char* argv[]);
-static int snakesCommand(int argc, char* argv[]);
-static int timeCommand(int argc, char* argv[]);
-static int zero_exceptionCommand(int argc, char * argv[]);
-static int size_up(int argc, char *argv[]);
-static int size_down(int argc, char *argv[]);
-
-
 static char * commands[][2] = {
         {"clear", "Clears the screen."},
         {"exit", "Exits the shell."},

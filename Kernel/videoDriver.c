@@ -60,10 +60,7 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
 
 
 void vdPrintCharColor(char c, uint64_t fcolor, uint64_t bcolor) {
-    // Comprueba si la posición actual está cerca del borde de la pantalla y mueve la pantalla si es necesario
-    // if (posX >= VBE_mode_info->width-(16*size)-MARGIN && posY >= VBE_mode_info->height-(32*size)-MARGIN) {
-    //     moveScreen();
-    // }
+    moveScreenUpIfFull();
 
     // Si el carácter es un espacio, usa el color de fondo para el primer plano
     if (c == ' ') {
@@ -254,6 +251,7 @@ void vdNewline() {
     // }
     posX = MARGIN;
     posY += 16*size;
+    moveScreenUpIfFull();
 }
 
 void vdTab(){
@@ -282,6 +280,31 @@ void clear() {
     posX = MARGIN;
     posY = MARGIN;
 }
+
+void moveScreenUpIfFull() {
+    if (posY >= VBE_mode_info->height - (32*size) - MARGIN) {
+        // Mover todo el contenido una línea hacia arriba
+        uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
+        for (int y = MARGIN + 16*size; y < VBE_mode_info->height; y++) {
+            for (int x = MARGIN; x < VBE_mode_info->width-MARGIN; x++) {
+                uint64_t destOffset = (x * (VBE_mode_info->bpp/8)) + ((y - 16*size) * VBE_mode_info->pitch);
+                uint64_t srcOffset = (x * (VBE_mode_info->bpp/8)) + (y * VBE_mode_info->pitch);
+                
+                framebuffer[destOffset] = framebuffer[srcOffset];
+                framebuffer[destOffset + 1] = framebuffer[srcOffset + 1];
+                framebuffer[destOffset + 2] = framebuffer[srcOffset + 2];
+            }
+        }
+        // Limpiar la última línea
+        for (int y = VBE_mode_info->height - 16*size; y < VBE_mode_info->height; y++) {
+            for (int x = MARGIN; x < VBE_mode_info->width-MARGIN; x++) {
+                putPixel(0, x, y);
+            }
+        }
+        posY -= 16*size;
+    }
+}
+
 
 void changeSize(int a){
     if (a != 0) {
