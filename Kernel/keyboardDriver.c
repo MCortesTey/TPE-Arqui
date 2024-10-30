@@ -3,6 +3,7 @@
 #include <lib.h>
 #include <videoDriver.h>
 #include <sysCalls.h>
+#include <registers.h>
 
 // Definiciones de constantes
 #define TOTAL_KEYS 58 // Número total de teclas definidas
@@ -83,7 +84,8 @@ unsigned char keyHandler(unsigned int key){
  		capsLock = 1 - capsLock; // Cambiar estado del bloqueo de mayúsculas
  		return 0; // No se inserta nada en el búfer
  	case ESCAPE_KEY:
- 		registerPressed = 1; // Activar registro
+		saveRegisters();
+ 		regsChecked = 1; // Activar registro
  		return 0; // No se inserta nada en el búfer
 	case ENTER_KEY:
 		return '\n';

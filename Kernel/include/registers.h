@@ -14,6 +14,7 @@ typedef struct regStruct{
 } regStruct;
 
 extern regStruct regBackup;
+extern int regsChecked;
 
 
 void printRegStatus ( regStruct * regs );

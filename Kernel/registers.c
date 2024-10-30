@@ -1,8 +1,14 @@
 #include <registers.h>
 #include <videoDriver.h>
 
+int regsChecked = 0 ;
+
 void printRegStatus(regStruct *regs) {
 
+    if ( !regsChecked ){
+        vdPrintError("Error, registers are not updated. Press ESC to update.\n");
+        return;
+    }
     char *regNames[] = {
         "RAX", "RBX", "RCX", "RDX", "RSI", "RDI", "RBP", "RSP",
         "R8 ", "R9 ", "R10", "R11", "R12", "R13", "R14", "R15",
@@ -17,7 +23,7 @@ void printRegStatus(regStruct *regs) {
         regs->ss, regs->cs, regs->rip, regs->rflags
     };
 
-    for (int i = 0; i < 18; i++) {
+    for (int i = 0; i <= 20 ; i++) {
         vdPrintRegister(regNames[i], regValues[i]);
     }
 }
