@@ -70,9 +70,9 @@ uint64_t int_80(uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t
 		// case 11:
 		// 		drawWordColorAt((char *)rdi, rsi, rdx, r10);
 		// 		break;
-		// case 12:
-		// 		putSquare(rdi, rsi, rdx, r10);
-		// 		break;
+		case 12:
+		 		drawSquare(rdi, rsi, rdx, r10);
+		 		break;
 		// case 13:
 		// 		sleepms(rdi);
 		// 		break;
