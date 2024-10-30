@@ -290,3 +290,11 @@ void changeSize(int a){
         size--;
     }
 }
+
+void drawSquare(uint64_t x, uint64_t y, uint32_t size, uint64_t color) {
+    for (uint32_t i = 0; i < size; i++) {
+        for (uint32_t j = 0; j < size; j++) {
+            putPixel(color, x + j, y + i);
+        }
+    }
+}

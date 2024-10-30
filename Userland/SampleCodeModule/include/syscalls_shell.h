@@ -15,5 +15,6 @@ void syscall_clear();
 void syscall_showRegisters();
 void syscall_time(char *buf);
 void syscall_changesize(int a);
+void syscall_drawSquare(uint64_t x, uint64_t y, uint32_t size, uint64_t color);
 
 #endif

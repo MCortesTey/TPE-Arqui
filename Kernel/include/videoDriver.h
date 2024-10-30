@@ -28,6 +28,7 @@ void vdTab();
 void checkChar(char character, uint64_t fcolor, uint64_t bcolor);
 void clear();
 void changeSize(int a);
+void drawSquare(uint64_t x, uint64_t y, uint32_t size, uint64_t color);
 
 
 #endif // VIDEO_DRIVER_H

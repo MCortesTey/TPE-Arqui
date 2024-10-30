@@ -36,3 +36,6 @@ syscall_clear:
 syscall_changesize:
     syscall_entry 5
 
+syscall_drawSquare:
+    syscall_entry 12
+
