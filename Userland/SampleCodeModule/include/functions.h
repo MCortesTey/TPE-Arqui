@@ -15,5 +15,6 @@ void strcpy_s(char *dest, const char *src);
 void clearScreen();
 void showRegisters();
 void showTime();
+void changeSize(int a);
 
 #endif

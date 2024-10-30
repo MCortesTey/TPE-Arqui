@@ -46,7 +46,7 @@ VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x0000000000005C00;
 uint32_t posX = MARGIN;
 uint32_t posY = MARGIN;
 int cursor_pos = 0;
-int size = 1;
+static int size = 1;
 
 
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
@@ -280,4 +280,12 @@ void clear() {
     }
     posX = MARGIN;
     posY = MARGIN;
+}
+
+void changeSize(int a){
+    if (a != 0) {
+        size++;
+    } else if(size > 1){
+        size--;
+    }
 }

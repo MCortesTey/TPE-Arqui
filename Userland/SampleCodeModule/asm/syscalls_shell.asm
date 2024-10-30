@@ -4,6 +4,8 @@ GLOBAL syscall_clear
 GLOBAL syscall_showRegisters
 GLOBAL syscall_time
 
+global syscall_changesize
+
 section .text
 
 %macro syscall_entry 1 ; recibe un argumento que seria numero de syscall 
@@ -30,4 +32,7 @@ syscall_showRegisters:
 
 syscall_clear:
     syscall_entry 7
+
+syscall_changesize:
+    syscall_entry 5
 

@@ -14,5 +14,6 @@ void syscall_read(char * c, int size, int fd);
 void syscall_clear();
 void syscall_showRegisters();
 void syscall_time(char *buf);
+void syscall_changesize(int a);
 
 #endif

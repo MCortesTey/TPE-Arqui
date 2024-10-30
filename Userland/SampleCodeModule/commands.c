@@ -13,6 +13,8 @@ static int show_registersCommand(int argc, char* argv[]);
 static int snakesCommand(int argc, char* argv[]);
 static int timeCommand(int argc, char* argv[]);
 static int zero_exceptionCommand(int argc, char * argv[]);
+static int size_up(int argc, char *argv[]);
+static int size_down(int argc, char *argv[]);
 
 
 static char * commands[][2] = {
@@ -23,7 +25,9 @@ static char * commands[][2] = {
         {"zero", "Test for the Zero Division Exception"},
         {"inforeg", "Shows the registers values."},
         {"snakes", "Starts the Snakes game."},
-        {"time", "Shows the current time."}
+        {"time", "Shows the current time."},
+        {"sizeUp","Increment the size of the font."},
+        {"sizeDown","Decrement the size of the font."}
 };
 
 static int (*commandsFunctions[])(int argc, char* argv[]) = {
@@ -35,6 +39,8 @@ static int (*commandsFunctions[])(int argc, char* argv[]) = {
     show_registersCommand,
     snakesCommand,
     timeCommand,
+    size_up,
+    size_down,
 };
 
 
@@ -131,4 +137,13 @@ static int timeCommand(int argc, char* argv[]) {
 
 static int zero_exceptionCommand(int argc, char *argv[]) {
     return 0; 
+}
+
+static int size_up(int argc, char *argv[]) {
+    changeSize(1);
+    return 0;
+}
+static int size_down(int argc, char *argv[]) {
+    changeSize(0);
+    return 0;
 }
