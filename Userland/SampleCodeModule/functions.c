@@ -8,6 +8,12 @@
 #define WHITE 0xFFFFFFFF
 #define BUFFER_SIZE 256
 
+static unsigned int log(uint64_t n, int base) {
+    unsigned int count = 1;
+    while (n /= base)
+        count++;
+    return count;
+}
 
 // void putcharColor(char c, uint32_t color) { //puede que esta no la necesitemos 
 //     syscall_write(&c, 1, STDOUT, color);
@@ -26,7 +32,7 @@ void printf_s(char *fmt, ... ){
     va_list args;  
     va_start(args, fmt);  // inicializa args con los argumentos q estan despues del parametro fijo osea fmt
 
-    //char buffer[BUFFER_SIZE];
+    
     while ( *fmt != '\0'){
         if ( *fmt == '%'){
             fmt++;
@@ -40,9 +46,12 @@ void printf_s(char *fmt, ... ){
                 break;
             }
             case 'd':{
-                //int d = va_arg(args, int );
-                // hacer funcion para pasar de int a str y guardar en buffer
-                // putchar de cada caracter del string q esta en buffer
+                int d = va_arg(args, int);
+                char buffer[BUFFER_SIZE];
+                itoa(d, buffer,10);
+                for(int i = 0; buffer[i] != '\0'; i++) {
+                    putchar_s(buffer[i]);
+                }
                 break;
             }
             case 'c':{
@@ -133,3 +142,30 @@ void resetSize(){
 void drawSquare(uint64_t x, uint64_t y, uint32_t size, uint64_t color){
     syscall_drawsquare(x,y,size,color);
 }
+
+int itoa(int n, char* buffer, int base){
+    if(n==0){
+        buffer[0] = '0';
+        buffer[1] = '\0';
+        return 1;
+    }
+
+    unsigned int len=0;
+    int i = 0;
+    if( n<0 && base==10){
+        n = -n;
+        buffer[i] = '-';
+        len++;
+        i++;
+    }
+    
+    len += log(n, base);
+    while( n!=0){
+        int res = n%base;
+        buffer[len - i++ - 1] = (res > 9)? (res-10) + 'A' : res + '0';
+        n /= base;
+    }
+    buffer[i] = '\0';
+    return len;
+}
+

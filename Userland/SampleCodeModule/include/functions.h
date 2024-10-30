@@ -17,6 +17,6 @@ void showRegisters();
 void showTime();
 void changeSize(int a);
 void drawSquare(uint64_t x, uint64_t y, uint32_t size, uint64_t color);
-
+int itoa(int n, char* buffer, int base);
 
 #endif
