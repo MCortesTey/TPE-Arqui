@@ -190,34 +190,31 @@ haltcpu:
 
 
 
-; macro para guardar los registros en regBackup (esta en section.bss) en orden en que se los pushean en pushState
+%macro saveRegistersASM 0
+    mov [regBackup.r_rbp], rbp  ; Guarda el valor de rbp actual
 
-%macro saveRegistersASM 0  ;0 porque no recibe argumentos la macro
-
-    mov [regBackup.r_rbp], rbp  ; Guarda el valor de rbp
-
-    mov rbp, [rsp]              ; rbp
+    mov rbp, [rsp]              ; r15
     mov [regBackup.r_r15], rbp
 
-    mov rbp, [rsp + 8]          ; r15
+    mov rbp, [rsp + 8]          ; r14
     mov [regBackup.r_r14], rbp
 
-    mov rbp, [rsp + 16]         ; r14
+    mov rbp, [rsp + 16]         ; r13
     mov [regBackup.r_r13], rbp
 
-    mov rbp, [rsp + 24]         ; r13
+    mov rbp, [rsp + 24]         ; r12
     mov [regBackup.r_r12], rbp
 
-    mov rbp, [rsp + 32]         ; r12
+    mov rbp, [rsp + 32]         ; r11
     mov [regBackup.r_r11], rbp
 
-    mov rbp, [rsp + 40]         ; r11
+    mov rbp, [rsp + 40]         ; r10
     mov [regBackup.r_r10], rbp
 
-    mov rbp, [rsp + 48]         ; r10
+    mov rbp, [rsp + 48]         ; r9
     mov [regBackup.r_r9], rbp
 
-    mov rbp, [rsp + 56]         ; r9
+    mov rbp, [rsp + 56]         ; r8
     mov [regBackup.r_r8], rbp
 
     mov rbp, [rsp + 64]         ; rsi
@@ -225,6 +222,9 @@ haltcpu:
 
     mov rbp, [rsp + 72]         ; rdi
     mov [regBackup.r_rdi], rbp
+
+    mov rbp, [rsp + 80]         ; rbp
+    mov [regBackup.r_rbp], rbp
 
     mov rbp, [rsp + 88]         ; rdx
     mov [regBackup.r_rdx], rbp
@@ -254,7 +254,6 @@ haltcpu:
     mov [regBackup.r_rss], rbp
 
     mov rbp, [regBackup.r_rbp]  ; Restaura el valor original de rbp
-
 %endmacro
 
 

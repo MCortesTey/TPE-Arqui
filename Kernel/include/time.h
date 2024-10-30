@@ -9,6 +9,7 @@ int seconds_elapsed();
 uint8_t getSeconds();
 uint8_t getMinutes();
 uint8_t getHours();
+void convertToGMTMinus3(int *hours);
 char * TimeClock(char * buffer);
 
 #endif

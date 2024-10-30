@@ -11,21 +11,22 @@ void exceptionDispatcher(int exception) {
 	else{
 		invalidOperation();
 	}
-	//hago print de registros
+	printRegStatus(&regBackup);
+	vdNewline();
 	vdPrint("Press keyboard to continue");
 	//leer ese caracter pero no escribirlo en pantalla, solo leerlo para poder 
 	// rectivar el cursor
 }
 
 static void zero_division() {
-	// Activar isChecked si no se hizo antes
+	regsChecked = 1;
 	vdPrintError("Error: Division by cero is not permitted");
 	vdNewline();
 
 }
 
 void invalidOperation(){
-	// Activar isChecked si no se hizo antes
+	regsChecked = 1;
 	vdPrintError("Error: Invalid Operation");
 	vdNewline();
 }

@@ -20,6 +20,8 @@ void _irq80Handler(void);
 
 
 void _exception0Handler(void);
+void printRegStatusASM(void);
+void saveRegistersASM(void);
 
 void _cli(void);
 
