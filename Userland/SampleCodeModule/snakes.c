@@ -17,12 +17,19 @@
 
 #define MENU_FONT 4
 
+
+static int PLAYERS = 1;
+static int SPEED = 1;
 static int exit = 0;
 // matriz/tablero de posiciones
 uint64_t board[SCREEN_WIDTH][SCREEN_HEIGHT];
 
 int snakes(){
     // Animación
+    clearScreen();
+    printf_s(START_MSG, PLAYERS, SPEED);
+    menu();
+    clearScreen();
     displayBackground();
     displayLayout();
     // while(!exit){
@@ -35,9 +42,9 @@ int snakes(){
     // exit = 0;
     return 0;
 }
-
+/*
 int menu(){
-    displayMenu();
+    //displayMenu();
     int option = -1;
     while(option == -1){
         char dir = getchar_s();
@@ -51,13 +58,50 @@ int menu(){
     }
     return option;
 }
+*/
+int menu() {
+    int option = -1;
+    
+    while(option == -1) {
+        char key = getchar_s();
+        
+        if (key == '\n') {
+            option = PLAY;
+            gameLoop(option);
+        } else if (key == 's') {
+            // Preguntar por cantidad de jugadores
+            printf_s("Ingrese cantidad de jugadores (1/2): ");
+            char players_response = getchar_s();
+            PLAYERS = (players_response == '2') ? 2 : 1;
+            printf_s("%d\n\n", PLAYERS);
+            
+            // Preguntar por velocidad
+            printf_s("Ingrese velocidad (1-3): ");
+            char speed_char = getchar_s();
+            int speed = speed_char - '0';
+            
+            if (speed >= 1 && speed <= 3) {
+                SPEED = speed;
+                printf_s("%d\n\n", SPEED);
+                printf_s("Presione ENTER para jugar\n\n");
+            } else {
+                printf_s("Error: La velocidad debe estar entre 1 y 3\n\n");
+            }
+        } else if (key == 'e') {
+            option = EXIT;
+        }
+    }
+    return option;
+}
 
+/*
 void displayMenu() {
    // changeSize();
     printf_s("Seleccione una opción:\n");
     printf_s("0: Jugar\n");
     printf_s("e: Salir\n");
 }
+*/
 
 void displayLayout() {
     // Lógica para mostrar el fondo del juego
