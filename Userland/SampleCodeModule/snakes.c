@@ -31,11 +31,18 @@
 #define SPAWN_2_X (COLUMNS-SPAWN_1_X)
 #define SPAWN_2_Y SPAWN_1_Y
 
+#define MAX_LENGTH (COLUMNS * ROWS) // Tamaño máximo de la serpiente
+#define MAX_SNAKES 2 // Número máximo de serpientes
+
+#define UP 0
+#define DOWN 1
+#define LEFT 2
+#define RIGHT 3
 
 //se guardan los settings
 static int players = 1; 
 static int speed = 1;
-static int exit = 0;
+static int end = 0;
 
 // matriz/tablero de posiciones
 uint64_t board[SCREEN_WIDTH][SCREEN_HEIGHT] = {EMPTY};
@@ -50,15 +57,16 @@ int snakes(){
     displayBackground();
     displayLayout();
     spawnPlayers();
+    initSnakes();
     countDown();
-    // while(!exit){
+    // while(!end){
     //     int option = menu();
     //     if(option == EXIT){
     //         break;
     //     }
     //     gameLoop(option);
     // }
-    // exit = 0;
+    // end = 0;
     syscall_sleep(5000);
     //clearScreen();
     resetSize();
@@ -171,14 +179,11 @@ void spawnPlayers(){
         //p2
         drawSquare((SPAWN_2_X*CELL_SIZE)+OFFSET_X, (SPAWN_2_Y*CELL_SIZE)+OFFSET_Y, CELL_SIZE, P2_COLOR);
         drawSquare(((SPAWN_2_X-1)*CELL_SIZE)+OFFSET_X, (SPAWN_2_Y*CELL_SIZE)+OFFSET_Y, CELL_SIZE, P2_COLOR);
-        board[SPAWN_2_Y][SPAWN_2_X] = PLAYER_2;
-        board[SPAWN_2_Y][SPAWN_2_X-1] = PLAYER_2;
     }
     //p1
     drawSquare((SPAWN_1_X*CELL_SIZE)+OFFSET_X, (SPAWN_1_Y*CELL_SIZE)+OFFSET_Y, CELL_SIZE, P1_COLOR);
     drawSquare(((SPAWN_1_X-1)*CELL_SIZE)+OFFSET_X, (SPAWN_1_Y*CELL_SIZE)+OFFSET_Y, CELL_SIZE, P1_COLOR);
-    board[SPAWN_1_Y][SPAWN_1_X] = PLAYER_1;
-    board[SPAWN_1_Y][SPAWN_1_X-1] = PLAYER_1;
+    initSnakes();
     return;
 }
 
@@ -195,5 +200,95 @@ void countDown() {
 }
 
 
+static Snake snake1 = {0}; // Instancia de serpiente 1, inicializada a 0
+static Snake snake2 = {0}; // Instancia de serpiente 2, inicializada a 0
 
+// Inicializar las serpientes
+void initSnakes() { // Se pasa la serpiente como parámetro
+    if(players == 2 ){
+        snake2.x[snake2.length] = SPAWN_2_X;
+        snake2.y[snake2.length++] = SPAWN_2_Y;
+        snake2.x[snake2.length] = SPAWN_2_X+1;
+        snake2.y[snake2.length++] = SPAWN_2_Y;
+    }
+    snake1.x[snake1.length] = SPAWN_1_X; // Usar el parámetro
+    snake1.y[snake1.length++] = SPAWN_1_Y; // Usar el parámetro
+    snake1.x[snake1.length] = SPAWN_1_X-1; // Usar el parámetro
+    snake1.y[snake1.length++] = SPAWN_1_Y; // Usar el parámetro
+}
 
+// Añadir un nodo a la serpiente especificada
+void addNode(Snake* snake, int x, int y) { // Se pasa la serpiente como parámetro
+    if (snake->length < MAX_LENGTH) { // Verificar longitud de la serpiente
+        snake->x[snake->length] = x; // Establecer la coordenada X
+        snake->y[snake->length] = y; // Establecer la coordenada Y
+        snake->length++; // Incrementar la longitud de la serpiente
+    }
+}
+
+// Iterar sobre los nodos de la serpiente especificada y aplicar una función a cada uno
+void iterateSnake(Snake* snake, void (*func)(int x, int y)) { // Se pasa la serpiente como parámetro
+    for (int i = 0; i < snake->length; i++) {
+        func(snake->x[i], snake->y[i]); // Aplicar la función a las coordenadas del nodo
+    }
+}
+
+// Reiniciar las serpientes
+void resetSnakes(Snake* snake) { // Se pasa la serpiente como parámetro
+    snake->length = 0; // Reiniciar la longitud de la serpiente
+}
+
+// Mover la serpiente especificada en la dirección dada
+void moveSnake(Snake* snake, int direction, int player) {
+    if (snake->length > 0) { // Verificar que la serpiente tenga segmentos
+        // Mover los segmentos de la serpiente
+        for (int i = snake->length; i > 0; i--) {
+            snake->x[i] = snake->x[i - 1]; // Mover la coordenada X
+            snake->y[i] = snake->y[i - 1]; // Mover la coordenada Y
+        }
+
+        // Actualizar la cabeza de la serpiente según la dirección
+        switch (direction) {
+            case UP:
+                snake->y[0]--; // Mover hacia arriba
+                break;
+            case DOWN:
+                snake->y[0]++; // Mover hacia abajo
+                break;
+            case LEFT:
+                snake->x[0]--; // Mover hacia la izquierda
+                break;
+            case RIGHT:
+                snake->x[0]++; // Mover hacia la derecha
+                break;
+        }
+
+        // Dibuja la cabeza y la cola de la serpiente
+        drawSnakePosition(snake, player); // Llamada actualizada
+    }
+}
+
+void drawSnakePosition(Snake* snake, int player) {
+    // Dibuja la cola de la serpiente en el color de fondo
+    if (snake->length > 1) {
+        drawSquare(snake->x[snake->length - 1] * CELL_SIZE + OFFSET_X, 
+                   snake->y[snake->length - 1] * CELL_SIZE + OFFSET_Y, 
+                   CELL_SIZE, 
+                   ((snake->x[snake->length]+ snake->y[snake->length])% 2 == 0) ? B_COLOR1 : B_COLOR2); // Color de fondo alternativo
+    }
+
+    // Dibuja la cabeza de la serpiente
+    switch(player){
+        case PLAYER_1:
+            drawSquare(snake->x[0] * CELL_SIZE + OFFSET_X, 
+            snake->y[0] * CELL_SIZE + OFFSET_Y, 
+            CELL_SIZE, 
+            P1_COLOR); // Color de la cabeza
+        case PLAYER_2:
+            drawSquare(snake->x[0] * CELL_SIZE + OFFSET_X, 
+            snake->y[0] * CELL_SIZE + OFFSET_Y, 
+            CELL_SIZE, 
+            P2_COLOR); // Color de la cabeza
+    }
+   
+}

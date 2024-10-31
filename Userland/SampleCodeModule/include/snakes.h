@@ -3,11 +3,18 @@
 
 #include <stdint.h>
 
+#define SCREEN_WIDTH 1024
+#define SCREEN_HEIGHT 760
+
+#define CELL_SIZE 80
+#define ROWS (SCREEN_HEIGHT / CELL_SIZE)
+#define COLUMNS (SCREEN_WIDTH / CELL_SIZE)
+
 // Definiciones de constantes
-#define PLAYER1 1
-#define PLAYER2 2
 #define EXIT 0
 #define PLAY 1
+
+#define MAX_LENGTH (COLUMNS * ROWS) // Tamaño máximo de la serpiente
 
 #define START_MSG "SNAKES GAME\n PLAYERS: %d \n SPEED: %d \n\n Press: \n [ENTER] to begin game \n 's' for settings \n 'e' to exit \n"
 
@@ -30,4 +37,17 @@ int startSnakes();
 void spawnPlayers();
 void countDown();
 
-#endif // SNAKES_H
+// Definición de la estructura Snake
+typedef struct {
+    int length;      // Longitud de la serpiente
+    int x[MAX_LENGTH]; // Coordenadas X de los segmentos de la serpiente
+    int y[MAX_LENGTH]; // Coordenadas Y de los segmentos de la serpiente
+} Snake;
+
+// Prototipos para la estructura de las serpientes
+void initSnakes();
+void addNode(Snake* snake, int x, int y);
+void iterateSnake(Snake* snake, void (*func)(int x, int y));
+void resetSnakes(Snake* snake);
+
+#endif 
