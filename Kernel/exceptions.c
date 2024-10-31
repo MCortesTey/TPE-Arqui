@@ -4,6 +4,7 @@
 static void zero_division();
 #include "exceptions.h"
 #include "videoDriver.h"
+#include "lib.h"
 
 void exceptionDispatcher(int exception) {
 	if (exception == ZERO_EXCEPTION_ID)
@@ -14,11 +15,12 @@ void exceptionDispatcher(int exception) {
 	printRegStatus(&regBackup);
 	vdNewline();
 	vdPrint("Press keyboard to continue");
+	getKeyPressed(); 
 	//leer ese caracter pero no escribirlo en pantalla, solo leerlo para poder 
 	// rectivar el cursor
 }
 
-static void zero_division() {
+void zero_division() {
 	regsChecked = 1;
 	vdPrintError("Error: Division by cero is not permitted");
 	vdNewline();

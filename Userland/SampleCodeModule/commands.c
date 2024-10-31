@@ -127,7 +127,8 @@ int timeCommand(int argc, char* argv[]) {
 }
 
 int zero_exceptionCommand(int argc, char *argv[]) {
-    return 0; 
+    zero_division();
+    return 0;
 }
 
 int size_up(int argc, char *argv[]) {

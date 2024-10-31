@@ -22,7 +22,7 @@ EXTERN irqDispatcher
 EXTERN sysDispatcher
 EXTERN exceptionDispatcher
 EXTERN printRegStatus
-EXTERN getKeyPressed 
+
 
 EXTERN sysCaller
 
@@ -241,7 +241,6 @@ _irq80Handler:
 	mov rdi, %1
 	call exceptionDispatcher
 
-	call getKeyPressed
 	popState
 	iretq
 %endmacro

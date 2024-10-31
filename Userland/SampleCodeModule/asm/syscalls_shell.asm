@@ -6,9 +6,8 @@ GLOBAL syscall_time
 global syscall_changesize
 global syscall_drawsquare
 global syscall_sleep
-
 global _invalidOpcode
-
+global zero_division
 section .text
 
 %macro syscall_entry 1 ; recibe un argumento que seria numero de syscall 
@@ -47,3 +46,8 @@ syscall_drawsquare:
 
 _invalidOpcode:
     ud2
+
+zero_division:
+    mov rax, 1      ; Dividendo
+    xor rcx, rcx    ; Divisor = 0
+    div rcx      
