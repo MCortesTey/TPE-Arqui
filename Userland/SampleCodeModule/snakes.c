@@ -218,7 +218,7 @@ void initSnakes() { // Se pasa la serpiente como parámetro
 }
 
 // Añadir un nodo a la serpiente especificada
-void addNode(Snake* snake, int x, int y) { // Se pasa la serpiente como parámetro
+void grow(Snake* snake, int x, int y) { // Se pasa la serpiente como parámetro
     if (snake->length < MAX_LENGTH) { // Verificar longitud de la serpiente
         snake->x[snake->length] = x; // Establecer la coordenada X
         snake->y[snake->length] = y; // Establecer la coordenada Y
