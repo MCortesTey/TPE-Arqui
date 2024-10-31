@@ -26,4 +26,6 @@ void printRegStatus(regStruct *regs) {
     for (int i = 0; i <= 20 ; i++) {
         vdPrintRegister(regNames[i], regValues[i]);
     }
+    vdEndPrintRegisters();
+    
 }

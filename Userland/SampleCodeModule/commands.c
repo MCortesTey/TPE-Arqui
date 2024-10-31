@@ -106,6 +106,7 @@ int exitCommand(int argc, char *argv[]) {
 }
 
 int invalidOp_exceptionCommand(int argc, char* argv[]) {
+    _invalidOpcode();
     return 0;  
 }
 

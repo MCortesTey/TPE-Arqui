@@ -30,7 +30,7 @@ void clear();
 void moveScreenUpIfFull();
 void changeSize(int a);
 void drawSquare(uint64_t x, uint64_t y, uint32_t size, uint64_t color);
-
+void vdEndPrintRegisters();
 
 #endif // VIDEO_DRIVER_H
 

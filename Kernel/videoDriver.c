@@ -323,3 +323,9 @@ void drawSquare(uint64_t x, uint64_t y, uint32_t size, uint64_t color) {
         }
     }
 }
+
+void vdEndPrintRegisters() {
+    vdNewline();  // Agregar un salto de línea explícito
+    posX = MARGIN;  // Resetear la posición X
+    moveScreenUpIfFull(); 
+}

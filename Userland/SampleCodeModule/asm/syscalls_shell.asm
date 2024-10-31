@@ -7,6 +7,8 @@ global syscall_changesize
 global syscall_drawsquare
 global syscall_sleep
 
+global _invalidOpcode
+
 section .text
 
 %macro syscall_entry 1 ; recibe un argumento que seria numero de syscall 
@@ -43,3 +45,5 @@ syscall_changesize:
 syscall_drawsquare:
     syscall_entry 12
 
+_invalidOpcode:
+    ud2
