@@ -46,7 +46,7 @@ typedef struct {
 
 // Prototipos para la estructura de las serpientes
 void initSnakes();
-void addNode(Snake* snake, int x, int y);
+void grow(Snake* snake, int x, int y);
 void iterateSnake(Snake* snake, void (*func)(int x, int y));
 void resetSnakes(Snake* snake);
 

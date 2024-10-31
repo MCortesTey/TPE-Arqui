@@ -23,7 +23,7 @@ void printRegStatus(regStruct *regs) {
         regs->ss, regs->cs, regs->rip, regs->rflags
     };
 
-    for (int i = 0; i <= 20 ; i++) {
+    for (int i = 0; i < 20 ; i++) {
         vdPrintRegister(regNames[i], regValues[i]);
     }
     vdEndPrintRegisters();
