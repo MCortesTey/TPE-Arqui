@@ -44,6 +44,11 @@ syscall_changesize:
 syscall_drawsquare:
     syscall_entry 12
 
+syscall_makeSound:
+    mov rax, 9
+    int 80h
+    ret
+
 _invalidOpcode:
     ud2
 
