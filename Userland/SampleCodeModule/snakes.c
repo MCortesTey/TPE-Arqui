@@ -16,24 +16,41 @@
 #define B_COLOR2 0xCDA360
 #define BORDER_COLOR 0x8B8589
 
+#define P1_COLOR 0x1F1FFF
+#define P2_COLOR 0x50962D
+
 #define MENU_FONT 3
+#define COUNTDOWN_FONT 0
+
+#define PLAYER_1 1
+#define PLAYER_2 2
+#define EMPTY 0
+
+#define SPAWN_1_X 3
+#define SPAWN_1_Y 4
+#define SPAWN_2_X (COLUMNS-SPAWN_1_X)
+#define SPAWN_2_Y SPAWN_1_Y
 
 
-static int PLAYERS = 1;
-static int SPEED = 1;
+//se guardan los settings
+static int players = 1; 
+static int speed = 1;
 static int exit = 0;
+
 // matriz/tablero de posiciones
-uint64_t board[SCREEN_WIDTH][SCREEN_HEIGHT];
+uint64_t board[SCREEN_WIDTH][SCREEN_HEIGHT] = {EMPTY};
 
 int snakes(){
     // Animación
     clearScreen();
     setSize(MENU_FONT);
-    printf_s(START_MSG, PLAYERS, SPEED);
+    printf_s(START_MSG, players, speed);
     menu();
     clearScreen();
     displayBackground();
     displayLayout();
+    spawnPlayers();
+    countDown();
     // while(!exit){
     //     int option = menu();
     //     if(option == EXIT){
@@ -43,7 +60,7 @@ int snakes(){
     // }
     // exit = 0;
     syscall_sleep(5000);
-    clearScreen();
+    //clearScreen();
     resetSize();
     return 0;
 }
@@ -72,22 +89,22 @@ int menu() {
         
         if (key == '\n') {
             option = PLAY;
-            gameLoop(option);
+            //gameLoop(option);
         } else if (key == 's') {
             // Preguntar por cantidad de jugadores
             printf_s("Ingrese cantidad de jugadores (1/2): ");
             char players_response = getchar_s();
-            PLAYERS = (players_response == '2') ? 2 : 1;
-            printf_s("%d\n\n", PLAYERS);
+            players = (players_response == '2') ? 2 : 1;
+            printf_s("%d\n\n", players);
             
             // Preguntar por velocidad
             printf_s("Ingrese velocidad (1-3): ");
             char speed_char = getchar_s();
-            int speed = speed_char - '0';
+            int speed_option = speed_char - '0';
             
             if (speed >= 1 && speed <= 3) {
-                SPEED = speed;
-                printf_s("%d\n\n", SPEED);
+                speed = speed_option;
+                printf_s("%d\n\n", speed);
                 printf_s("Presione ENTER para jugar\n\n");
             } else {
                 printf_s("Error: La velocidad debe estar entre 1 y 3\n\n");
@@ -140,9 +157,43 @@ void displayBackground() {
 
 
 void gameLoop(int option) {
-    // Lógica del juego basada en la opción seleccionada
-    printf_s("Iniciando el juego con la opción: %d\n", option);
+    int end = 0;
+    spawnPlayers();
+    countDown();
+    while(!end){
+
+    }
     // Aquí iría la lógica del juego
 }
+
+void spawnPlayers(){
+    if(players == 2){
+        //p2
+        drawSquare((SPAWN_2_X*CELL_SIZE)+OFFSET_X, (SPAWN_2_Y*CELL_SIZE)+OFFSET_Y, CELL_SIZE, P2_COLOR);
+        drawSquare(((SPAWN_2_X-1)*CELL_SIZE)+OFFSET_X, (SPAWN_2_Y*CELL_SIZE)+OFFSET_Y, CELL_SIZE, P2_COLOR);
+        board[SPAWN_2_Y][SPAWN_2_X] = PLAYER_2;
+        board[SPAWN_2_Y][SPAWN_2_X-1] = PLAYER_2;
+    }
+    //p1
+    drawSquare((SPAWN_1_X*CELL_SIZE)+OFFSET_X, (SPAWN_1_Y*CELL_SIZE)+OFFSET_Y, CELL_SIZE, P1_COLOR);
+    drawSquare(((SPAWN_1_X-1)*CELL_SIZE)+OFFSET_X, (SPAWN_1_Y*CELL_SIZE)+OFFSET_Y, CELL_SIZE, P1_COLOR);
+    board[SPAWN_1_Y][SPAWN_1_X] = PLAYER_1;
+    board[SPAWN_1_Y][SPAWN_1_X-1] = PLAYER_1;
+    return;
+}
+
+void countDown() {
+    setSize(COUNTDOWN_FONT);
+    printf_s("\t\t\t\t\t\t");
+    for (int i = 3; i > 0; i--) {
+        printf_s("%d", i); // Imprimir el número de la cuenta regresiva
+        syscall_sleep(1000); // Esperar 1 segundo (1000 ms)
+        putchar_s('\b');
+    }
+    printf_s("Go!\n"); // Mensaje al finalizar la cuenta regresiva
+    resetSize();
+}
+
+
 
 

@@ -27,5 +27,7 @@ void updateSnakes();
 void pause();
 int charToDir();
 int startSnakes();
+void spawnPlayers();
+void countDown();
 
 #endif // SNAKES_H
