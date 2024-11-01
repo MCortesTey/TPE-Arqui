@@ -36,6 +36,10 @@ int charToDir();
 int startSnakes();
 void spawnPlayers();
 void countDown();
+void handleInput(char key);
+int getPlayerByKey(char key);
+int inputToDir(char key, int player);
+
 
 // Definición de la estructura Snake
 typedef struct {
@@ -49,5 +53,6 @@ void initSnakes();
 void grow(Snake* snake, int x, int y);
 void iterateSnake(Snake* snake, void (*func)(int x, int y));
 void resetSnakes(Snake* snake);
-
+void drawSnakePosition(Snake* snake, int player);
+void moveSnake(Snake* snake, int direction, int player);
 #endif 

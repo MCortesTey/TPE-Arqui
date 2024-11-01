@@ -39,6 +39,16 @@
 #define LEFT 2
 #define RIGHT 3
 
+#define player1Up 'w'
+#define player1Down 's'
+#define player1Left 'a'
+#define player1Right 'd'
+
+#define player2Up 'i'
+#define player2Down 'k'
+#define player2Left 'j'
+#define player2Right 'l'
+
 //se guardan los settings
 static int players = 1; 
 static int speed = 1;
@@ -46,6 +56,8 @@ static int end = 0;
 
 // matriz/tablero de posiciones
 uint64_t board[SCREEN_WIDTH][SCREEN_HEIGHT] = {EMPTY};
+static Snake snake1 = {0}; // Instancia de serpiente 1, inicializada a 0
+static Snake snake2 = {0}; // Instancia de serpiente 2, inicializada a 0
 
 int snakes(){
     // Animación
@@ -174,6 +186,52 @@ void gameLoop(int option) {
     // Aquí iría la lógica del juego
 }
 
+void handleInput(char key) {
+        int who = getPlayerByKey(key);
+        if(who == PLAYER_1){
+            moveSnake(&snake1, inputToDir(key, PLAYER_1), PLAYER_1);
+        } else if(who == PLAYER_2){
+            moveSnake(&snake2, inputToDir(key, PLAYER_2), PLAYER_2);
+        }
+}
+
+int getPlayerByKey(char key) {
+    // Completar los casos para determinar el jugador según la tecla
+    if (key == player1Up || key == player1Down || key == player1Left || key == player1Right) {
+        return PLAYER_1; // Retorna el jugador 1 si se presiona una tecla de jugador 1
+    } else if (key == player2Up || key == player2Down || key == player2Left || key == player2Right) {
+        return PLAYER_2; // Retorna el jugador 2 si se presiona una tecla de jugador 2
+    }
+    return EMPTY; // Retorna EMPTY si no se reconoce la tecla
+}
+
+int inputToDir(char key, int player){
+    if(player == PLAYER_1){
+        switch(key){
+            case player1Up:
+                return UP; // Retorna dirección arriba
+            case player1Down:
+                return DOWN; // Retorna dirección abajo
+            case player1Left:
+                return LEFT; // Retorna dirección izquierda
+            case player1Right:
+                return RIGHT; // Retorna dirección derecha
+        }
+    } else if(player == PLAYER_2) {
+        switch(key){
+            case player2Up:
+                return UP; // Retorna dirección arriba
+            case player2Down:
+                return DOWN; // Retorna dirección abajo
+            case player2Left:
+                return LEFT; // Retorna dirección izquierda
+            case player2Right:
+                return RIGHT; // Retorna dirección derecha
+        }
+    }
+    return -1; // Retorna -1 si no se reconoce la tecla
+}
+
 void spawnPlayers(){
     if(players == 2){
         //p2
@@ -198,10 +256,6 @@ void countDown() {
     printf_s("Go!\n"); // Mensaje al finalizar la cuenta regresiva
     resetSize();
 }
-
-
-static Snake snake1 = {0}; // Instancia de serpiente 1, inicializada a 0
-static Snake snake2 = {0}; // Instancia de serpiente 2, inicializada a 0
 
 // Inicializar las serpientes
 void initSnakes() { // Se pasa la serpiente como parámetro
