@@ -19,6 +19,7 @@
 #define START_MSG "SNAKES GAME\n PLAYERS: %d \n SPEED: %d \n\n Press: \n [ENTER] to begin game \n 's' for settings \n 'e' to exit \n"
 
 // Prototipos de funciones para el juego de Snakes
+void gameTick();
 void animation();
 int snakes();
 int menu();
@@ -51,8 +52,8 @@ typedef struct {
 // Prototipos para la estructura de las serpientes
 void initSnakes();
 void grow(Snake* snake, int x, int y);
-void iterateSnake(Snake* snake, void (*func)(int x, int y));
+void iterateSnake(Snake* snake, int player);
 void resetSnakes(Snake* snake);
 void drawSnakePosition(Snake* snake, int player);
-void moveSnake(Snake* snake, int direction, int player);
+void moveSnake(Snake* snake, int direction, int player, int g);
 #endif 

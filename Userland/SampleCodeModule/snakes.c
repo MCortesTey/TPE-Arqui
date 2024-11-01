@@ -69,8 +69,32 @@ int snakes(){
     displayBackground();
     displayLayout();
     spawnPlayers();
-    initSnakes();
     countDown();
+    moveSnake(&snake1, UP, PLAYER_1, 0);
+    gameTick();
+    moveSnake(&snake1, UP, PLAYER_1, 0);
+    gameTick();
+    moveSnake(&snake1, UP, PLAYER_1, 1);
+    gameTick();
+    moveSnake(&snake1, RIGHT, PLAYER_1, 0);
+    gameTick();
+    moveSnake(&snake1, RIGHT, PLAYER_1, 0);
+    gameTick();
+    moveSnake(&snake1, RIGHT, PLAYER_1, 1);
+    gameTick();
+    moveSnake(&snake1, RIGHT, PLAYER_1, 0);
+    gameTick();
+    moveSnake(&snake1, RIGHT, PLAYER_1, 1);
+    gameTick();
+    moveSnake(&snake1, RIGHT, PLAYER_1, 0);
+    gameTick();
+    moveSnake(&snake1, DOWN, PLAYER_1, 1);
+    gameTick();
+    moveSnake(&snake1, DOWN, PLAYER_1, 0);
+    gameTick();
+    moveSnake(&snake1, DOWN, PLAYER_1, 1);
+    gameTick();
+    moveSnake(&snake1, LEFT, PLAYER_1, 0);
     // while(!end){
     //     int option = menu();
     //     if(option == EXIT){
@@ -84,23 +108,7 @@ int snakes(){
     resetSize();
     return 0;
 }
-/*
-int menu(){
-    //displayMenu();
-    int option = -1;
-    while(option == -1){
-        char dir = getchar_s();
-        if (dir >= '0' && dir <= '9') {
-            option = dir - '0'; // Convertir el carácter a un entero
-        } else if (dir == 'e') { // Suponiendo que 'e' es para salir
-            option = EXIT;
-        } else {
-            printf_s("Opción no válida. Intente de nuevo.\n");
-        }
-    }
-    return option;
-}
-*/
+
 int menu() {
     int option = -1;
     
@@ -118,16 +126,16 @@ int menu() {
             printf_s("%d\n\n", players);
             
             // Preguntar por velocidad
-            printf_s("Ingrese velocidad (1-3): ");
+            printf_s("Ingrese velocidad (1-5): ");
             char speed_char = getchar_s();
             int speed_option = speed_char - '0';
             
-            if (speed >= 1 && speed <= 3) {
+            if (speed >= 1 && speed <= 5) {
                 speed = speed_option;
                 printf_s("%d\n\n", speed);
                 printf_s("Presione ENTER para jugar\n\n");
             } else {
-                printf_s("Error: La velocidad debe estar entre 1 y 3\n\n");
+                printf_s("Error: La velocidad debe estar entre 1 y 5\n\n");
             }
         } else if (key == 'e') {
             option = EXIT;
@@ -136,14 +144,9 @@ int menu() {
     return option;
 }
 
-/*
-void displayMenu() {
-   // changeSize();
-    printf_s("Seleccione una opción:\n");
-    printf_s("0: Jugar\n");
-    printf_s("e: Salir\n");
+void gameTick(){
+    syscall_sleep(800/speed);
 }
-*/
 
 void displayLayout() {
     // Lógica para mostrar el fondo del juego
@@ -161,8 +164,8 @@ void displayLayout() {
             }
         }
     }
-    //printf_s("Fondo del juego mostrado.\n");
 }
+
 void displayBackground() {
     for(int i = 0; i < COLUMNS; i++){
         for(int j = 0; j < ROWS; j ++){
@@ -189,9 +192,9 @@ void gameLoop(int option) {
 void handleInput(char key) {
         int who = getPlayerByKey(key);
         if(who == PLAYER_1){
-            moveSnake(&snake1, inputToDir(key, PLAYER_1), PLAYER_1);
+            moveSnake(&snake1, inputToDir(key, PLAYER_1), PLAYER_1, 0);
         } else if(who == PLAYER_2){
-            moveSnake(&snake2, inputToDir(key, PLAYER_2), PLAYER_2);
+            moveSnake(&snake2, inputToDir(key, PLAYER_2), PLAYER_2, 0);
         }
 }
 
@@ -269,6 +272,9 @@ void initSnakes() { // Se pasa la serpiente como parámetro
     snake1.y[snake1.length++] = SPAWN_1_Y; // Usar el parámetro
     snake1.x[snake1.length] = SPAWN_1_X-1; // Usar el parámetro
     snake1.y[snake1.length++] = SPAWN_1_Y; // Usar el parámetro
+    // for(int i = 0 ; i < snake1.length ; i++ ){
+    //     printf_s("[%d,%d]    ", snake1.x[i], snake1.y[i]);
+    // }
 }
 
 // Añadir un nodo a la serpiente especificada
@@ -281,9 +287,11 @@ void grow(Snake* snake, int x, int y) { // Se pasa la serpiente como parámetro
 }
 
 // Iterar sobre los nodos de la serpiente especificada y aplicar una función a cada uno
-void iterateSnake(Snake* snake, void (*func)(int x, int y)) { // Se pasa la serpiente como parámetro
+void iterateSnake(Snake* snake, int player) { // Se pasa la serpiente como parámetro
     for (int i = 0; i < snake->length; i++) {
-        func(snake->x[i], snake->y[i]); // Aplicar la función a las coordenadas del nodo
+        drawSquare(snake->x[i] * CELL_SIZE + OFFSET_X, 
+                   snake->y[i] * CELL_SIZE + OFFSET_Y, 
+                   CELL_SIZE, P1_COLOR); // Aplicar la función a las coordenadas del nodo
     }
 }
 
@@ -293,12 +301,25 @@ void resetSnakes(Snake* snake) { // Se pasa la serpiente como parámetro
 }
 
 // Mover la serpiente especificada en la dirección dada
-void moveSnake(Snake* snake, int direction, int player) {
-    if (snake->length > 0) { // Verificar que la serpiente tenga segmentos
+void moveSnake(Snake* snake, int direction, int player, int g) {
+    if (snake->length > 0 ) { // Verificar que la serpiente tenga segmentos
+        if(!g){
         // Mover los segmentos de la serpiente
+        printf_s("%d", snake->length);
+        drawSquare(snake->x[snake->length-1] * CELL_SIZE + OFFSET_X, 
+                   snake->y[snake->length-1] * CELL_SIZE + OFFSET_Y, 
+                   CELL_SIZE, 
+                   ((snake->x[snake->length-1]+ snake->y[snake->length-1])% 2 == 0) ? B_COLOR1 : B_COLOR2); // Color de fondo alternativo)
         for (int i = snake->length; i > 0; i--) {
             snake->x[i] = snake->x[i - 1]; // Mover la coordenada X
             snake->y[i] = snake->y[i - 1]; // Mover la coordenada Y
+        }
+        }else{
+            grow(snake, snake->x[snake->length], snake->y[snake->length]);
+            for (int i = snake->length-1; i > 0; i--) {
+                snake->x[i] = snake->x[i - 1]; // Mover la coordenada X
+                snake->y[i] = snake->y[i - 1]; // Mover la coordenada Y
+            }
         }
 
         // Actualizar la cabeza de la serpiente según la dirección
@@ -318,31 +339,35 @@ void moveSnake(Snake* snake, int direction, int player) {
         }
 
         // Dibuja la cabeza y la cola de la serpiente
-        drawSnakePosition(snake, player); // Llamada actualizada
+        iterateSnake(snake, player);
+        //drawSnakePosition(snake, player); // Llamada actualizada
     }
 }
 
 void drawSnakePosition(Snake* snake, int player) {
     // Dibuja la cola de la serpiente en el color de fondo
-    if (snake->length > 1) {
+    if (snake->length+1 > 1) {
         drawSquare(snake->x[snake->length - 1] * CELL_SIZE + OFFSET_X, 
                    snake->y[snake->length - 1] * CELL_SIZE + OFFSET_Y, 
                    CELL_SIZE, 
-                   ((snake->x[snake->length]+ snake->y[snake->length])% 2 == 0) ? B_COLOR1 : B_COLOR2); // Color de fondo alternativo
+                   ((snake->x[snake->length]+ snake->y[snake->length])% 2 == 0) ? B_COLOR2 : B_COLOR1); // Color de fondo alternativo
     }
 
     // Dibuja la cabeza de la serpiente
+    printf_s("%d",player);
     switch(player){
         case PLAYER_1:
             drawSquare(snake->x[0] * CELL_SIZE + OFFSET_X, 
             snake->y[0] * CELL_SIZE + OFFSET_Y, 
             CELL_SIZE, 
             P1_COLOR); // Color de la cabeza
+            break;
         case PLAYER_2:
             drawSquare(snake->x[0] * CELL_SIZE + OFFSET_X, 
             snake->y[0] * CELL_SIZE + OFFSET_Y, 
             CELL_SIZE, 
             P2_COLOR); // Color de la cabeza
+            break;
     }
    
 }
