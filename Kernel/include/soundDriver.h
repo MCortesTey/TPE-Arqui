@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
-void makeSound(uint64_t freq, uint64_t duration);
+static void play_sound(uint32_t nFrequence);
+static void nosound();
+void beep(int time, int frequency);
+
 
 #endif

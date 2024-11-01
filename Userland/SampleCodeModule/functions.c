@@ -169,3 +169,6 @@ int itoa(int n, char* buffer, int base){
     return len;
 }
 
+void makeSound(uint64_t freq, uint64_t duration) {
+    syscall_makeSound(freq, duration);
+}

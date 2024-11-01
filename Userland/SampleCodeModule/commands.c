@@ -15,7 +15,8 @@ static char * commands[][2] = {
         {"snakes", "Starts the Snakes game."},
         {"time", "Shows the current time."},
         {"sizeUp","Increment the size of the font."},
-        {"sizeDown","Decrement the size of the font."}
+        {"sizeDown","Decrement the size of the font."},
+        {"beep", "Make a beep sound."}
 };
 
 static int (*commandsFunctions[])(int argc, char* argv[]) = {
@@ -29,7 +30,13 @@ static int (*commandsFunctions[])(int argc, char* argv[]) = {
     timeCommand,
     size_up,
     size_down,
+    beepCommand
 };
+
+int beepCommand(int argc, char* argv[]) {
+    syscall_makeSound(2000, 1000);  // Frecuencia más alta y duración más corta
+    return 0;
+}
 
 
 //recibe el string del comando y retorna la funcion del comando

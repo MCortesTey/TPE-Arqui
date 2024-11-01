@@ -20,5 +20,5 @@ int zero_exceptionCommand(int argc, char * argv[]);
 int size_up(int argc, char *argv[]);
 int size_down(int argc, char *argv[]);
 int CommandParse(char *commandInput);
-
+int beepCommand(int argc, char* argv[]);
 #endif
