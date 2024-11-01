@@ -1,7 +1,7 @@
 #include "commands.h"
 #include "functions.h"
 #include "snakes.h"
-
+#include "syscalls_shell.h"
 
 #define COMMAND_COUNT sizeof(commands) / sizeof(commands[0]) // Ajustado para calcular correctamente el número de comandos
 

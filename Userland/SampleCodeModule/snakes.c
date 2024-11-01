@@ -2,13 +2,6 @@
 #include "functions.h"
 #include "syscalls_shell.h"
 
-#define SCREEN_WIDTH 1024
-#define SCREEN_HEIGHT 650
-
-#define CELL_SIZE 65
-#define ROWS (SCREEN_HEIGHT / CELL_SIZE)
-#define COLUMNS (SCREEN_WIDTH / CELL_SIZE)
-
 #define OFFSET_X 24
 #define OFFSET_Y 80
 
@@ -31,7 +24,6 @@
 #define SPAWN_2_X (COLUMNS-SPAWN_1_X)
 #define SPAWN_2_Y SPAWN_1_Y
 
-#define MAX_LENGTH (COLUMNS * ROWS) // Tamaño máximo de la serpiente
 #define MAX_SNAKES 2 // Número máximo de serpientes
 
 #define UP 0

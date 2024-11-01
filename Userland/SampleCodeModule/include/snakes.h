@@ -4,9 +4,9 @@
 #include <stdint.h>
 
 #define SCREEN_WIDTH 1024
-#define SCREEN_HEIGHT 760
+#define SCREEN_HEIGHT 650
 
-#define CELL_SIZE 80
+#define CELL_SIZE 65
 #define ROWS (SCREEN_HEIGHT / CELL_SIZE)
 #define COLUMNS (SCREEN_WIDTH / CELL_SIZE)
 
@@ -40,7 +40,7 @@ void countDown();
 void handleInput(char key);
 int getPlayerByKey(char key);
 int inputToDir(char key, int player);
-int spawnFruit();
+void spawnFruit();
 
 
 // Definición de la estructura Snake
@@ -57,4 +57,5 @@ void iterateSnake(Snake* snake, int player);
 void resetSnakes(Snake* snake);
 void drawSnakePosition(Snake* snake, int player);
 void moveSnake(Snake* snake, int direction, int player, int g);
+int getRandom();
 #endif 
