@@ -3,14 +3,14 @@
 #include "syscalls_shell.h"
 
 #define SCREEN_WIDTH 1024
-#define SCREEN_HEIGHT 760
+#define SCREEN_HEIGHT 650
 
-#define CELL_SIZE 80
+#define CELL_SIZE 65
 #define ROWS (SCREEN_HEIGHT / CELL_SIZE)
 #define COLUMNS (SCREEN_WIDTH / CELL_SIZE)
 
-#define OFFSET_X 32
-#define OFFSET_Y 40
+#define OFFSET_X 24
+#define OFFSET_Y 80
 
 #define B_COLOR1 0xF5D5A1
 #define B_COLOR2 0xCDA360
@@ -20,7 +20,7 @@
 #define P2_COLOR 0x50962D
 
 #define MENU_FONT 3
-#define COUNTDOWN_FONT 0
+#define COUNTDOWN_FONT 3
 
 #define PLAYER_1 1
 #define PLAYER_2 2
@@ -153,13 +153,13 @@ void displayLayout() {
     // This function draws the margins of the game board by iterating through each pixel on the screen.
     // It checks if the current pixel is part of the margin (top, bottom, left, or right) and if so, sets its color to RED.
     for(int i = OFFSET_X; i < SCREEN_WIDTH - OFFSET_X; i++){
-        for(int j = OFFSET_Y; j < SCREEN_HEIGHT; j++){
+        for(int j = OFFSET_Y; j <= SCREEN_HEIGHT + OFFSET_Y ; j++){
             // The following conditions check if the current pixel is part of the margin.
             // The margin is defined as 20 pixels from the edges of the screen.
-            if((i == OFFSET_X && j >= OFFSET_Y && j <= SCREEN_HEIGHT) || // Left margin
-               (i == SCREEN_WIDTH - OFFSET_X - 1 && j >= OFFSET_Y && j <= SCREEN_HEIGHT) || // Right margin
+            if((i == OFFSET_X && j >= OFFSET_Y && j <= SCREEN_HEIGHT + OFFSET_Y) || // Left margin
+               (i == SCREEN_WIDTH - OFFSET_X - 1 && j >= OFFSET_Y && j <= SCREEN_HEIGHT + OFFSET_Y) || // Right margin
                (j == OFFSET_Y && i >= OFFSET_X && i <= SCREEN_WIDTH - OFFSET_X - 1) || // Top margin
-               (j == SCREEN_HEIGHT - 1 && i >= OFFSET_X && i <= SCREEN_WIDTH - OFFSET_X - 1)){ // Bottom margin
+               (j == SCREEN_HEIGHT + OFFSET_Y && i >= OFFSET_X && i <= SCREEN_WIDTH - OFFSET_X - 1)){ // Bottom margin
                 drawSquare(i, j, 5, BORDER_COLOR); // Draw a 5x5 square at the current pixel position with RED color
             }
         }
@@ -250,7 +250,7 @@ void spawnPlayers(){
 
 void countDown() {
     setSize(COUNTDOWN_FONT);
-    printf_s("\t\t\t\t\t\t");
+    printf_s("\t\t\t\t");
     for (int i = 3; i > 0; i--) {
         printf_s("%d", i); // Imprimir el número de la cuenta regresiva
         syscall_sleep(1000); // Esperar 1 segundo (1000 ms)
@@ -370,4 +370,31 @@ void drawSnakePosition(Snake* snake, int player) {
             break;
     }
    
+}
+
+void spawnFruit(){
+    int aux = getRandom(); // Genera un número aleatorio
+    // Aquí puedes usar 'aux' para determinar la posición de la fruta o cualquier otra lógica
+}
+
+unsigned long seed = 1; // Semilla inicial
+
+// Función para establecer la semilla
+void setSeed(unsigned long newSeed) {
+    seed = newSeed;
+}
+
+// Función LCG para generar un número aleatorio
+unsigned long lcg() {
+    seed = (1103515245 * seed + 12345) % (1UL << 31); // Parámetros típicos
+    return seed;
+}
+
+// Función para obtener un número aleatorio
+int getRandom() {
+    return lcg(); // Genera un número aleatorio usando LCG
+}
+
+int getRandomInRange(int min, int max) {
+    return (lcg() % (max - min + 1)) + min; // Genera un número en el rango [min, max]
 }
