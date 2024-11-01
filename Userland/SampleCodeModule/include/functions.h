@@ -21,5 +21,12 @@ void resetSize();
 void drawSquare(uint64_t x, uint64_t y, uint32_t size, uint64_t color);
 int itoa(int n, char* buffer, int base);
 int atoi(char *str);
+void makeSound(uint64_t freq, uint64_t duration);
+
+
+void setSeed(unsigned long newSeed);
+unsigned long lcg();
+int getRandom();
+int getRandomInRange(int min, int max);
 
 #endif

@@ -369,24 +369,3 @@ void spawnFruit(){
     // Aquí puedes usar 'aux' para determinar la posición de la fruta o cualquier otra lógica
 }
 
-unsigned long seed = 1; // Semilla inicial
-
-// Función para establecer la semilla
-void setSeed(unsigned long newSeed) {
-    seed = newSeed;
-}
-
-// Función LCG para generar un número aleatorio
-unsigned long lcg() {
-    seed = (1103515245 * seed + 12345) % (1UL << 31); // Parámetros típicos
-    return seed;
-}
-
-// Función para obtener un número aleatorio
-int getRandom() {
-    return lcg(); // Genera un número aleatorio usando LCG
-}
-
-int getRandomInRange(int min, int max) {
-    return (lcg() % (max - min + 1)) + min; // Genera un número en el rango [min, max]
-}

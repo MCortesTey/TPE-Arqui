@@ -57,5 +57,4 @@ void iterateSnake(Snake* snake, int player);
 void resetSnakes(Snake* snake);
 void drawSnakePosition(Snake* snake, int player);
 void moveSnake(Snake* snake, int direction, int player, int g);
-int getRandom();
 #endif 
