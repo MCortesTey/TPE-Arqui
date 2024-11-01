@@ -16,6 +16,7 @@ void syscall_time(char *buf);
 void syscall_changesize(int a);
 void syscall_drawsquare(uint64_t x, uint64_t y, uint32_t size, uint64_t color);
 void syscall_sleep(uint64_t millis);
+void syscall_makeSound(uint64_t freq, uint64_t duration);
 void _invalidOpcode();
 void zero_division();
 

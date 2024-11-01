@@ -4,7 +4,8 @@ GLOBAL getSeconds
 GLOBAL getMinutes
 GLOBAL getHours
 GLOBAL getKeyPressed
-
+GLOBAL outb
+GLOBAL inb
 section .text
 	
 cpuVendor:
@@ -78,3 +79,18 @@ getKeyPressed:
     in al, 60h  ; Si está activo, lee el código de la tecla presionada del puerto 0x60
 
     ret  ; Retorna el código de la tecla presionada
+
+outb:
+	push rdx
+	mov rdx, rdi ;rdi contiele el numero del puerto
+	mov rax, rsi ;rsi contiene el valor a enviar
+	out dx, al ; envia al al puerto en dx
+	pop rdx
+	ret
+
+inb:
+	push rdx
+	mov rdx, rdi ;rdi contiele el numero del puerto
+	in al, dx ; lee el puerto en dx
+	pop rdx
+	ret

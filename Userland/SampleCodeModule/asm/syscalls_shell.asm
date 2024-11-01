@@ -6,6 +6,7 @@ GLOBAL syscall_time
 global syscall_changesize
 global syscall_drawsquare
 global syscall_sleep
+global syscall_makeSound
 global _invalidOpcode
 global zero_division
 section .text
@@ -31,6 +32,8 @@ syscall_time:
 
 syscall_showRegisters:
     syscall_entry 4
+syscall_changesize:
+    syscall_entry 5
 
 syscall_sleep:
     syscall_entry 6
@@ -38,11 +41,13 @@ syscall_sleep:
 syscall_clear:
     syscall_entry 7
 
-syscall_changesize:
-    syscall_entry 5
+syscall_makeSound:
+    syscall_entry 9
 
 syscall_drawsquare:
     syscall_entry 12
+
+
 
 _invalidOpcode:
     ud2

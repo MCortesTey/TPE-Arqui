@@ -20,5 +20,6 @@ void setSize(int size);
 void resetSize();
 void drawSquare(uint64_t x, uint64_t y, uint32_t size, uint64_t color);
 int itoa(int n, char* buffer, int base);
+int atoi(char *str);
 
 #endif

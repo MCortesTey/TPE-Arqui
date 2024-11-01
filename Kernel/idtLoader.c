@@ -35,7 +35,7 @@ void load_idt() {
   setup_IDT_entry(0x80, (uint64_t)&_irq80Handler);
 
 	//Solo interrupcion timer tick y teclado habilitadas
-	picMasterMask(0xFC); 
+	picMasterMask(0xF8); 
 	picSlaveMask(0xFF);
         
 	_sti();

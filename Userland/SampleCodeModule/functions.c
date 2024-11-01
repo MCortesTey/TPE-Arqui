@@ -168,4 +168,23 @@ int itoa(int n, char* buffer, int base){
     buffer[i] = '\0';
     return len;
 }
+int atoi(char *str) {
+    int res = 0; 
+    int sign = 1; 
+    int i = 0; 
 
+    if (str[0] == '-') {
+        sign = -1;
+        i++; 
+    }
+
+    for (; str[i] != '\0'; ++i)
+        res = res*10 + str[i] - '0';
+
+    return sign*res;
+}
+
+
+void makeSound(uint64_t freq, uint64_t duration) {
+    syscall_makeSound(freq, duration);
+}

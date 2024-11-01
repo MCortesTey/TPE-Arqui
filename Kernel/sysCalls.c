@@ -6,8 +6,7 @@
 #include <stdarg.h>
 #include <time.h>
 #include <interrupts.h>
-
-
+#include <soundDriver.h>
 
 void sys_write(char * buff, int count, int fd){
     switch(fd){
@@ -48,3 +47,4 @@ void sys_sleep(uint64_t millis) {
     
     _cli();// Deshabilito interrupciones para asegurar que el sistema no se interrumpa
 }
+
