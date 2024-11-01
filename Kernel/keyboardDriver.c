@@ -145,8 +145,8 @@ unsigned char keyHandler(unsigned int key){
  		capsLock = 1 - capsLock; // Cambiar estado del bloqueo de mayúsculas
  		return 0; // No se inserta nada en el búfer
  	case ESCAPE_KEY:
-		saveRegisters();
- 		regsChecked = 1; // Activar registro
+	//	saveRegisters();
+ 	//	regsChecked = 1; // Activar registro
  		return 0; // No se inserta nada en el búfer
 	case ENTER_KEY:
 		return '\n';

@@ -12,23 +12,23 @@ void exceptionDispatcher(int exception) {
 	else{
 		invalidOperation();
 	}
-	printRegStatus(&regBackup);
-	vdNewline();
-	vdPrint("Press keyboard to continue");
-	getKeyPressed(); 
+	printRegStatus(1); //&regBackup
+	//vdNewline();
+	//vdPrint("Press keyboard to continue");
+	//getKeyPressed(); 
 	//leer ese caracter pero no escribirlo en pantalla, solo leerlo para poder 
 	// rectivar el cursor
 }
 
 void zero_division() {
-	regsChecked = 1;
+	//regsChecked = 1;
 	vdPrintError("Error: Division by cero is not permitted");
 	vdNewline();
 
 }
 
 void invalidOperation(){
-	regsChecked = 1;
+	//regsChecked = 1;
 	vdPrintError("Error: Invalid Operation");
 	vdNewline();
 }

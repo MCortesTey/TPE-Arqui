@@ -17,7 +17,7 @@ extern regStruct regBackup;
 extern int regsChecked;
 
 
-void printRegStatus ( regStruct * regs );
+void printRegStatus (int n ); // regStruct * regs
 
 
 #endif
