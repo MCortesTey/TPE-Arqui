@@ -34,7 +34,7 @@ static int (*commandsFunctions[])(int argc, char* argv[]) = {
 };
 
 int beepCommand(int argc, char* argv[]) {
-    syscall_makeSound(2000, 1000);  // Frecuencia más alta y duración más corta
+    syscall_makeSound(500, 500);  // Frecuencia más alta y duración más corta
     return 0;
 }
 

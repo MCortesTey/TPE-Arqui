@@ -6,6 +6,8 @@ GLOBAL getHours
 GLOBAL getKeyPressed
 GLOBAL outb
 GLOBAL inb
+GLOBAL _in
+GLOBAL _out
 section .text
 	
 cpuVendor:
@@ -80,17 +82,26 @@ getKeyPressed:
 
     ret  ; Retorna el código de la tecla presionada
 
-outb:
-	push rdx
-	mov rdx, rdi ;rdi contiele el numero del puerto
-	mov rax, rsi ;rsi contiene el valor a enviar
-	out dx, al ; envia al al puerto en dx
-	pop rdx
+
+_in:
+    push rbp
+    mov rbp, rsp
+    mov rdx, rdi    ; port
+    in al, dx
+
+	mov rsp, rbp
+	pop rbp
 	ret
 
-inb:
-	push rdx
-	mov rdx, rdi ;rdi contiele el numero del puerto
-	in al, dx ; lee el puerto en dx
-	pop rdx
-	ret
+
+_out:
+    push rbp
+    mov rbp, rsp
+
+    mov rax, rsi   
+    mov rdx, rdi
+    out dx, al
+
+    mov rsp, rbp
+	pop rbp
+    ret

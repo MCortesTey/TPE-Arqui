@@ -3,30 +3,33 @@
 #include "include/sysCalls.h"
 #include "include/lib.h"
 
-//Play sound using built-in speaker
-void play_sound(uint32_t nFrequence) {
- 	uint32_t Div;
- 	uint8_t tmp;
- 
-        //Set the PIT to the desired frequency
- 	Div = 1193180 / nFrequence;
- 	outb(0x43, 0xb6);
- 	outb(0x42, (uint8_t) (Div) );
- 	outb(0x42, (uint8_t) (Div >> 8));
- 
-        //And play the sound using the PC speaker
- 	tmp = inb(0x61);
-  	if (tmp != (tmp | 3)) {
- 		outb(0x61, tmp | 3);
- 	}
- }
- 
+#define PIT_FREQUENCY 1193180
+#define TIMER2 0x42
+#define TIMER2_CONTROL 0x43
+#define SPEAKER_PORT 0x61
+
+static void play_sound(uint32_t frequency) {
+    uint32_t div = PIT_FREQUENCY / frequency;
+    
+    // Configura el timer 2
+    _out(TIMER2_CONTROL, 0xB6);
+    _out(TIMER2, (uint8_t)(div & 0xFF));
+    _out(TIMER2, (uint8_t)(div >> 8));
+    
+    // Obtiene el valor actual del puerto del speaker
+    uint8_t tmp = _in(SPEAKER_PORT);
+    
+    // Activa el bit 1 (permite el timer) y el bit 0 (activa el speaker)
+    if (tmp != (tmp | 3)) {
+        _out(SPEAKER_PORT, tmp | 3);
+    }
+}
  //make it shut up
-void nosound() {
- 	uint8_t tmp = inb(0x61) & 0xFC;
-     
- 	outb(0x61, tmp);
- }
+static void nosound() {
+    uint8_t tmp = _in(SPEAKER_PORT) & 0xFC;
+    _out(SPEAKER_PORT, tmp);
+}
+
  
  //Make a beep
  void beep(int time, int frequency) {
