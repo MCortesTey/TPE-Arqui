@@ -22,78 +22,16 @@ EXTERN irqDispatcher
 EXTERN sysDispatcher
 EXTERN exceptionDispatcher
 EXTERN printRegStatus
+EXTERN load_main
+EXTERN keyboard_handler
 
+GLOBAL exceptregs
+GLOBAL registers
+GLOBAL capturedReg
 
 EXTERN sysCaller
 
 SECTION .text
-
-
-%macro saveRegistersASM 0
-    mov [regBackup.r_rbp], rbp  ; Guarda el valor de rbp actual
-
-    mov rbp, [rsp]              ; r15
-    mov [regBackup.r_r15], rbp
-
-    mov rbp, [rsp + 8]          ; r14
-    mov [regBackup.r_r14], rbp
-
-    mov rbp, [rsp + 16]         ; r13
-    mov [regBackup.r_r13], rbp
-
-    mov rbp, [rsp + 24]         ; r12
-    mov [regBackup.r_r12], rbp
-
-    mov rbp, [rsp + 32]         ; r11
-    mov [regBackup.r_r11], rbp
-
-    mov rbp, [rsp + 40]         ; r10
-    mov [regBackup.r_r10], rbp
-
-    mov rbp, [rsp + 48]         ; r9
-    mov [regBackup.r_r9], rbp
-
-    mov rbp, [rsp + 56]         ; r8
-    mov [regBackup.r_r8], rbp
-
-    mov rbp, [rsp + 64]         ; rsi
-    mov [regBackup.r_rsi], rbp
-
-    mov rbp, [rsp + 72]         ; rdi
-    mov [regBackup.r_rdi], rbp
-
-    mov rbp, [rsp + 80]         ; rbp
-    mov [regBackup.r_rbp], rbp
-
-    mov rbp, [rsp + 88]         ; rdx
-    mov [regBackup.r_rdx], rbp
-
-    mov rbp, [rsp + 96]         ; rcx
-    mov [regBackup.r_rcx], rbp
-
-    mov rbp, [rsp + 104]        ; rbx
-    mov [regBackup.r_rbx], rbp
-
-    mov rbp, [rsp + 112]        ; rax
-    mov [regBackup.r_rax], rbp
-
-    mov rbp, [rsp + 120]        ; rip
-    mov [regBackup.r_rip], rbp
-
-    mov rbp, [rsp + 128]        ; cs
-    mov [regBackup.r_rcs], rbp
-
-    mov rbp, [rsp + 136]        ; rflags
-    mov [regBackup.r_rflags], rbp
-
-    mov rbp, [rsp + 144]        ; rsp
-    mov [regBackup.r_rsp], rbp
-
-    mov rbp, [rsp + 152]        ; ss
-    mov [regBackup.r_rss], rbp
-
-    mov rbp, [regBackup.r_rbp]  ; Restaura el valor original de rbp
-%endmacro
 
 
 %macro pushState 0
@@ -185,7 +123,61 @@ _irq00Handler:
 
 ;Keyboard
 _irq01Handler:
-	irqHandlerMaster 1
+	pushState
+	
+	;xor rax, rax
+	;in al, 0x60
+	;cmp al, 0x1D ; ctrl 
+	;jne .no_control
+	
+	;RAX, RBX, RCX, RDX, RSI, RDI, RBP, R8, R9, R10, R11, R12, R13, R14, R15, RSP, RIP, RFLAGS
+   	mov [registers+8*1],	rbx
+	mov [registers+8*2],	rcx
+	mov [registers+8*3],	rdx
+	mov [registers+8*4],	rsi
+	mov [registers+8*5],	rdi
+	mov [registers+8*6],	rbp
+	mov [registers+8*7], r8
+	mov [registers+8*8], r9
+	mov [registers+8*9], r10
+	mov [registers+8*10], r11
+	mov [registers+8*11], r12
+	mov [registers+8*12], r13
+	mov [registers+8*13], r14
+	mov [registers+8*14], r15
+
+	mov rax, rsp
+	add rax, 160			  ;volvemos a antes de pushear los registros
+	mov [registers + 8*15], rax  ;RSP
+
+	mov rax, [rsp+15*8]
+	mov [registers + 8*16], rax ;RIP
+
+	mov rax, [rsp + 14*8]	;RAX
+	mov [registers], rax
+
+	mov rax, [rsp+15*9]
+	mov [registers + 8*17], rax ;RFLAGS
+
+	;mov byte [capturedReg], 1
+	;jmp .exit
+
+;.no_control:
+	;cmp al, 0x9D	
+	;je .exit
+
+	call keyboard_handler
+	
+;.exit:
+	mov al, 20h
+	out 20h, al
+
+	popState
+	iretq
+
+;Keyboard
+;_irq01Handler:
+;	irqHandlerMaster 1
 
 ;Cascade pic never called
 _irq02Handler:
@@ -235,15 +227,43 @@ _irq80Handler:
 
 %macro exceptionHandler 1
 	pushState
-	saveRegistersASM
+	; guardamos los registros en este orden: 
+	;RAX, RBX, RCX, RDX, RSI, RDI, RBP, R8, R9, R10, R11, R12, R13
+	; R14, R15, RSP,RIP, RFLAGS
+    mov [exceptregs+8*0],	rax
+	mov [exceptregs+8*1],	rbx
+	mov [exceptregs+8*2],	rcx
+	mov [exceptregs+8*3],	rdx
+	mov [exceptregs+8*4],	rsi
+	mov [exceptregs+8*5],	rdi
+	mov [exceptregs+8*6],	rbp
+	mov [exceptregs+8*7], r8
+	mov [exceptregs+8*8], r9
+	mov [exceptregs+8*9], r10
+	mov [exceptregs+8*10], r11
+	mov [exceptregs+8*11], r12
+	mov [exceptregs+8*12], r13
+	mov [exceptregs+8*13], r14
+	mov [exceptregs+8*14], r15
+
+	mov rax, rsp
+	add rax, 160			  ;volvemos a antes de pushear los registros
+	mov [exceptregs+ 8*15], rax  ;rsp
+	mov rax, [rsp+15*8]
+	mov [exceptregs + 128], rax ;rip
+	mov rax, [rsp+15*9]
+	mov [exceptregs + 136], rax ;rflags
 
 
 	mov rdi, %1
 	call exceptionDispatcher
 
 	popState
+	add rsp, 8
+	push load_main
 	iretq
 %endmacro
+
 _exception0Handler:
 	exceptionHandler 0
 	jmp haltcpu
@@ -265,32 +285,13 @@ saveRegisters:
 
 
 printRegStatusASM:
-	mov qword rdi, regBackup
+	mov rdi, 0
 	call printRegStatus
 	ret
 
 section .bss 
 	aux resq 1	
+	capturedReg resb 1		;flag para saber si se capturo un teclado
+	exceptregs resq 18	;registros para la excepcion
+	registers resq 18		;registros para el teclado
 	
-	GLOBAL regBackup   ; struct para guardar cada registro en su lugar sin tener que movernos con suma de bytes
-	regBackup:
-	.r_rax resq 1
-	.r_rbx resq 1
-	.r_rcx resq 1
-	.r_rdx resq 1
-	.r_rsi resq 1
-	.r_rdi resq 1
-	.r_rsp resq 1
-	.r_rbp resq 1 
-	.r_r8 resq 1
-	.r_r9 resq 1
-	.r_r10 resq 1
-	.r_r11 resq 1
-	.r_r12 resq 1
-	.r_r13 resq 1
-	.r_r14 resq 1
-	.r_r15 resq 1
-	.r_rss resq 1
-	.r_rcs resq 1
-	.r_rip resq 1
-	.r_rflags resq 1
