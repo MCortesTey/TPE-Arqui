@@ -23,11 +23,13 @@ EXTERN sysDispatcher
 EXTERN exceptionDispatcher
 EXTERN printRegStatus
 EXTERN load_main
-EXTERN keyboard_handler
+EXTERN regsReady
+EXTERN keyboardDriver
+EXTERN getStackBase
 
-GLOBAL exceptregs
+GLOBAL exception_regs
 GLOBAL registers
-GLOBAL capturedReg
+GLOBAL regsChecked
 
 EXTERN sysCaller
 
@@ -124,56 +126,47 @@ _irq00Handler:
 ;Keyboard
 _irq01Handler:
 	pushState
-	
-	;xor rax, rax
-	;in al, 0x60
-	;cmp al, 0x1D ; ctrl 
-	;jne .no_control
-	
+
+	mov rdi, 1 
+	call irqDispatcher
+
+	call regsReady
+	cmp rax, 1
+	je .exit
+
 	;RAX, RBX, RCX, RDX, RSI, RDI, RBP, R8, R9, R10, R11, R12, R13, R14, R15, RSP, RIP, RFLAGS
-   	mov [registers+8*1],	rbx
-	mov [registers+8*2],	rcx
-	mov [registers+8*3],	rdx
-	mov [registers+8*4],	rsi
-	mov [registers+8*5],	rdi
-	mov [registers+8*6],	rbp
-	mov [registers+8*7], r8
-	mov [registers+8*8], r9
-	mov [registers+8*9], r10
-	mov [registers+8*10], r11
-	mov [registers+8*11], r12
-	mov [registers+8*12], r13
-	mov [registers+8*13], r14
-	mov [registers+8*14], r15
+	mov [registers+8*1],rbx
+	mov [registers+8*2],rcx
+	mov [registers+8*3],rdx
+	mov [registers+8*4],rsi
+	mov [registers+8*5],rdi
+	mov [registers+8*6],rbp
 
-	mov rax, rsp
-	add rax, 160			  ;volvemos a antes de pushear los registros
-	mov [registers + 8*15], rax  ;RSP
+	mov rax, [rsp + 8*18]
 
-	mov rax, [rsp+15*8]
-	mov [registers + 8*16], rax ;RIP
-
-	mov rax, [rsp + 14*8]	;RAX
-	mov [registers], rax
-
-	mov rax, [rsp+15*9]
-	mov [registers + 8*17], rax ;RFLAGS
-
-	;mov byte [capturedReg], 1
-	;jmp .exit
-
-;.no_control:
-	;cmp al, 0x9D	
-	;je .exit
-
-	call keyboard_handler
+	mov [registers+8*7], rax
+	mov [registers+8*8], r8
+	mov [registers+8*9], r9
+	mov [registers+8*10], r10
+	mov [registers+8*11], r11
+	mov [registers+8*12], r12
+	mov [registers+8*13], r13
+	mov [registers+8*14], r14
+	mov [registers+8*15], r15
 	
-;.exit:
+	mov rax, [rsp+8*15]
+	mov [registers + 8*16], rax 
+
+	mov rax, 1
+	mov [regsChecked], rax
+
+.exit:
+	mov al, 20h
 	mov al, 20h
 	out 20h, al
 
 	popState
-	iretq
+	iretq	
 
 ;Keyboard
 ;_irq01Handler:
@@ -226,42 +219,46 @@ _irq80Handler:
 	iretq
 
 %macro exceptionHandler 1
+
 	pushState
-	; guardamos los registros en este orden: 
-	;RAX, RBX, RCX, RDX, RSI, RDI, RBP, R8, R9, R10, R11, R12, R13
-	; R14, R15, RSP,RIP, RFLAGS
-    mov [exceptregs+8*0],	rax
-	mov [exceptregs+8*1],	rbx
-	mov [exceptregs+8*2],	rcx
-	mov [exceptregs+8*3],	rdx
-	mov [exceptregs+8*4],	rsi
-	mov [exceptregs+8*5],	rdi
-	mov [exceptregs+8*6],	rbp
-	mov [exceptregs+8*7], r8
-	mov [exceptregs+8*8], r9
-	mov [exceptregs+8*9], r10
-	mov [exceptregs+8*10], r11
-	mov [exceptregs+8*11], r12
-	mov [exceptregs+8*12], r13
-	mov [exceptregs+8*13], r14
-	mov [exceptregs+8*14], r15
+	mov [exception_regs + 8*0 ], rax
+	mov [exception_regs + 8*1 ], rbx
+	mov [exception_regs + 8*2 ], rcx
+	mov [exception_regs + 8*3 ], rdx
+	mov [exception_regs + 8*4 ], rsi
+	mov [exception_regs + 8*5 ], rdi
+	mov [exception_regs + 8*6 ], rbp
+	; mov rax, rsp
+    ; add rax, 16 * 8                     ; RSP del contexto anterior
+    mov rax, [rsp + 18 * 8]
+	mov [exception_regs + 8*7 ], rax	;
+	mov [exception_regs + 8*8 ], r8
+	mov [exception_regs + 8*9 ], r9
+	mov [exception_regs + 8*10], r10
+	mov [exception_regs + 8*11], r11
+	mov [exception_regs + 8*12], r12
+	mov [exception_regs + 8*13], r13
+	mov [exception_regs + 8*14], r14
+	mov [exception_regs + 8*15], r15
+	mov rax, [rsp+15*8]                     ;RIP del contexto anterior
+	mov [exception_regs + 8*16], rax
+	mov rax, [rsp+17*8]                     ; RFLAGS
+	mov [exception_regs + 8*17], rax
 
-	mov rax, rsp
-	add rax, 160			  ;volvemos a antes de pushear los registros
-	mov [exceptregs+ 8*15], rax  ;rsp
-	mov rax, [rsp+15*8]
-	mov [exceptregs + 128], rax ;rip
-	mov rax, [rsp+15*9]
-	mov [exceptregs + 136], rax ;rflags
+	mov rdi, %1                             ; Parametros para exceptionDispatcher
+	mov rsi, exception_regs
 
-
-	mov rdi, %1
 	call exceptionDispatcher
 
 	popState
-	add rsp, 8
-	push load_main
-	iretq
+    call getStackBase
+	mov [rsp+24], rax ; El StackBase
+    mov rax, userland
+    mov [rsp], rax ; PISO la dirección de retorno
+
+    sti
+    iretq
+
 %endmacro
 
 _exception0Handler:
@@ -284,14 +281,20 @@ saveRegisters:
 	ret
 
 
-printRegStatusASM:
-	mov rdi, 0
-	call printRegStatus
-	ret
+;printRegStatusASM:
+;	mov rdi, 0
+;	call printRegStatus
+;	ret
 
 section .bss 
 	aux resq 1	
-	capturedReg resb 1		;flag para saber si se capturo un teclado
 	exceptregs resq 18	;registros para la excepcion
-	registers resq 18		;registros para el teclado
 	
+	
+section .data
+	registers dq 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	;registros para el teclado
+	regsChecked dq 0		;flag para saber si se capturo un teclado
+	exception_regs dq 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ; 18 zeros
+
+SECTION .rodata
+userland equ 0x400000

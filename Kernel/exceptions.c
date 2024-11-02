@@ -5,6 +5,7 @@ static void zero_division();
 #include "exceptions.h"
 #include "videoDriver.h"
 #include "lib.h"
+extern uint64_t exception_regs[18];
 
 void exceptionDispatcher(int exception) {
 	if (exception == ZERO_EXCEPTION_ID)
@@ -32,3 +33,4 @@ void invalidOperation(){
 	vdPrintError("Error: Invalid Operation");
 	vdNewline();
 }
+
