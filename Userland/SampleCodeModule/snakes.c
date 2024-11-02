@@ -60,33 +60,7 @@ int snakes(){
     clearScreen();
     displayBackground();
     displayLayout();
-    spawnPlayers();
-    countDown();
-    moveSnake(&snake1, UP, PLAYER_1, 0);
-    gameTick();
-    moveSnake(&snake1, UP, PLAYER_1, 0);
-    gameTick();
-    moveSnake(&snake1, UP, PLAYER_1, 1);
-    gameTick();
-    moveSnake(&snake1, RIGHT, PLAYER_1, 0);
-    gameTick();
-    moveSnake(&snake1, RIGHT, PLAYER_1, 0);
-    gameTick();
-    moveSnake(&snake1, RIGHT, PLAYER_1, 1);
-    gameTick();
-    moveSnake(&snake1, RIGHT, PLAYER_1, 0);
-    gameTick();
-    moveSnake(&snake1, RIGHT, PLAYER_1, 1);
-    gameTick();
-    moveSnake(&snake1, RIGHT, PLAYER_1, 0);
-    gameTick();
-    moveSnake(&snake1, DOWN, PLAYER_1, 1);
-    gameTick();
-    moveSnake(&snake1, DOWN, PLAYER_1, 0);
-    gameTick();
-    moveSnake(&snake1, DOWN, PLAYER_1, 1);
-    gameTick();
-    moveSnake(&snake1, LEFT, PLAYER_1, 0);
+    gameLoop();
     // while(!end){
     //     int option = menu();
     //     if(option == EXIT){
@@ -171,22 +145,45 @@ void displayBackground() {
 }
 
 
-void gameLoop(int option) {
+void gameLoop() {
     int end = 0;
     spawnPlayers();
     countDown();
+    int pos = syscall_getbufferpos();
+    char key;
+    int timeLimit = 1000;
+    int startTime = (int) syscall_timerms();
+    printf_s("%d", startTime);
     while(!end){
-
+        //printf_s("%d", pos);
+        while(1){
+            if (((int)syscall_timerms()) - startTime >= timeLimit) {
+                break; // Salir del bucle si se ha alcanzado el tiempo límite
+            }
+            //printf_s("ayuda");
+            key = syscall_getcharat(pos-1);
+            if(key != 0){
+                pos++;
+            }
+            handleInput(key);
+        }
+        printf_s("ayuda");
+        moveSnake(&snake1, PLAYER_1, 0);
+        moveSnake(&snake2, PLAYER_2, 0);
+        gameTick();
     }
     // Aquí iría la lógica del juego
+    return;
 }
 
 void handleInput(char key) {
         int who = getPlayerByKey(key);
         if(who == PLAYER_1){
-            moveSnake(&snake1, inputToDir(key, PLAYER_1), PLAYER_1, 0);
+            snake1.dir = inputToDir(key, PLAYER_1);
+            
         } else if(who == PLAYER_2){
-            moveSnake(&snake2, inputToDir(key, PLAYER_2), PLAYER_2, 0);
+            snake2.dir = inputToDir(key, PLAYER_2);
+            
         }
 }
 
@@ -264,9 +261,6 @@ void initSnakes() { // Se pasa la serpiente como parámetro
     snake1.y[snake1.length++] = SPAWN_1_Y; // Usar el parámetro
     snake1.x[snake1.length] = SPAWN_1_X-1; // Usar el parámetro
     snake1.y[snake1.length++] = SPAWN_1_Y; // Usar el parámetro
-    // for(int i = 0 ; i < snake1.length ; i++ ){
-    //     printf_s("[%d,%d]    ", snake1.x[i], snake1.y[i]);
-    // }
 }
 
 // Añadir un nodo a la serpiente especificada
@@ -293,11 +287,10 @@ void resetSnakes(Snake* snake) { // Se pasa la serpiente como parámetro
 }
 
 // Mover la serpiente especificada en la dirección dada
-void moveSnake(Snake* snake, int direction, int player, int g) {
+void moveSnake(Snake* snake, int player, int g) {
     if (snake->length > 0 ) { // Verificar que la serpiente tenga segmentos
         if(!g){
         // Mover los segmentos de la serpiente
-        printf_s("%d", snake->length);
         drawSquare(snake->x[snake->length-1] * CELL_SIZE + OFFSET_X, 
                    snake->y[snake->length-1] * CELL_SIZE + OFFSET_Y, 
                    CELL_SIZE, 
@@ -315,7 +308,7 @@ void moveSnake(Snake* snake, int direction, int player, int g) {
         }
 
         // Actualizar la cabeza de la serpiente según la dirección
-        switch (direction) {
+        switch (snake->dir) {
             case UP:
                 snake->y[0]--; // Mover hacia arriba
                 break;
@@ -364,7 +357,7 @@ void drawSnakePosition(Snake* snake, int player) {
    
 }
 
-void spawnFruit(){
+void fruitControl(){
     int aux = getRandom(); // Genera un número aleatorio
     // Aquí puedes usar 'aux' para determinar la posición de la fruta o cualquier otra lógica
 }

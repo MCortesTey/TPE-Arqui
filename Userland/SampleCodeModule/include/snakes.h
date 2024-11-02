@@ -23,7 +23,7 @@ void gameTick();
 void animation();
 int snakes();
 int menu();
-void gameLoop(int players);
+void gameLoop();
 int onePlayer();
 int twoPlayer();
 int collision();
@@ -45,6 +45,7 @@ void spawnFruit();
 
 // Definición de la estructura Snake
 typedef struct {
+    int dir;
     int length;      // Longitud de la serpiente
     int x[MAX_LENGTH]; // Coordenadas X de los segmentos de la serpiente
     int y[MAX_LENGTH]; // Coordenadas Y de los segmentos de la serpiente
@@ -56,5 +57,5 @@ void grow(Snake* snake, int x, int y);
 void iterateSnake(Snake* snake, int player);
 void resetSnakes(Snake* snake);
 void drawSnakePosition(Snake* snake, int player);
-void moveSnake(Snake* snake, int direction, int player, int g);
+void moveSnake(Snake* snake, int player, int g);
 #endif 

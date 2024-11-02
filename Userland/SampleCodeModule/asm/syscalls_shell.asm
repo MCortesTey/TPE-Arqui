@@ -6,7 +6,11 @@ GLOBAL syscall_time
 global syscall_changesize
 global syscall_drawsquare
 global syscall_sleep
+
+global syscall_timerms
 global syscall_makeSound
+global syscall_getbufferpos
+global syscall_getcharat
 global _invalidOpcode
 global zero_division
 section .text
@@ -48,8 +52,13 @@ syscall_makeSound:
 syscall_drawsquare:
     syscall_entry 12
 
+syscall_timerms:
+    syscall_entry 13
+syscall_getbufferpos:
+    syscall_entry 16
 
-
+syscall_getcharat:
+    syscall_entry 17
 _invalidOpcode:
     ud2
 

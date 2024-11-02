@@ -183,13 +183,6 @@ unsigned char keyHandler(unsigned int key){
  	return 0; // Retornar 0 si no se debe insertar nada
  }
 
-// void bsBuffer() { // Función para borrar el último carácter del buffer
-//     if (ptr->pos > 0) { // Si hay caracteres en el buffer
-//         ptr->pos -= 1; // Decrementa la posición
-//         ptr->buffer[ptr->pos] = 0; // Limpia el carácter borrado
-//         ptr->len -= 1; // Decrementa la longitud del buffer
-//     }
-// }
 
  // Función para determinar si una tecla es una tecla F
  char isFKey(unsigned int key)
@@ -210,6 +203,17 @@ unsigned char keyHandler(unsigned int key){
         return c;
     }
     return 0;
+}
+
+int getPos() { // Retorna la posición actual en el buffer
+    return ptr->pos; // Retorna la posición actual
+}
+
+char getBuffCharAt(int pos){ // Retorna el carácter en una posición específica del buffer
+	// for(int i = 0 ; i < ptr->pos; i++){
+	// 		vdPrintCharColor(ptr->buffer[i], 0xFFFFFFFF, 0x00000000);
+	// }
+    return ptr->buffer[pos]; // Retorna el carácter en la posición especificada
 }
 
 void buffNext() {
