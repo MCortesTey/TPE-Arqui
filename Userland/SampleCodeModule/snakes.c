@@ -14,6 +14,7 @@
 
 #define MENU_FONT 3
 #define COUNTDOWN_FONT 3
+#define FINAL_FONT 4 
 
 #define PLAYER_1 1
 #define PLAYER_2 2
@@ -45,6 +46,7 @@
 static int players = 1; 
 static int speed = 1;
 static int end = 0;
+static int winner = 0;
 
 // matriz/tablero de posiciones
 uint64_t board[SCREEN_WIDTH][SCREEN_HEIGHT] = {EMPTY};
@@ -60,13 +62,16 @@ int snakes(){
     clearScreen();
     displayBackground();
     displayLayout();
-    gameLoop();
+    //gameLoop();
+    syscall_sleep(2000);
+    finalScreen();
     // while(!end){
     //     int option = menu();
     //     if(option == EXIT){
     //         break;
     //     }
-    //     gameLoop(option);
+    //     gameLoop();
+    //     finalScreen();
     // }
     // end = 0;
     syscall_sleep(5000);
@@ -110,6 +115,21 @@ int menu() {
     return option;
 }
 
+void finalScreen(){
+    clearScreen();
+    setSize(FINAL_FONT);
+    winner = 1 ;
+    if(winner != 0){
+        printf_s("\n\n\t   Winner winner\n\t  chicken dinner!\n");
+        printf_s("\t\tPlayer%d wins", winner);
+    }else{
+        printf_s("\n\n\n\t\tGAME OVER");
+    }
+    syscall_sleep(3000);
+    resetSize();
+    winner = 0; //reseteo el winner para la proxima
+}
+
 void gameTick(){
     syscall_sleep(800/speed);
 }
@@ -146,18 +166,22 @@ void displayBackground() {
 
 
 void gameLoop() {
-    int end = 0;
     spawnPlayers();
     countDown();
     int pos = syscall_getbufferpos();
     char key;
-    int timeLimit = 1000;
-    int startTime = (int) syscall_timerms();
-    printf_s("%d", startTime);
+    int timeLimit = 3;
+    //printf_s("%d", startTime);
     while(!end){
+        int currentTime;
         //printf_s("%d", pos);
+        int startTime;
+        syscall_timerms(&startTime);
+        printf_s("%d\n", startTime);
         while(1){
-            if (((int)syscall_timerms()) - startTime >= timeLimit) {
+            syscall_timerms(&currentTime);
+            printf_s("%d\n",currentTime);
+            if (currentTime - startTime > timeLimit) {
                 break; // Salir del bucle si se ha alcanzado el tiempo límite
             }
             //printf_s("ayuda");
@@ -167,13 +191,30 @@ void gameLoop() {
             }
             handleInput(key);
         }
-        printf_s("ayuda");
         moveSnake(&snake1, PLAYER_1, 0);
         moveSnake(&snake2, PLAYER_2, 0);
         gameTick();
     }
-    // Aquí iría la lógica del juego
+    end = 0; //para que solo se salga por el menu
     return;
+}
+
+void collision(int player){
+    end = 1;
+    if(players == 2){
+        switch (player){
+        case PLAYER_1: //PERDIO EL P1
+            winner = PLAYER_2;
+            break;
+        
+        case PLAYER_2: //PERDIO EL P2
+            winner = PLAYER_1;
+            break;
+        }
+    }else{ // si solo era 1 jugador por defecto gana la casa
+        winner = 0 ;
+    }
+    
 }
 
 void handleInput(char key) {
@@ -290,39 +331,51 @@ void resetSnakes(Snake* snake) { // Se pasa la serpiente como parámetro
 void moveSnake(Snake* snake, int player, int g) {
     if (snake->length > 0 ) { // Verificar que la serpiente tenga segmentos
         if(!g){
-        // Mover los segmentos de la serpiente
-        drawSquare(snake->x[snake->length-1] * CELL_SIZE + OFFSET_X, 
+        
+            drawSquare(snake->x[snake->length-1] * CELL_SIZE + OFFSET_X, 
                    snake->y[snake->length-1] * CELL_SIZE + OFFSET_Y, 
                    CELL_SIZE, 
                    ((snake->x[snake->length-1]+ snake->y[snake->length-1])% 2 == 0) ? B_COLOR1 : B_COLOR2); // Color de fondo alternativo)
-        for (int i = snake->length; i > 0; i--) {
-            snake->x[i] = snake->x[i - 1]; // Mover la coordenada X
-            snake->y[i] = snake->y[i - 1]; // Mover la coordenada Y
-        }
         }else{
             grow(snake, snake->x[snake->length], snake->y[snake->length]);
-            for (int i = snake->length-1; i > 0; i--) {
-                snake->x[i] = snake->x[i - 1]; // Mover la coordenada X
-                snake->y[i] = snake->y[i - 1]; // Mover la coordenada Y
-            }
+        }
+        for (int i = snake->length; i > 0; i--) {// Mover los segmentos de la serpiente
+            snake->x[i] = snake->x[i - 1]; // Mover la coordenada X
+            snake->y[i] = snake->y[i - 1]; // Mover la coordenada Y
+            board[snake->x[i]][snake->y[i]] = player; // Actualizo el tablero con quien ocupa ese espacio
         }
 
         // Actualizar la cabeza de la serpiente según la dirección
         switch (snake->dir) {
             case UP:
-                snake->y[0]--; // Mover hacia arriba
+                if (snake->y[0] > 0) {
+                    snake->y[0]--; // Mover hacia arriba si no sale del rango
+                } else {
+                    collision(player); // Llamar a collision() si intenta salir del rango
+                }
                 break;
             case DOWN:
-                snake->y[0]++; // Mover hacia abajo
+                if (snake->y[0] < SCREEN_HEIGHT - 1) {
+                    snake->y[0]++; // Mover hacia abajo si no sale del rango
+                } else {
+                    collision(player); // Llamar a collision() si intenta salir del rango
+                }
                 break;
             case LEFT:
-                snake->x[0]--; // Mover hacia la izquierda
+                if (snake->x[0] > 0) {
+                    snake->x[0]--; // Mover hacia la izquierda si no sale del rango
+                } else {
+                    collision(player); // Llamar a collision() si intenta salir del rango
+                }
                 break;
             case RIGHT:
-                snake->x[0]++; // Mover hacia la derecha
+                if (snake->x[0] < SCREEN_WIDTH - 1) {
+                    snake->x[0]++; // Mover hacia la derecha si no sale del rango
+                } else {
+                    collision(player); // Llamar a collision() si intenta salir del rango
+                }
                 break;
         }
-
         // Dibuja la cabeza y la cola de la serpiente
         iterateSnake(snake, player);
         //drawSnakePosition(snake, player); // Llamada actualizada
