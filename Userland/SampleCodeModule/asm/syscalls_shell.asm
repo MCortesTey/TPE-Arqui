@@ -1,7 +1,7 @@
 GLOBAL syscall_write
 GLOBAL syscall_read
 GLOBAL syscall_clear
-GLOBAL syscall_showRegisters
+GLOBAL syscall_regs_ok
 GLOBAL syscall_time
 global syscall_changesize
 global syscall_drawsquare
@@ -30,8 +30,9 @@ syscall_read:
 syscall_time:
     syscall_entry 3
 
-syscall_showRegisters:
+syscall_regs_ok:
     syscall_entry 4
+
 syscall_changesize:
     syscall_entry 5
 

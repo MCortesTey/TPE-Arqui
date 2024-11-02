@@ -4,6 +4,7 @@
 #include "functions.h"
 #include "syscalls_shell.h"
 
+
 #define STDOUT 1
 #define WHITE 0xFFFFFFFF
 #define BUFFER_SIZE 256
@@ -58,8 +59,22 @@ void printf_s(char *fmt, ... ){
                 char c = va_arg(args, int);
                 putchar_s(c);
                 break;
+            }case 'x': {
+                uint64_t x = va_arg(args, uint64_t);
+                static char buffer[64];
+                char * ptr = &buffer[63];
+                *ptr = '\0';
+                do {
+                    *--ptr = "0123456789abcdef"[x % 16];
+                    x /= 16;
+                } while(x != 0);
+                char * hex_str = ptr;
+                for(int i = 0; hex_str[i] != '\0'; i++) {
+                    putchar_s(hex_str[i]);
+                }
+                break;
             }
-            }
+        }
         }
         else {
             syscall_write(fmt, 1, STDOUT);
@@ -115,7 +130,39 @@ void clearScreen(){
 }
 
 void showRegisters(){
-    syscall_showRegisters();
+    RegsSaved regs;
+    int ok = syscall_regs_ok(&regs) ;
+    char buffer[10];
+    
+    if(ok == 0) {
+        itoa(ok, buffer, 10);
+        printf_s(buffer);
+        printf_s("No register snapshot available. Press ESC to take a snapshot.\n");
+        return;
+    } else if ( ok == 1 ){
+    
+    printf_s("Register snapshot:\n");
+    printf_s(ok);
+    printf_s(buffer);
+
+    printf_s("rax: 0x%x\n", regs.rax);
+    printf_s("rbx: 0x%x\n", regs.rbx);
+    printf_s("rcx: 0x%x\n", regs.rcx);
+    printf_s("rdx: 0x%x\n", regs.rdx);
+    printf_s("rsi: 0x%x\n", regs.rsi);
+    printf_s("rdi: 0x%x\n", regs.rdi);
+    printf_s("rbp: 0x%x\n", regs.rbp);
+    printf_s("rsp: 0x%x\n", regs.rsp);
+    printf_s("r8:  0x%x\n", regs.r8 );
+    printf_s("r9:  0x%x\n", regs.r9 );
+    printf_s("r10: 0x%x\n", regs.r10);
+    printf_s("r11: 0x%x\n", regs.r11);
+    printf_s("r12: 0x%x\n", regs.r12);
+    printf_s("r13: 0x%x\n", regs.r13);
+    printf_s("r14: 0x%x\n", regs.r14);
+    printf_s("r15: 0x%x\n", regs.r15);
+    printf_s("rIP: 0x%x\n", regs.rip);
+    }
 }
 
 void showTime(){
