@@ -19,6 +19,7 @@
 #define PLAYER_1 1
 #define PLAYER_2 2
 #define EMPTY 0
+#define FRUIT 3
 
 #define SPAWN_1_X 3
 #define SPAWN_1_Y 4
@@ -47,6 +48,7 @@ static int players = 1;
 static int speed = 1;
 static int end = 0;
 static int winner = 0;
+static int fruit = 0;
 
 // matriz/tablero de posiciones
 uint64_t board[SCREEN_WIDTH][SCREEN_HEIGHT] = {EMPTY};
@@ -54,33 +56,26 @@ static Snake snake1 = {0}; // Instancia de serpiente 1, inicializada a 0
 static Snake snake2 = {0}; // Instancia de serpiente 2, inicializada a 0
 
 int snakes(){
-    // Animación
+    while(!end){
+        int option = menu();
+        if(option == EXIT){
+            break;
+        }
+        clearScreen();
+        displayBackground();
+        displayLayout();
+        gameLoop();
+        finalScreen();
+    }
+    end = 0;
     clearScreen();
-    setSize(MENU_FONT);
-    printf_s(START_MSG, players, speed);
-    menu();
-    clearScreen();
-    displayBackground();
-    displayLayout();
-    //gameLoop();
-    syscall_sleep(2000);
-    finalScreen();
-    // while(!end){
-    //     int option = menu();
-    //     if(option == EXIT){
-    //         break;
-    //     }
-    //     gameLoop();
-    //     finalScreen();
-    // }
-    // end = 0;
-    syscall_sleep(5000);
-    //clearScreen();
     resetSize();
     return 0;
 }
 
 int menu() {
+    setSize(MENU_FONT);
+    printf_s(START_MSG, players, speed);
     int option = -1;
     
     while(option == -1) {
@@ -112,6 +107,7 @@ int menu() {
             option = EXIT;
         }
     }
+    resetSize();
     return option;
 }
 
@@ -173,6 +169,7 @@ void gameLoop() {
     int timeLimit = 3;
     //printf_s("%d", startTime);
     while(!end){
+        if(fruit == 0){fruitControl();};
         int currentTime;
         //printf_s("%d", pos);
         int startTime;
@@ -329,58 +326,46 @@ void resetSnakes(Snake* snake) { // Se pasa la serpiente como parámetro
 
 // Mover la serpiente especificada en la dirección dada
 void moveSnake(Snake* snake, int player, int g) {
-    if (snake->length > 0 ) { // Verificar que la serpiente tenga segmentos
-        if(!g){
-        
-            drawSquare(snake->x[snake->length-1] * CELL_SIZE + OFFSET_X, 
-                   snake->y[snake->length-1] * CELL_SIZE + OFFSET_Y, 
-                   CELL_SIZE, 
-                   ((snake->x[snake->length-1]+ snake->y[snake->length-1])% 2 == 0) ? B_COLOR1 : B_COLOR2); // Color de fondo alternativo)
-        }else{
+    // Obtener la próxima posición en X e Y según la dirección actual de la serpiente
+    int nextX = (snake->dir == LEFT) ? snake->x[0] - 1 : (snake->dir == RIGHT) ? snake->x[0] + 1 : snake->x[0];
+    int nextY = (snake->dir == UP) ? snake->y[0] - 1 : (snake->dir == DOWN) ? snake->y[0] + 1 : snake->y[0];
+
+    // Chequear colisiones antes de verificar la fruta
+    if (nextY < 0 || nextY >= ROWS || nextX < 0 || nextX >= COLUMNS) {
+        collision(player); // Llamar a collision() si intenta salir del rango
+        return; // Salir de la función si hay colisión
+    }
+
+    if(board[nextY][nextX] == FRUIT) {
+        board[nextY][nextX] = EMPTY; 
+        g = 1; // Indicar que se ha comido una fruta
+    }
+    
+    if (snake->length > 0) { // Verificar que la serpiente tenga segmentos
+        if (!g) {
+            drawSquare(snake->x[snake->length - 1] * CELL_SIZE + OFFSET_X, 
+                       snake->y[snake->length - 1] * CELL_SIZE + OFFSET_Y, 
+                       CELL_SIZE, 
+                       ((snake->x[snake->length - 1] + snake->y[snake->length - 1]) % 2 == 0) ? B_COLOR1 : B_COLOR2); // Color de fondo alternativo
+        } else {
             grow(snake, snake->x[snake->length], snake->y[snake->length]);
         }
-        for (int i = snake->length; i > 0; i--) {// Mover los segmentos de la serpiente
+        for (int i = snake->length; i > 0; i--) { // Mover los segmentos de la serpiente
             snake->x[i] = snake->x[i - 1]; // Mover la coordenada X
             snake->y[i] = snake->y[i - 1]; // Mover la coordenada Y
             board[snake->x[i]][snake->y[i]] = player; // Actualizo el tablero con quien ocupa ese espacio
         }
 
         // Actualizar la cabeza de la serpiente según la dirección
-        switch (snake->dir) {
-            case UP:
-                if (snake->y[0] > 0) {
-                    snake->y[0]--; // Mover hacia arriba si no sale del rango
-                } else {
-                    collision(player); // Llamar a collision() si intenta salir del rango
-                }
-                break;
-            case DOWN:
-                if (snake->y[0] < SCREEN_HEIGHT - 1) {
-                    snake->y[0]++; // Mover hacia abajo si no sale del rango
-                } else {
-                    collision(player); // Llamar a collision() si intenta salir del rango
-                }
-                break;
-            case LEFT:
-                if (snake->x[0] > 0) {
-                    snake->x[0]--; // Mover hacia la izquierda si no sale del rango
-                } else {
-                    collision(player); // Llamar a collision() si intenta salir del rango
-                }
-                break;
-            case RIGHT:
-                if (snake->x[0] < SCREEN_WIDTH - 1) {
-                    snake->x[0]++; // Mover hacia la derecha si no sale del rango
-                } else {
-                    collision(player); // Llamar a collision() si intenta salir del rango
-                }
-                break;
-        }
-        // Dibuja la cabeza y la cola de la serpiente
+        snake->x[0] = nextX; // Actualizar la posición X de la cabeza
+        snake->y[0] = nextY; // Actualizar la posición Y de la cabeza
+        board[snake->x[0]][snake->y[0]] = player;
+        //redibuja la serpiente
         iterateSnake(snake, player);
         //drawSnakePosition(snake, player); // Llamada actualizada
     }
 }
+
 
 void drawSnakePosition(Snake* snake, int player) {
     // Dibuja la cola de la serpiente en el color de fondo
@@ -413,5 +398,6 @@ void drawSnakePosition(Snake* snake, int player) {
 void fruitControl(){
     int aux = getRandom(); // Genera un número aleatorio
     // Aquí puedes usar 'aux' para determinar la posición de la fruta o cualquier otra lógica
+    fruit = 1;
 }
 

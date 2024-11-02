@@ -41,7 +41,7 @@ void countDown();
 void handleInput(char key);
 int getPlayerByKey(char key);
 int inputToDir(char key, int player);
-void spawnFruit();
+void fruitControl();
 
 
 // Definición de la estructura Snake
