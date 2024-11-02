@@ -118,7 +118,7 @@ void bufferAppend(char c) {
  // Búfer de teclado
  //static char buffer[KEYBOARD_BUFFER_SIZE] = {0};
  static int currentKey = 0; // Índice actual de la tecla en el búfer
- //static int nextToRead = 0; // Índice de la próxima tecla a leer del búfer
+
  int shift = 0; // Estado de la tecla shift
  int capsLock = 0; // Estado del bloqueo de mayúsculas
  int registerPressed = 0; // Estado de la tecla de registro
@@ -210,10 +210,7 @@ int getPos() { // Retorna la posición actual en el buffer
 }
 
 char getBuffCharAt(int pos){ // Retorna el carácter en una posición específica del buffer
-	// for(int i = 0 ; i < ptr->pos; i++){
-	// 		vdPrintCharColor(ptr->buffer[i], 0xFFFFFFFF, 0x00000000);
-	// }
-    return ptr->buffer[pos]; // Retorna el carácter en la posición especificada
+    return ptr->buffer[pos]; 
 }
 
 void buffNext() {

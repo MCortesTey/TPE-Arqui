@@ -126,20 +126,7 @@ void checkChar(char character, uint64_t fcolor, uint64_t bcolor){
             vdPrintCharColor(character, fcolor, bcolor);
             return;
 
-    }//HACER LOS CASOS DE ACA ABAJO COMO CASES
-    
-    // if (character == 0x7C) {
-    //     moveLeft();
-    //     return;
-    // }
-    // if (character == 0x7D) {
-    //     moveRight();
-    //     return;
-    // }
-    // if (character == 0x7F || character == 0x7B) {
-    //     cursor_pos = 0;
-    //     return;
-    // }
+    }
 }
 
 

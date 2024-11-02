@@ -40,6 +40,8 @@ void sys_read(char * c, int len, int fd){
     return;
 }
 
+
+//version1
 // void sys_sleep(uint64_t millis) {
 //     unsigned long long initial_time = ms_elapsed(); // tiempo
 //     unsigned long long currentTime = initial_time;
@@ -50,7 +52,7 @@ void sys_read(char * c, int len, int fd){
     
 //     _cli();// Deshabilito interrupciones para asegurar que el sistema no se interrumpa
 // }
-
+//version2
 void sys_sleep(uint64_t millis){
 	int startTime = ticks_elapsed();
 	while (millis > ticks_elapsed()* 55 - startTime * 55){
