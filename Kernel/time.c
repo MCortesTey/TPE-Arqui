@@ -1,6 +1,7 @@
 #include <time.h>
 #include <naiveConsole.h>
-
+#include <videoDriver.h>
+#include <interrupts.h>
 static unsigned long ticks = 0;
 
 void timer_handler() {
@@ -18,10 +19,9 @@ int seconds_elapsed() {
 uint64_t ms_elapsed() {
     return ticks * 55;
 }
-
-// int getHours();
-// int getMinutes();
-// int getSeconds();
+void timer_ms(int * time ){
+    time = seconds_elapsed();
+}
 
 // Arma un string con la hora actual en formato HH:MM:SS
 char * TimeClock(char * buffer) {

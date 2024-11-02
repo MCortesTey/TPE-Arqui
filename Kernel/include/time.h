@@ -7,6 +7,7 @@ void timer_handler();
 int ticks_elapsed();
 int seconds_elapsed();
 uint64_t ms_elapsed();
+void timer_ms(int * time );
 uint8_t getSeconds();
 uint8_t getMinutes();
 uint8_t getHours();

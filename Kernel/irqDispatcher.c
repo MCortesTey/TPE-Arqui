@@ -75,7 +75,7 @@ uint64_t int_80(uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t
 		 	drawSquare(rdi, rsi, rdx, r10);
 		 	break;
 		case 13:
-			ms_elapsed();
+			timer_ms((int *)rdi);
 			break;
 		// case 14:
 		// 		sleeps(rdi);
