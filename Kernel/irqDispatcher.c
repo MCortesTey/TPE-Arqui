@@ -72,23 +72,23 @@ uint64_t int_80(uint64_t rax, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t
 		// 		drawWordColorAt((char *)rdi, rsi, rdx, r10);
 		// 		break;
 		case 12:
-		 		drawSquare(rdi, rsi, rdx, r10);
-		 		break;
-		// case 13:
-		// 		sleepms(rdi);
-		// 		break;
+		 	drawSquare(rdi, rsi, rdx, r10);
+		 	break;
+		case 13:
+			ms_elapsed();
+			break;
 		// case 14:
 		// 		sleeps(rdi);
 		// 		break;
 		// case 15:
 		// 		pixelColorAt(rdi, rsi);
 		// 		break;
-		// case 16:
-		// 		return getPos();
-		// 		break;
-		// case 17:
-		// 		return getBuffCharAt(rdi);
-		// 		break;
+		case 16:
+				return getPos();
+				break;
+		case 17:
+				return getBuffCharAt(rdi);
+				break;
 		// case 18:
 		// 		bufferClearAll();
 		// 		break;
