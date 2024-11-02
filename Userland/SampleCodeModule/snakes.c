@@ -58,11 +58,11 @@ static Snake snake2 = {0}; // Instancia de serpiente 2, inicializada a 0
 
 int snakes(){
     while(!end){
+        //clearScreen();
         int option = menu();
         if(option == EXIT){
             break;
         }
-        clearScreen();
         displayBackground();
         displayLayout();
         gameLoop();
@@ -108,6 +108,7 @@ int menu() {
             option = EXIT;
         }
     }
+    clearScreen();
     resetSize();
     return option;
 }
@@ -124,6 +125,7 @@ void finalScreen(){
     }
     syscall_sleep(3000);
     resetSize();
+    clearScreen();
     winner = 0; //reseteo el winner para la proxima
 }
 
@@ -175,22 +177,22 @@ void gameLoop() {
         //printf_s("%d", pos);
         int startTime;
         syscall_timerms(&startTime);
-        printf_s("%d\n", startTime);
-        while(1){
+        //printf_s("%d\n", startTime);
+        //while(1){
             syscall_timerms(&currentTime);
-            printf_s("%d\n",currentTime);
-            if (currentTime - startTime > timeLimit) {
-                break; // Salir del bucle si se ha alcanzado el tiempo límite
-            }
+            //printf_s("%d\n",currentTime);
+            // if (currentTime - startTime > timeLimit) {
+            //     break; // Salir del bucle si se ha alcanzado el tiempo límite
+            // }
             //printf_s("ayuda");
             key = syscall_getcharat(pos-1);
             if(key != 0){
                 pos++;
             }
             handleInput(key);
-        }
+        //}
         moveSnake(&snake1, PLAYER_1, 0);
-        moveSnake(&snake2, PLAYER_2, 0);
+        if(players ==2){moveSnake(&snake2, PLAYER_2, 0);}
         gameTick();
     }
     end = 0; //para que solo se salga por el menu
@@ -316,7 +318,8 @@ void iterateSnake(Snake* snake, int player) { // Se pasa la serpiente como pará
     for (int i = 0; i < snake->length; i++) {
         drawSquare(snake->x[i] * CELL_SIZE + OFFSET_X, 
                    snake->y[i] * CELL_SIZE + OFFSET_Y, 
-                   CELL_SIZE, P1_COLOR); // Aplicar la función a las coordenadas del nodo
+                   CELL_SIZE, player == PLAYER_1? P1_COLOR:P2_COLOR); // Aplicar la función a las coordenadas del nodo
+        //printf_s("[%d,%d]->", snake->x[i], snake->y[i] );
     }
 }
 
@@ -328,16 +331,20 @@ void resetSnakes(Snake* snake) { // Se pasa la serpiente como parámetro
 // Mover la serpiente especificada en la dirección dada
 void moveSnake(Snake* snake, int player, int g) {
     // Obtener la próxima posición en X e Y según la dirección actual de la serpiente
+    //printf_s("dir: %d \n",snake->dir);
     int nextX = (snake->dir == LEFT) ? snake->x[0] - 1 : (snake->dir == RIGHT) ? snake->x[0] + 1 : snake->x[0];
     int nextY = (snake->dir == UP) ? snake->y[0] - 1 : (snake->dir == DOWN) ? snake->y[0] + 1 : snake->y[0];
-
+    //printf_s("%d  %d\n", nextX, nextY);
     // Chequear colisiones antes de verificar la fruta
-    if (nextY < 0 || nextY >= ROWS || nextX < 0 || nextX >= COLUMNS) {
+    if (nextY < 0 || nextY >= ROWS || nextX < 0 || nextX >= COLUMNS || board[nextY][nextX] == PLAYER_1 || board[nextY][nextX] == PLAYER_2  ) {
+        printf_s("hubo\n");
+        while(1);
         collision(player); // Llamar a collision() si intenta salir del rango
         return; // Salir de la función si hay colisión
     }
 
     if(board[nextY][nextX] == FRUIT) {
+        fruit = 0;
         board[nextY][nextX] = EMPTY; 
         g = 1; // Indicar que se ha comido una fruta
     }
@@ -352,6 +359,9 @@ void moveSnake(Snake* snake, int player, int g) {
             grow(snake, snake->x[snake->length], snake->y[snake->length]);
         }
         for (int i = snake->length; i > 0; i--) { // Mover los segmentos de la serpiente
+            if(i == snake->length){
+                board[snake->x[i]][snake->y[i]] = EMPTY;
+            }
             snake->x[i] = snake->x[i - 1]; // Mover la coordenada X
             snake->y[i] = snake->y[i - 1]; // Mover la coordenada Y
             board[snake->x[i]][snake->y[i]] = player; // Actualizo el tablero con quien ocupa ese espacio
@@ -365,35 +375,6 @@ void moveSnake(Snake* snake, int player, int g) {
         iterateSnake(snake, player);
         //drawSnakePosition(snake, player); // Llamada actualizada
     }
-}
-
-
-void drawSnakePosition(Snake* snake, int player) {
-    // Dibuja la cola de la serpiente en el color de fondo
-    if (snake->length+1 > 1) {
-        drawSquare(snake->x[snake->length - 1] * CELL_SIZE + OFFSET_X, 
-                   snake->y[snake->length - 1] * CELL_SIZE + OFFSET_Y, 
-                   CELL_SIZE, 
-                   ((snake->x[snake->length]+ snake->y[snake->length])% 2 == 0) ? B_COLOR2 : B_COLOR1); // Color de fondo alternativo
-    }
-
-    // Dibuja la cabeza de la serpiente
-    printf_s("%d",player);
-    switch(player){
-        case PLAYER_1:
-            drawSquare(snake->x[0] * CELL_SIZE + OFFSET_X, 
-            snake->y[0] * CELL_SIZE + OFFSET_Y, 
-            CELL_SIZE, 
-            P1_COLOR); // Color de la cabeza
-            break;
-        case PLAYER_2:
-            drawSquare(snake->x[0] * CELL_SIZE + OFFSET_X, 
-            snake->y[0] * CELL_SIZE + OFFSET_Y, 
-            CELL_SIZE, 
-            P2_COLOR); // Color de la cabeza
-            break;
-    }
-   
 }
 
 void fruitControl(){
