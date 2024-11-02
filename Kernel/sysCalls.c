@@ -8,6 +8,9 @@
 #include <interrupts.h>
 #include <soundDriver.h>
 
+extern uint64_t registers[17];
+extern uint64_t regsChecked;
+
 void sys_write(char * buff, int count, int fd){
     switch(fd){
         case STDOUT:
@@ -46,5 +49,32 @@ void sys_sleep(uint64_t millis) {
     }
     
     _cli();// Deshabilito interrupciones para asegurar que el sistema no se interrumpa
+}
+
+
+int sys_regs_ok ( RegsSaved * regs){
+    
+    if(regsChecked == 0) {
+        return 0;
+    }
+
+    regs->rax = registers[0];
+    regs->rbx = registers[1];
+    regs->rcx = registers[2];
+    regs->rdx = registers[3];
+    regs->rsi = registers[4];
+    regs->rdi = registers[5];
+    regs->rbp = registers[6];
+    regs->rsp = registers[7];
+    regs->r8 = registers[8];
+    regs->r9 = registers[9];
+    regs->r10 = registers[10];
+    regs->r11 = registers[11];
+    regs->r12 = registers[12];
+    regs->r13 = registers[13];
+    regs->r14 = registers[14];
+    regs->r15 = registers[15];
+    regs->rip = registers[16];
+    return 1;
 }
 

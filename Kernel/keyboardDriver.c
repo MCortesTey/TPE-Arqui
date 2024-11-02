@@ -27,6 +27,11 @@
 #define CTRL_PRESS 0x1D // Tecla de control presionada
 #define CTRL_RELEASE 0x9D // Tecla de control liberada
 
+static int regsChecked = 0 ;
+
+static void escPressed(void){
+    regsChecked = 1;
+}
 
 static unsigned char asccCode[58][2] = {
  	{0, 0},
@@ -101,6 +106,7 @@ static struct kbuff buff = {0, 0, {'\0'}}; // Inicializa el buffer de teclado
 static buffer_ptr ptr = &buff; // Puntero al buffer de teclado
 int buffer_pos = 0; // Posición actual en el buffer
 
+
 void bufferAppend(char c) {
     if (ptr->len < KEYBOARD_BUFFER_SIZE) {
         int writePos = (ptr->pos + ptr->len) % KEYBOARD_BUFFER_SIZE;
@@ -145,8 +151,7 @@ unsigned char keyHandler(unsigned int key){
  		capsLock = 1 - capsLock; // Cambiar estado del bloqueo de mayúsculas
  		return 0; // No se inserta nada en el búfer
  	case ESCAPE_KEY:
-	//	saveRegisters();
- 	//	regsChecked = 1; // Activar registro
+ 		regsChecked = 1; // Activar registro
  		return 0; // No se inserta nada en el búfer
 	case ENTER_KEY:
 		return '\n';
@@ -225,3 +230,9 @@ void buffNext() {
          ptr->buffer[i] = 0; // Limpia cada posición del buffer
      }
  }
+
+ int regsReady(){
+	return regsChecked;
+ }
+
+ 

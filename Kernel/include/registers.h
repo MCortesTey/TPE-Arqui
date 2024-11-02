@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-
+/*
 typedef struct regStruct{
 	uint64_t rax, rbx, rcx, rdx;
 	uint64_t rsi, rdi, rbp, rsp;
@@ -15,7 +15,7 @@ typedef struct regStruct{
 
 extern regStruct regBackup;
 extern int regsChecked;
-
+*/
 
 void printRegStatus (int n ); // regStruct * regs
 
