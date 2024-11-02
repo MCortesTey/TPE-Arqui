@@ -16,7 +16,8 @@ static char * commands[][2] = {
         {"time", "Shows the current time."},
         {"sizeUp","Increment the size of the font."},
         {"sizeDown","Decrement the size of the font."},
-        {"beep", "Make a beep sound."}
+        {"beep", "Make a beep sound."},
+        {"random","Get a random number between 1-100"}
 };
 
 static int (*commandsFunctions[])(int argc, char* argv[]) = {
@@ -30,7 +31,8 @@ static int (*commandsFunctions[])(int argc, char* argv[]) = {
     timeCommand,
     size_up,
     size_down,
-    beepCommand
+    beepCommand,
+    randomCommand
 };
 
 int beepCommand(int argc, char* argv[]) {
@@ -146,5 +148,9 @@ int size_up(int argc, char *argv[]) {
 int size_down(int argc, char *argv[]) {
     changeSize(-1);
     clearScreen();
+    return 0;
+}
+int randomCommand(int argc, char *argv[]){
+    printf_s("%d\n", getRandomInRange(1,100));
     return 0;
 }

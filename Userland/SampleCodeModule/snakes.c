@@ -11,6 +11,7 @@
 
 #define P1_COLOR 0x1F1FFF
 #define P2_COLOR 0x50962D
+#define FRUIT_COLOR 0xFF0000
 
 #define MENU_FONT 3
 #define COUNTDOWN_FONT 3
@@ -396,8 +397,14 @@ void drawSnakePosition(Snake* snake, int player) {
 }
 
 void fruitControl(){
-    int aux = getRandom(); // Genera un número aleatorio
-    // Aquí puedes usar 'aux' para determinar la posición de la fruta o cualquier otra lógica
+    int auxX; 
+    int auxY; 
+    do{
+        auxX = getRandomInRange(0, COLUMNS-1);
+        auxY = getRandomInRange(0, ROWS-1);
+    }while(board[auxY][auxX] != 0);
+    board[auxY][auxX] = FRUIT;
+    drawSquare(auxX * CELL_SIZE + OFFSET_X, auxY* CELL_SIZE + OFFSET_Y, CELL_SIZE, FRUIT_COLOR);
     fruit = 1;
 }
 
