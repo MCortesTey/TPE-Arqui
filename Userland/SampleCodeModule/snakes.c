@@ -193,6 +193,7 @@ void gameLoop() {
 
 void collision(int player){
     end = 1;
+    makeSound(300, 250);
     if(players == 2){
         switch (player){
         case PLAYER_1: //PERDIO EL P1
