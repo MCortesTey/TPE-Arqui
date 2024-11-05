@@ -86,33 +86,6 @@ void * initializeKernelBinary()
 int main()
 {	
 	load_idt();
-	/*
-	ncPrint("[Kernel Main]");
-	ncNewline();
-	ncPrint("  Sample code module at 0x");
-	ncPrintHex((uint64_t)sampleCodeModuleAddress);
-	ncNewline();
-	ncPrint("  Calling the sample code module returned: ");
-	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
-	ncNewline();
-	ncNewline();
-
-	ncPrint("  Sample data module at 0x");
-	ncPrintHex((uint64_t)sampleDataModuleAddress);
-	ncNewline();
-	ncPrint("  Sample data module contents: ");
-	ncPrint((char*)sampleDataModuleAddress);
-	ncNewline();
-
-	ncNewline();
-	ncPrint("Press ESC to exit text mode.");
-	ncNewline();
-	//printKeys sin interrupcion
-	//pressKey();
-	while(1);
-	ncPrint("[Finished]");
-	return (EntryPoint)sampleCodeModuleAddress;
-	*/
 	return ((EntryPoint)sampleCodeModuleAddress)();
 	
 }

@@ -100,7 +100,6 @@ typedef struct kbuff * buffer_ptr;
 
 static struct kbuff buff = {0, 0, {'\0'}}; // Inicializa el buffer de teclado
 static buffer_ptr ptr = &buff; // Puntero al buffer de teclado
-int buffer_pos = 0; // Posición actual en el buffer
 
 
 void bufferAppend(char c) {
@@ -112,9 +111,6 @@ void bufferAppend(char c) {
 }
 
  // Búfer de teclado
- //static char buffer[KEYBOARD_BUFFER_SIZE] = {0};
- static int currentKey = 0; // Índice actual de la tecla en el búfer
-
  int shift = 0; // Estado de la tecla shift
  int capsLock = 0; // Estado del bloqueo de mayúsculas
  int registerPressed = 0; // Estado de la tecla de registro
@@ -123,12 +119,8 @@ void bufferAppend(char c) {
  	uint8_t key = keyHandler(getKeyPressed()); // Filtrar la tecla y obtener el caracter
 
  	if (key){ // Si no es una tecla especial
- 		bufferAppend(key); // Escribir en el búfer
-		//vdPrintCharColor(key, 0xFFFFFF, 0x000000);
+ 		bufferAppend(key); 
  	}
-
- 	currentKey %= KEYBOARD_BUFFER_SIZE; // Asegurarse de no sobrepasar el tamaño del búfer
- 	//sys_write( STDOUT,ptr->buffer, bufferLen());
  	
  }
 
@@ -141,18 +133,20 @@ unsigned char keyHandler(unsigned int key){
  	case RIGHT_SHIFT_PRESS:
  	case LEFT_SHIFT_PRESS:
  		shift = 1; // Activar shift
- 		return 0; // No se inserta nada en el búfer
+ 		return 0; 
  	case RIGHT_SHIFT_RELEASE:
  	case LEFT_SHIFT_RELEASE:
  		shift = 0; // Desactivar shift
- 		return 0; // No se inserta nada en el búfer
+ 		return 0; 
  	case CAPS_LOCK_PRESS:
  		capsLock = 1 - capsLock; // Cambiar estado del bloqueo de mayúsculas
- 		return 0; // No se inserta nada en el búfer
+ 		return 0; 
 	case ENTER_KEY:
 		return '\n';
 	case BACKSPACE_KEY:
 		return '\b';
+	case TAB_KEY:
+		return '\t';
  	}
 
  	// Si no es una tecla especial, retornar la tecla correspondiente
@@ -164,16 +158,9 @@ unsigned char keyHandler(unsigned int key){
  		}
  		else
  		{
- 			index = shift; // Determinar el índice según el estado de shift
+ 			index = shift;
  		}
  		return asccCode[key][index]; // Retornar la tecla a insertar en el búfer
- 	}
- 	switch (key)
- 	{
- 	case TAB_KEY:
- 		vdPrint("    "); // Retornar el carácter de tabulación
- 	case BACKSPACE_KEY:
- 		//bsBuffer(); // Retornar el carácter de retroceso
  	}
 
  	return 0; // Retornar 0 si no se debe insertar nada
@@ -190,7 +177,7 @@ unsigned char keyHandler(unsigned int key){
  char isSpecialKey(unsigned int key)
  {
  	return key == LEFT_SHIFT_PRESS || key == RIGHT_SHIFT_PRESS ||
- 		   key == CAPS_LOCK_PRESS || key == ALT_PRESS || isFKey(key) || key == ESCAPE_KEY || key == TAB_KEY;
+ 		   key == CAPS_LOCK_PRESS || key == ALT_PRESS || isFKey(key);
  }
 
  char getBuffAtCurrent() { // Retorna el carácter en la posición actual del buffer
@@ -221,10 +208,10 @@ void buffNext() {
  }
 
  void bufferClearAll(){ // Limpia completamente el buffer
-     ptr->pos = 0; // Resetea la posición del buffer
-     ptr->len = 0; // Resetea la longitud del buffer
+     ptr->pos = 0; 
+     ptr->len = 0; 
      for (int i = 0; i < KEYBOARD_BUFFER_SIZE; i++) { // Itera sobre todo el buffer
-         ptr->buffer[i] = 0; // Limpia cada posición del buffer
+         ptr->buffer[i] = 0; // Limpia cada posición
      }
  }
 

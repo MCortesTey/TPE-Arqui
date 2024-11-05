@@ -38,21 +38,15 @@ switch(rax){
 		case 13:
 			timer_ms((long *)rdi);
 			break;
-		// case 14:
-		// 		sleeps(rdi);
-		// 		break;
-		// case 15:
-		// 		pixelColorAt(rdi, rsi);
-		// 		break;
 		case 16:
-				return getPos();
-				break;
+			return getPos();
+			break;
 		case 17:
-				return getBuffCharAt(rdi);
-				break;
+			return getBuffCharAt(rdi);
+			break;
 	
 		default:
-				return 0;
+			return 0;
 				
 	}
 	return 0;

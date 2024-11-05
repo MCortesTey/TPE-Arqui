@@ -66,24 +66,17 @@ void vdPrintCharColor(char c, uint64_t fcolor, uint64_t bcolor) {
     if (c == ' ') {
         fcolor = bcolor;
     }
-    // // Si la posición del cursor no está al principio, mueve la pantalla a la derecha
-    // if (cursor_pos != 0) {
-    //     moveScreenRight();
-    // }
 
-    // Inicializa las variables para la posición del carácter y los contadores del bucle
+    // Inicializo las variables para la posición del carácter y los contadores del bucle
     int cx, cy;
-    int pos = c - 33; // Calcula la posición en el array de fuentes basándose en el carácter
+    int pos = c - 33; // Posición en el array de fuentes basándose en el carácter
 
     // Recorre cada fila del carácter
     for (cy = 0; cy < 16; cy++) {
         int maskCheck = 0x01; // Inicializa una máscara para comprobar cada bit en el array de fuentes
-        //int maskCheck2 = 0x01; // Otra máscara para el segundo byte de cada fila (no utilizada en esta implementación)
-        // Recorre cada columna del carácter
         for (cx = 0; cx < 10; cx++) {
             // Comprueba si el píxel actual del carácter está configurado (1) o no (0)
             if (((font[(pos*32) + (2*cy)] & (maskCheck << cx)) != 0) && cx < 8) {
-                // Si el píxel está configurado, dibújalo con el color de primer plano
                 for (int z = 0; z < size; z++) {
                     for (int w = 0; w < size; w++) {
                         putPixel(fcolor, cx*size + posX + z, cy*size + posY + w);
@@ -100,7 +93,7 @@ void vdPrintCharColor(char c, uint64_t fcolor, uint64_t bcolor) {
             }
         }
     }
-    // Comprueba si la posición actual está en el borde de la pantalla y pasa a la siguiente línea si es necesario
+    // Compruebo si la posición actual está en el borde de la pantalla y pasa a la siguiente línea si es necesario
     if (posX >= VBE_mode_info->width-MARGIN-(16*size)) {
         posY += 16*size;
         posX = MARGIN;
@@ -141,7 +134,7 @@ void vdPrintColor(char * string, uint64_t fColor, uint64_t bColor){
     for(int i = 0; string[i] != 0; i++){
         checkChar(string[i], fColor, bColor);
     }
-}//podriamos hacerla llamando a vdPrintColorLen calculando la length antes de llamar
+}
 
 
 void vdPrint(char * string){
@@ -176,9 +169,8 @@ void vdDelete(){
         posX = VBE_mode_info->width-MARGIN-4;
         posY -= 16*size;
     }
-    // Variables para los bucles
     int i, j;
-    // Bucle para borrar el carácter actual
+    // borrar el carácter actual
     for (i = 0; i < 16*size; i++) {
         for (j = 0; j < 10*size; j++) {
             // Dibuja un píxel negro en la posición del carácter actual

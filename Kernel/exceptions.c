@@ -14,11 +14,6 @@ void exceptionDispatcher(int exception, uint64_t exceptionRegisters[18]) {
 		invalidOperation();
 	}
 	printRegStatus(exceptionRegisters); //&regBackup
-	//vdNewline();
-	//vdPrint("Press keyboard to continue");
-	//getKeyPressed(); 
-	//leer ese caracter pero no escribirlo en pantalla, solo leerlo para poder 
-	// rectivar el cursor
 }
 
 void zero_division() {
