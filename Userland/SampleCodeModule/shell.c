@@ -21,7 +21,7 @@ void startShell()
         getBuffer(input);
 
 
-        if (input[0] != 0 ) { // chequeo si el usuario ingreso algo
+        if (input[0] != 0 ) {  // chequeo si el usuario ingreso algo
             strcpy_s(copy, input);
             exit = CommandParse(copy);
             if (exit == INPUT_ERROR) {
@@ -34,9 +34,8 @@ void startShell()
         
 
     }while(!exit);
-    //mensaje de despedida
-}
 
+}
 
 static void getBuffer(char * input) {
     char c;

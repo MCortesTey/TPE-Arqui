@@ -33,12 +33,6 @@ static int (*commandsFunctions[])(int argc, char* argv[]) = {
     randomCommand
 };
 
-int beepCommand(int argc, char* argv[]) {
-    syscall_makeSound(500, 500);  // Frecuencia más alta y duración más corta
-    return 0;
-}
-
-
 //recibe el string del comando y retorna la funcion del comando
 int CommandParse(char *commandInput){
     if(commandInput == NULL)
@@ -61,7 +55,7 @@ int CommandParse(char *commandInput){
     return INPUT_ERROR;
 }
 
-
+//recibe el string del comando y los argumentos y retorna el comando final
 char* fillCommandAndArgs(char* args[], char *commandInput, int *argsCount){
     *argsCount = 0;
     char *current = commandInput;
@@ -101,7 +95,6 @@ int helpCommand(int argc, char * argv[] ){
     return 0;
 }
 
-
 int clearCommand(int argc, char *argv[]) {
     clearScreen();
     return 0;
@@ -138,11 +131,18 @@ int size_up(int argc, char *argv[]) {
     clearScreen();
     return 0;
 }
+
 int size_down(int argc, char *argv[]) {
     changeSize(-1);
     clearScreen();
     return 0;
 }
+
+int beepCommand(int argc, char* argv[]) {
+    syscall_makeSound(500, 500);  // Frecuencia más alta y duración más corta
+    return 0;
+}
+
 int randomCommand(int argc, char *argv[]){
     printf_s("%d\n", getRandomInRange(1,100));
     return 0;
