@@ -14,5 +14,6 @@ char getBuffAtCurrent();
 void buffNext();
 int getPos();
 char getBuffCharAt(int pos);
+void uncheckRegs();
 
 #endif // _KEYBOARD_DRIVER_H_

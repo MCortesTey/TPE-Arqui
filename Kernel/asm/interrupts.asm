@@ -18,7 +18,7 @@ GLOBAL _exception6Handler
 GLOBAL saveRegisters
 GLOBAL printRegStatusASM
 
-
+EXTERN uncheckRegs
 EXTERN irqDispatcher
 EXTERN syscallDispatcher
 EXTERN exceptionDispatcher
@@ -162,6 +162,7 @@ _irq01Handler:
 	mov [registers + 8 * 16], rax
 
     mov rdi, registers
+	call uncheckRegs
     call saveRegs
 
 .exit:
