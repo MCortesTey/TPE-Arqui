@@ -53,8 +53,8 @@ static int fruit = 0;
 
 // matriz/tablero de posiciones
 uint64_t board[SCREEN_WIDTH][SCREEN_HEIGHT] = {EMPTY};
-static Snake snake1 = {0}; // Instancia de serpiente 1, inicializada a 0
-static Snake snake2 = {0}; // Instancia de serpiente 2, inicializada a 0
+static Snake snake1 = {0}; 
+static Snake snake2 = {0}; 
 
 int snakes(){
     while(!end){
@@ -97,7 +97,7 @@ int menu() {
             char speed_char = getchar_s();
             int speed_option = speed_char - '0';
             
-            if (speed >= 1 && speed <= 5) {
+            if (speed_option >= 1 && speed_option <= 5) {
                 speed = speed_option;
                 printf_s("%d\n\n", speed);
                 printf_s("Presione ENTER para jugar\n\n");
@@ -116,14 +116,13 @@ int menu() {
 void finalScreen(){
     clearScreen();
     setSize(FINAL_FONT);
-    winner = 1 ;
     if(winner != 0){
         printf_s("\n\n\t   Winner winner\n\t  chicken dinner!\n");
         printf_s("\t\tPlayer%d wins", winner);
     }else{
         printf_s("\n\n\n\t\tGAME OVER");
     }
-    syscall_sleep(3000);
+    syscall_sleep(5000);
     resetSize();
     clearScreen();
     winner = 0; //reseteo el winner para la proxima
@@ -134,18 +133,14 @@ void gameTick(){
 }
 
 void displayLayout() {
-    // Lógica para mostrar el fondo del juego
-    // This function draws the margins of the game board by iterating through each pixel on the screen.
-    // It checks if the current pixel is part of the margin (top, bottom, left, or right) and if so, sets its color to RED.
+    
     for(int i = OFFSET_X; i < SCREEN_WIDTH - OFFSET_X; i++){
         for(int j = OFFSET_Y; j <= SCREEN_HEIGHT + OFFSET_Y ; j++){
-            // The following conditions check if the current pixel is part of the margin.
-            // The margin is defined as 20 pixels from the edges of the screen.
-            if((i == OFFSET_X && j >= OFFSET_Y && j <= SCREEN_HEIGHT + OFFSET_Y) || // Left margin
-               (i == SCREEN_WIDTH - OFFSET_X - 1 && j >= OFFSET_Y && j <= SCREEN_HEIGHT + OFFSET_Y) || // Right margin
-               (j == OFFSET_Y && i >= OFFSET_X && i <= SCREEN_WIDTH - OFFSET_X - 1) || // Top margin
-               (j == SCREEN_HEIGHT + OFFSET_Y && i >= OFFSET_X && i <= SCREEN_WIDTH - OFFSET_X - 1)){ // Bottom margin
-                drawSquare(i, j, 5, BORDER_COLOR); // Draw a 5x5 square at the current pixel position with RED color
+            if((i == OFFSET_X && j >= OFFSET_Y && j <= SCREEN_HEIGHT + OFFSET_Y) || // Margen izquierdo
+               (i == SCREEN_WIDTH - OFFSET_X - 1 && j >= OFFSET_Y && j <= SCREEN_HEIGHT + OFFSET_Y) || // Margen derecho
+               (j == OFFSET_Y && i >= OFFSET_X && i <= SCREEN_WIDTH - OFFSET_X - 1) || // Margen superior
+               (j == SCREEN_HEIGHT + OFFSET_Y && i >= OFFSET_X && i <= SCREEN_WIDTH - OFFSET_X - 1)){ // Margen inferior
+                drawSquare(i, j,5, BORDER_COLOR); // Dibujar un cuadrado de 3x3 en la posición actual con el color del borde
             }
         }
     }
@@ -155,9 +150,9 @@ void displayBackground() {
     for(int i = 0; i < COLUMNS; i++){
         for(int j = 0; j < ROWS; j ++){
             if((i + j) % 2 == 0){
-                drawSquare((i*CELL_SIZE)+OFFSET_X, (j*CELL_SIZE)+OFFSET_Y, CELL_SIZE, B_COLOR1); // Draw a CELL_SIZE x CELL_SIZE square at the current pixel position with WHITE color
+                drawSquare((i*CELL_SIZE)+OFFSET_X, (j*CELL_SIZE)+OFFSET_Y, CELL_SIZE, B_COLOR1); 
             } else {
-                drawSquare((i*CELL_SIZE)+OFFSET_X, (j*CELL_SIZE)+OFFSET_Y, CELL_SIZE, B_COLOR2); // Draw a CELL_SIZE x CELL_SIZE square at the current pixel position with BLACK color
+                drawSquare((i*CELL_SIZE)+OFFSET_X, (j*CELL_SIZE)+OFFSET_Y, CELL_SIZE, B_COLOR2); 
             }
         }
     }
@@ -169,32 +164,29 @@ void gameLoop() {
     countDown();
     int pos = syscall_getbufferpos();
     char key;
-    int timeLimit = 3;
-    //printf_s("%d", startTime);
+    long timeLimit = 1000/speed;
     while(!end){
         if(fruit == 0){fruitControl();};
-        int currentTime;
-        //printf_s("%d", pos);
-        int startTime;
+        long currentTime;
+        long startTime;
         syscall_timerms(&startTime);
-        //printf_s("%d\n", startTime);
-        //while(1){
+        while(1){
             syscall_timerms(&currentTime);
-            //printf_s("%d\n",currentTime);
-            // if (currentTime - startTime > timeLimit) {
-            //     break; // Salir del bucle si se ha alcanzado el tiempo límite
-            // }
-            //printf_s("ayuda");
+            if (currentTime - startTime > timeLimit) {
+                break; // Salir del bucle si se ha alcanzado el tiempo límite
+            }
             key = syscall_getcharat(pos-1);
             if(key != 0){
                 pos++;
             }
             handleInput(key);
-        //}
-        moveSnake(&snake1, PLAYER_1, 0);
-        if(players ==2){moveSnake(&snake2, PLAYER_2, 0);}
-        gameTick();
+        }
+        moveSnake(&snake1, PLAYER_1);
+        if(players ==2){moveSnake(&snake2, PLAYER_2);}
+        //printBoard();
+        //gameTick();
     }
+    resetGame();
     end = 0; //para que solo se salga por el menu
     return;
 }
@@ -218,58 +210,67 @@ void collision(int player){
 }
 
 void handleInput(char key) {
-        int who = getPlayerByKey(key);
-        if(who == PLAYER_1){
-            snake1.dir = inputToDir(key, PLAYER_1);
-            
-        } else if(who == PLAYER_2){
-            snake2.dir = inputToDir(key, PLAYER_2);
-            
+    int who = getPlayerByKey(key);
+    if(who == PLAYER_1){
+        int newDir = inputToDir(key, PLAYER_1);
+        if ((snake1.dir == UP && newDir != DOWN) || 
+            (snake1.dir == DOWN && newDir != UP) || 
+            (snake1.dir == LEFT && newDir != RIGHT) || 
+            (snake1.dir == RIGHT && newDir != LEFT)) {
+            snake1.dir = newDir;
         }
+    } else if(who == PLAYER_2){
+        int newDir = inputToDir(key, PLAYER_2);
+        if ((snake2.dir == UP && newDir != DOWN) || 
+            (snake2.dir == DOWN && newDir != UP) || 
+            (snake2.dir == LEFT && newDir != RIGHT) || 
+            (snake2.dir == RIGHT && newDir != LEFT)) {
+            snake2.dir = newDir;
+        }
+    }
 }
 
 int getPlayerByKey(char key) {
-    // Completar los casos para determinar el jugador según la tecla
     if (key == player1Up || key == player1Down || key == player1Left || key == player1Right) {
-        return PLAYER_1; // Retorna el jugador 1 si se presiona una tecla de jugador 1
+        return PLAYER_1;
     } else if (key == player2Up || key == player2Down || key == player2Left || key == player2Right) {
-        return PLAYER_2; // Retorna el jugador 2 si se presiona una tecla de jugador 2
+        return PLAYER_2;
     }
-    return EMPTY; // Retorna EMPTY si no se reconoce la tecla
+    return EMPTY;
 }
 
 int inputToDir(char key, int player){
     if(player == PLAYER_1){
         switch(key){
             case player1Up:
-                return UP; // Retorna dirección arriba
+                return UP;
             case player1Down:
-                return DOWN; // Retorna dirección abajo
+                return DOWN;
             case player1Left:
-                return LEFT; // Retorna dirección izquierda
+                return LEFT;
             case player1Right:
-                return RIGHT; // Retorna dirección derecha
+                return RIGHT;
         }
     } else if(player == PLAYER_2) {
         switch(key){
             case player2Up:
-                return UP; // Retorna dirección arriba
+                return UP;
             case player2Down:
-                return DOWN; // Retorna dirección abajo
+                return DOWN;
             case player2Left:
-                return LEFT; // Retorna dirección izquierda
+                return LEFT;
             case player2Right:
-                return RIGHT; // Retorna dirección derecha
+                return RIGHT;
         }
     }
-    return -1; // Retorna -1 si no se reconoce la tecla
+    return -1;
 }
 
 void spawnPlayers(){
     if(players == 2){
         //p2
-        drawSquare((SPAWN_2_X*CELL_SIZE)+OFFSET_X, (SPAWN_2_Y*CELL_SIZE)+OFFSET_Y, CELL_SIZE, P2_COLOR);
         drawSquare(((SPAWN_2_X-1)*CELL_SIZE)+OFFSET_X, (SPAWN_2_Y*CELL_SIZE)+OFFSET_Y, CELL_SIZE, P2_COLOR);
+        drawSquare((SPAWN_2_X*CELL_SIZE)+OFFSET_X, (SPAWN_2_Y*CELL_SIZE)+OFFSET_Y, CELL_SIZE, P2_COLOR);
     }
     //p1
     drawSquare((SPAWN_1_X*CELL_SIZE)+OFFSET_X, (SPAWN_1_Y*CELL_SIZE)+OFFSET_Y, CELL_SIZE, P1_COLOR);
@@ -278,12 +279,12 @@ void spawnPlayers(){
     return;
 }
 
-void countDown() {
+void countDown() { //cuenta regresiva
     setSize(COUNTDOWN_FONT);
     printf_s("\t\t\t\t");
     for (int i = 3; i > 0; i--) {
-        printf_s("%d", i); // Imprimir el número de la cuenta regresiva
-        syscall_sleep(1000); // Esperar 1 segundo (1000 ms)
+        printf_s("%d", i);
+        syscall_sleep(1000);
         putchar_s('\b');
     }
     printf_s("Go!\n"); // Mensaje al finalizar la cuenta regresiva
@@ -291,62 +292,73 @@ void countDown() {
 }
 
 // Inicializar las serpientes
-void initSnakes() { // Se pasa la serpiente como parámetro
+void initSnakes() { 
     if(players == 2 ){
+        snake2.x[snake2.length] = SPAWN_2_X-1;
+        snake2.y[snake2.length++] = SPAWN_2_Y;
         snake2.x[snake2.length] = SPAWN_2_X;
         snake2.y[snake2.length++] = SPAWN_2_Y;
-        snake2.x[snake2.length] = SPAWN_2_X+1;
-        snake2.y[snake2.length++] = SPAWN_2_Y;
     }
-    snake1.x[snake1.length] = SPAWN_1_X; // Usar el parámetro
-    snake1.y[snake1.length++] = SPAWN_1_Y; // Usar el parámetro
-    snake1.x[snake1.length] = SPAWN_1_X-1; // Usar el parámetro
-    snake1.y[snake1.length++] = SPAWN_1_Y; // Usar el parámetro
+    snake1.x[snake1.length] = SPAWN_1_X; 
+    snake1.y[snake1.length++] = SPAWN_1_Y; 
+    snake1.x[snake1.length] = SPAWN_1_X-1; 
+    snake1.y[snake1.length++] = SPAWN_1_Y; 
 }
 
 // Añadir un nodo a la serpiente especificada
-void grow(Snake* snake, int x, int y) { // Se pasa la serpiente como parámetro
-    if (snake->length < MAX_LENGTH) { // Verificar longitud de la serpiente
-        snake->x[snake->length] = x; // Establecer la coordenada X
-        snake->y[snake->length] = y; // Establecer la coordenada Y
-        snake->length++; // Incrementar la longitud de la serpiente
+void grow(Snake* snake, int x, int y) { 
+    if (snake->length < MAX_LENGTH) { 
+        snake->x[snake->length] = x; 
+        snake->y[snake->length] = y; 
+        snake->length++; 
     }
 }
 
-// Iterar sobre los nodos de la serpiente especificada y aplicar una función a cada uno
-void iterateSnake(Snake* snake, int player) { // Se pasa la serpiente como parámetro
+void drawSnake(Snake* snake, int player) {
     for (int i = 0; i < snake->length; i++) {
         drawSquare(snake->x[i] * CELL_SIZE + OFFSET_X, 
                    snake->y[i] * CELL_SIZE + OFFSET_Y, 
-                   CELL_SIZE, player == PLAYER_1? P1_COLOR:P2_COLOR); // Aplicar la función a las coordenadas del nodo
-        //printf_s("[%d,%d]->", snake->x[i], snake->y[i] );
+                   CELL_SIZE, player == PLAYER_1? P1_COLOR:P2_COLOR);
     }
 }
 
 // Reiniciar las serpientes
-void resetSnakes(Snake* snake) { // Se pasa la serpiente como parámetro
+void resetSnake(Snake* snake) { // Se pasa la serpiente como parámetro
+    snake->dir =0;
+    for(int i = 0 ; i < snake->length ; i++){
+        snake->x[i] = 0;
+        snake->y[i] = 0;
+    }
     snake->length = 0; // Reiniciar la longitud de la serpiente
+}
+void resetGame(){
+    resetSnake(&snake1);
+    resetSnake(&snake2);
+    for(int i = 0 ; i<ROWS ; i++){
+        for (int j = 0; j < COLUMNS; j++){
+            board[i][j] = EMPTY;
+        }
+    }
+    fruit = 0;
 }
 
 // Mover la serpiente especificada en la dirección dada
-void moveSnake(Snake* snake, int player, int g) {
-    // Obtener la próxima posición en X e Y según la dirección actual de la serpiente
-    //printf_s("dir: %d \n",snake->dir);
+void moveSnake(Snake* snake, int player) {
+    // Próxima posición según la dirección de la serpiente
     int nextX = (snake->dir == LEFT) ? snake->x[0] - 1 : (snake->dir == RIGHT) ? snake->x[0] + 1 : snake->x[0];
     int nextY = (snake->dir == UP) ? snake->y[0] - 1 : (snake->dir == DOWN) ? snake->y[0] + 1 : snake->y[0];
-    //printf_s("%d  %d\n", nextX, nextY);
-    // Chequear colisiones antes de verificar la fruta
+
+    // Chequear colisiones
     if (nextY < 0 || nextY >= ROWS || nextX < 0 || nextX >= COLUMNS || board[nextY][nextX] == PLAYER_1 || board[nextY][nextX] == PLAYER_2  ) {
-        printf_s("hubo\n");
-        while(1);
-        collision(player); // Llamar a collision() si intenta salir del rango
-        return; // Salir de la función si hay colisión
+        collision(player);
+        return; 
     }
 
+    int g = 0; //veo si crece
     if(board[nextY][nextX] == FRUIT) {
         fruit = 0;
         board[nextY][nextX] = EMPTY; 
-        g = 1; // Indicar que se ha comido una fruta
+        g = 1; 
     }
     
     if (snake->length > 0) { // Verificar que la serpiente tenga segmentos
@@ -358,23 +370,33 @@ void moveSnake(Snake* snake, int player, int g) {
         } else {
             grow(snake, snake->x[snake->length], snake->y[snake->length]);
         }
-        for (int i = snake->length; i > 0; i--) { // Mover los segmentos de la serpiente
-            if(i == snake->length){
-                board[snake->x[i]][snake->y[i]] = EMPTY;
+        for (int i = snake->length-1; i > 0; i--) { // Muevo los segmentos de la serpiente
+            if(i == snake->length-1){
+                board[snake->y[i]][snake->x[i]] = EMPTY;
             }
-            snake->x[i] = snake->x[i - 1]; // Mover la coordenada X
-            snake->y[i] = snake->y[i - 1]; // Mover la coordenada Y
-            board[snake->x[i]][snake->y[i]] = player; // Actualizo el tablero con quien ocupa ese espacio
+            snake->x[i] = snake->x[i - 1]; 
+            snake->y[i] = snake->y[i - 1];
+            board[snake->y[i]][snake->x[i]] = player; 
         }
 
         // Actualizar la cabeza de la serpiente según la dirección
-        snake->x[0] = nextX; // Actualizar la posición X de la cabeza
-        snake->y[0] = nextY; // Actualizar la posición Y de la cabeza
-        board[snake->x[0]][snake->y[0]] = player;
-        //redibuja la serpiente
-        iterateSnake(snake, player);
-        //drawSnakePosition(snake, player); // Llamada actualizada
+        snake->x[0] = nextX; 
+        snake->y[0] = nextY; 
+        board[snake->y[0]][snake->x[0]] = player;
+
+        //redibujo la serpiente
+        drawSnake(snake, player);
     }
+}
+void printBoard(){//version text-based
+    for(int i = 0 ; i<ROWS ; i++){
+        for (int j = 0; j < COLUMNS; j++)
+        {
+            printf_s("%d", board[i][j]);
+        }
+        printf_s("\n");
+    }
+    printf_s("\n");
 }
 
 void fruitControl(){

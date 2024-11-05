@@ -19,8 +19,8 @@ int seconds_elapsed() {
 uint64_t ms_elapsed() {
     return ticks * 55;
 }
-void timer_ms(int * time ){
-    time = seconds_elapsed();
+void timer_ms(long * time ){
+    *time = ms_elapsed();
 }
 
 // Arma un string con la hora actual en formato HH:MM:SS

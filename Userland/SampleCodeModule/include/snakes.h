@@ -42,6 +42,7 @@ void handleInput(char key);
 int getPlayerByKey(char key);
 int inputToDir(char key, int player);
 void fruitControl();
+void printBoard();
 
 
 // Definición de la estructura Snake
@@ -56,7 +57,8 @@ typedef struct {
 void initSnakes();
 void grow(Snake* snake, int x, int y);
 void iterateSnake(Snake* snake, int player);
-void resetSnakes(Snake* snake);
+void resetSnake(Snake* snake);
+void resetGame();
 void drawSnakePosition(Snake* snake, int player);
-void moveSnake(Snake* snake, int player, int g);
+void moveSnake(Snake* snake, int player);
 #endif 
