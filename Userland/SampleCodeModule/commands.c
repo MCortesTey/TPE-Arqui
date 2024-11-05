@@ -7,7 +7,6 @@
 
 static char * commands[][2] = {
         {"clear", "Clears the screen."},
-        {"exit", "Exits the shell."},
         {"help", "Shows the available commands."},
         {"invalidOpcode", "Test for the Invalid Opcode Exception"},
         {"zero", "Test for the Zero Division Exception"},
@@ -22,7 +21,6 @@ static char * commands[][2] = {
 
 static int (*commandsFunctions[])(int argc, char* argv[]) = {
     clearCommand,
-    exitCommand,
     helpCommand,
     invalidOp_exceptionCommand,
     zero_exceptionCommand,
@@ -107,11 +105,6 @@ int helpCommand(int argc, char * argv[] ){
 int clearCommand(int argc, char *argv[]) {
     clearScreen();
     return 0;
-}
-
-int exitCommand(int argc, char *argv[]) {
-    clearScreen();
-    return EXIT;  
 }
 
 int invalidOp_exceptionCommand(int argc, char* argv[]) {

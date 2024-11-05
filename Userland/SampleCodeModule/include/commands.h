@@ -10,7 +10,6 @@
 
 char* fillCommandAndArgs(char* args[], char *commandInput, int *argsCount);
 int clearCommand(int argc, char * argv[]);
-int exitCommand(int argc, char * argv[]);
 int helpCommand(int argc, char * argv[]);
 int invalidOp_exceptionCommand(int argc, char* argv[]);
 int show_registersCommand(int argc, char* argv[]);

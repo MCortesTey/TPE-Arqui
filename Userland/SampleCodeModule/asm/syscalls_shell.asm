@@ -63,6 +63,6 @@ _invalidOpcode:
     ud2
 
 zero_division:
-    mov rax, 1      ; Dividendo
+    mov rax, 8      ; Dividendo
     xor rcx, rcx    ; Divisor = 0
     div rcx      
