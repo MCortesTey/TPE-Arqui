@@ -24,12 +24,13 @@ EXTERN exceptionDispatcher
 EXTERN printRegStatus
 EXTERN load_main
 EXTERN regsReady
+EXTERN saveRegs
 EXTERN keyboardDriver
 EXTERN getStackBase
 
 GLOBAL exception_regs
-GLOBAL registers
-GLOBAL regsChecked
+;GLOBAL registers
+;GLOBAL regsChecked
 
 EXTERN sysCaller
 
@@ -132,33 +133,37 @@ _irq01Handler:
 
 	call regsReady
 	cmp rax, 1
-	je .exit
+	jne .exit
 
-	;RAX, RBX, RCX, RDX, RSI, RDI, RBP, R8, R9, R10, R11, R12, R13, R14, R15, RSP, RIP, RFLAGS
-	mov [registers+8*1],rbx
-	mov [registers+8*2],rcx
-	mov [registers+8*3],rdx
-	mov [registers+8*4],rsi
-	mov [registers+8*5],rdi
-	mov [registers+8*6],rbp
+	popState
+	pushState
 
-	mov rax, [rsp + 8*18]
-
-	mov [registers+8*7], rax
-	mov [registers+8*8], r8
-	mov [registers+8*9], r9
-	mov [registers+8*10], r10
-	mov [registers+8*11], r11
-	mov [registers+8*12], r12
-	mov [registers+8*13], r13
-	mov [registers+8*14], r14
-	mov [registers+8*15], r15
+.saveRegs:
 	
-	mov rax, [rsp+8*15]
-	mov [registers + 8*16], rax 
+    mov [registers + 8 * 0 ], rax
+    mov [registers + 8 * 1 ], rbx
+    mov [registers + 8 * 2 ], rcx
+    mov [registers + 8 * 3 ], rdx
+    mov [registers + 8 * 4 ], rsi
+    mov [registers + 8 * 5 ], rdi
+    mov [registers + 8 * 6 ], rbp
+    mov rax, [rsp+18*8]
+    ;add rax, 16 * 8 ; es lo que se decremento rsp con la macro pushState y el pusheo de la dir. de retorno
+    mov [registers + 8 * 7 ], rax ;rsp
 
-	mov rax, 1
-	mov [regsChecked], rax
+    mov [registers + 8 * 8 ], r8
+    mov [registers + 8 * 9 ], r9
+    mov [registers + 8 * 10], r10
+   	mov [registers + 8 * 11], r11
+   	mov [registers + 8 * 12], r12
+   	mov [registers + 8 * 13], r13
+   	mov [registers + 8 * 14], r14
+   	mov [registers + 8 * 15], r15
+   	mov rax, [rsp+15*8]; posicion en el stack de la dir. de retorno (valor del rip previo al llamado de la interrupcion)
+	mov [registers + 8 * 16], rax
+
+    mov rdi, registers
+    call saveRegs
 
 .exit:
 	mov al, 20h
@@ -274,27 +279,14 @@ haltcpu:
 	hlt
 	ret
 
-saveRegisters:
-	pushState
-	saveRegistersASM
-	popState
-	ret
-
-
-;printRegStatusASM:
-;	mov rdi, 0
-;	call printRegStatus
-;	ret
 
 section .bss 
 	aux resq 1	
-	exceptregs resq 18	;registros para la excepcion
-	
+	registers resq 17
 	
 section .data
-	registers dq 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	;registros para el teclado
-	regsChecked dq 0		;flag para saber si se capturo un teclado
 	exception_regs dq 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ; 18 zeros
 
 SECTION .rodata
-userland equ 0x400000
+	userland equ 0x400000
+	

@@ -8,8 +8,16 @@
 #include <interrupts.h>
 #include <soundDriver.h>
 
-extern uint64_t registers[17];
-extern uint64_t regsChecked;
+uint64_t registers[17];
+uint64_t regsChecked;
+
+
+void saveRegs(const int64_t *regs) {
+    for (int i = 0; i < 17; i++)
+        registers[i] = regs[i];
+    regsChecked = 1;
+}
+
 
 void sys_write(char * buff, int count, int fd){
     switch(fd){

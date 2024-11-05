@@ -131,20 +131,15 @@ void clearScreen(){
 
 void showRegisters(){
     RegsSaved regs;
-    int ok = syscall_regs_ok(&regs) ;
+    int regsChecked = syscall_regs_ok(&regs) ;
     char buffer[10];
     
-    if(ok == 0) {
-        itoa(ok, buffer, 10);
-        printf_s(buffer);
+    if(regsChecked == 0) {
         printf_s("No register snapshot available. Press ESC to take a snapshot.\n");
         return;
-    } else if ( ok == 1 ){
+    } 
     
     printf_s("Register snapshot:\n");
-    printf_s(ok);
-    printf_s(buffer);
-
     printf_s("rax: 0x%x\n", regs.rax);
     printf_s("rbx: 0x%x\n", regs.rbx);
     printf_s("rcx: 0x%x\n", regs.rcx);
@@ -162,7 +157,7 @@ void showRegisters(){
     printf_s("r14: 0x%x\n", regs.r14);
     printf_s("r15: 0x%x\n", regs.r15);
     printf_s("rIP: 0x%x\n", regs.rip);
-    }
+    
 }
 
 void showTime(){

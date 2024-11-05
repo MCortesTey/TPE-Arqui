@@ -27,11 +27,8 @@
 #define CTRL_PRESS 0x1D // Tecla de control presionada
 #define CTRL_RELEASE 0x9D // Tecla de control liberada
 
-static int regsChecked = 0 ;
+static uint8_t regs_ok = 0 ;
 
-static void escPressed(void){
-    regsChecked = 1;
-}
 
 static unsigned char asccCode[58][2] = {
  	{0, 0},
@@ -139,6 +136,9 @@ void bufferAppend(char c) {
 unsigned char keyHandler(unsigned int key){
  	switch (key)
  	{
+	case ESCAPE_KEY:
+ 		regs_ok = 1; // Activar registro
+ 		return 0; // No se inserta nada en el búfer
  	case RIGHT_SHIFT_PRESS:
  	case LEFT_SHIFT_PRESS:
  		shift = 1; // Activar shift
@@ -149,9 +149,6 @@ unsigned char keyHandler(unsigned int key){
  		return 0; // No se inserta nada en el búfer
  	case CAPS_LOCK_PRESS:
  		capsLock = 1 - capsLock; // Cambiar estado del bloqueo de mayúsculas
- 		return 0; // No se inserta nada en el búfer
- 	case ESCAPE_KEY:
- 		regsChecked = 1; // Activar registro
  		return 0; // No se inserta nada en el búfer
 	case ENTER_KEY:
 		return '\n';
@@ -232,8 +229,8 @@ void buffNext() {
      }
  }
 
- int regsReady(){
-	return regsChecked;
+ uint8_t regsReady(){
+	return regs_ok;
  }
 
  
