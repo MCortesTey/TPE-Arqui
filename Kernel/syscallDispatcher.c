@@ -36,7 +36,7 @@ switch(rax){
 		 	drawSquare(rdi, rsi, rdx, r10);
 		 	break;
 		case 13:
-			timer_ms((int *)rdi);
+			timer_ms((long *)rdi);
 			break;
 		// case 14:
 		// 		sleeps(rdi);
