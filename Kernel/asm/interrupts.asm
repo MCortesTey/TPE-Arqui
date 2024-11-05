@@ -283,9 +283,8 @@ haltcpu:
 section .bss 
 	aux resq 1	
 	registers resq 17
-	
-section .data
-	exception_regs dq 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ; 18 zeros
+	exception_regs resq 18
+
 
 SECTION .rodata
 	userland equ 0x400000

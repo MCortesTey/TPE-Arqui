@@ -3,7 +3,6 @@
 #include <lib.h>
 #include <videoDriver.h>
 #include <sysCalls.h>
-#include <registers.h>
 
 // Definiciones de constantes
 #define TOTAL_KEYS 58 // Número total de teclas definidas
