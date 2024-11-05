@@ -24,7 +24,7 @@ int atoi(char *str);
 void makeSound(uint64_t freq, uint64_t duration);
 
 
-void setSeed(unsigned long newSeed);
+void setSeed();
 unsigned long lcg();
 int getRandom();
 int getRandomInRange(int min, int max);

@@ -132,8 +132,7 @@ void clearScreen(){
 void showRegisters(){
     RegsSaved regs;
     int regsChecked = syscall_regs_ok(&regs) ;
-    char buffer[10];
-    
+
     if(regsChecked == 0) {
         printf_s("No register snapshot available. Press ESC to take a snapshot.\n");
         return;
@@ -231,10 +230,10 @@ void makeSound(uint64_t freq, uint64_t duration) {
     syscall_makeSound(freq, duration);
 }
 
-static unsigned long seed = 1; // Semilla inicial
+static long seed = 1; // Semilla inicial
 
-void setSeed(unsigned long newSeed) {
-    seed = newSeed;
+void setSeed() {
+    syscall_timerms(&seed);
 }
 
 // Función LCG para generar un número aleatorio
@@ -245,9 +244,11 @@ unsigned long lcg() {
 
 // Función para obtener un número aleatorio
 int getRandom() {
+    setSeed();
     return lcg(); // Genera un número aleatorio usando LCG
 }
 
 int getRandomInRange(int min, int max) {
+    setSeed();
     return (lcg() % (max - min + 1)) + min; // Genera un número en el rango [min, max]
 }
