@@ -92,6 +92,8 @@ int sys_regs_ok ( RegsSaved * regs){
     regs->r14 = registers[14];
     regs->r15 = registers[15];
     regs->rip = registers[16];
+
+
     return 1;
 }
 

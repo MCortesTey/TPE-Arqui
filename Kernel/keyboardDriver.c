@@ -232,4 +232,8 @@ void buffNext() {
 	return regs_ok;
  }
 
+ void uncheckRegs(){
+	regs_ok = 0;
+ }
+
  
