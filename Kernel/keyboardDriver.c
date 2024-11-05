@@ -120,7 +120,7 @@ void bufferAppend(char c) {
  int registerPressed = 0; // Estado de la tecla de registro
 
  void keyboard_handler(){	
- 	unsigned int key = keyHandler(getKeyPressed()); // Filtrar la tecla y obtener el caracter
+ 	uint8_t key = keyHandler(getKeyPressed()); // Filtrar la tecla y obtener el caracter
 
  	if (key){ // Si no es una tecla especial
  		bufferAppend(key); // Escribir en el búfer

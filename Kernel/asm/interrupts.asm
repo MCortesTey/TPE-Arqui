@@ -18,8 +18,9 @@ GLOBAL _exception6Handler
 GLOBAL saveRegisters
 GLOBAL printRegStatusASM
 
+
 EXTERN irqDispatcher
-EXTERN sysDispatcher
+EXTERN syscallDispatcher
 EXTERN exceptionDispatcher
 EXTERN printRegStatus
 EXTERN load_main
@@ -31,8 +32,6 @@ EXTERN getStackBase
 GLOBAL exception_regs
 ;GLOBAL registers
 ;GLOBAL regsChecked
-
-EXTERN sysCaller
 
 SECTION .text
 
@@ -147,7 +146,7 @@ _irq01Handler:
     mov [registers + 8 * 4 ], rsi
     mov [registers + 8 * 5 ], rdi
     mov [registers + 8 * 6 ], rbp
-    mov rax, [rsp+18*8]
+    mov rax, [rsp + 18 * 8]
     ;add rax, 16 * 8 ; es lo que se decremento rsp con la macro pushState y el pusheo de la dir. de retorno
     mov [registers + 8 * 7 ], rax ;rsp
 
@@ -206,13 +205,12 @@ _irq80Handler:
 	
 
 
-	mov r9, rcx
-	mov r8, rdx
-	mov rcx, rsi
-	mov rdx, rdi
-	mov rsi, rax
-	mov rdi, 60h
-	call irqDispatcher
+	mov r8, rcx
+	mov rcx, rdx
+	mov rdx, rsi
+	mov rsi, rdi
+	mov rdi, rax
+	call syscallDispatcher
 
 	pop r15
 	pop r14
