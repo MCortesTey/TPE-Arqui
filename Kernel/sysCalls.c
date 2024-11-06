@@ -8,16 +8,9 @@
 #include <interrupts.h>
 #include <soundDriver.h>
 
+//RegsSaved definido en sysCalls.h
 uint64_t registers[17];
 uint64_t regsChecked;
-
-
-void saveRegs(const int64_t *regs) {
-    for (int i = 0; i < 17; i++)
-        registers[i] = regs[i];
-    regsChecked = 1;
-}
-
 
 void sys_write(char * buff, int count, int fd){
     switch(fd){
@@ -26,11 +19,12 @@ void sys_write(char * buff, int count, int fd){
             break;
         case STDERR:
             vdPrintColorUpto(buff, 0x00FF0000, 0x00000000, count);
-            //ncPrintStyle(buff, 0x04);
+            
             break;
     }
-    //CASO INVALID FD
+    
 }
+
 void sys_read(char * c, int len, int fd){
     if (fd == STDIN) {
         for (int i = 0; i < len; i++) {
@@ -48,26 +42,12 @@ void sys_read(char * c, int len, int fd){
     return;
 }
 
-
-//version1
-// void sys_sleep(uint64_t millis) {
-//     unsigned long long initial_time = ms_elapsed(); // tiempo
-//     unsigned long long currentTime = initial_time;
-//     _sti();// Habilito interrupciones para permitir que el sistema siga funcionando
-//     while ((currentTime - initial_time) <= millis) { //espero transcurra lo especificado
-//         currentTime = ms_elapsed();
-//     }
-    
-//     _cli();// Deshabilito interrupciones para asegurar que el sistema no se interrumpa
-// }
-//version2
 void sys_sleep(uint64_t millis){
 	int startTime = ticks_elapsed();
 	while (millis > ticks_elapsed()* 55 - startTime * 55){
 		_hlt();
 	}
 }
-
 
 int sys_regs_ok ( RegsSaved * regs){
     
@@ -97,3 +77,8 @@ int sys_regs_ok ( RegsSaved * regs){
     return 1;
 }
 
+void saveRegs(const int64_t *regs) {
+    for (int i = 0; i < 17; i++)
+        registers[i] = regs[i];
+    regsChecked = 1;
+}
