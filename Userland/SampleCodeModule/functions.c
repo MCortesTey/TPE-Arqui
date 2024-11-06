@@ -139,23 +139,23 @@ void showRegisters(){
     } 
     
     printf_s("Register snapshot:\n");
-    printf_s("rax: 0x%x\n", regs.rax);
-    printf_s("rbx: 0x%x\n", regs.rbx);
-    printf_s("rcx: 0x%x\n", regs.rcx);
-    printf_s("rdx: 0x%x\n", regs.rdx);
-    printf_s("rsi: 0x%x\n", regs.rsi);
-    printf_s("rdi: 0x%x\n", regs.rdi);
-    printf_s("rbp: 0x%x\n", regs.rbp);
-    printf_s("rsp: 0x%x\n", regs.rsp);
-    printf_s("r8:  0x%x\n", regs.r8 );
-    printf_s("r9:  0x%x\n", regs.r9 );
-    printf_s("r10: 0x%x\n", regs.r10);
-    printf_s("r11: 0x%x\n", regs.r11);
-    printf_s("r12: 0x%x\n", regs.r12);
-    printf_s("r13: 0x%x\n", regs.r13);
-    printf_s("r14: 0x%x\n", regs.r14);
-    printf_s("r15: 0x%x\n", regs.r15);
-    printf_s("rIP: 0x%x\n", regs.rip);
+    printf_s("RAX: 0x%x\n", regs.rax);
+    printf_s("RBX: 0x%x\n", regs.rbx);
+    printf_s("RCX: 0x%x\n", regs.rcx);
+    printf_s("RDX: 0x%x\n", regs.rdx);
+    printf_s("RSI: 0x%x\n", regs.rsi);
+    printf_s("RDI: 0x%x\n", regs.rdi);
+    printf_s("RBP: 0x%x\n", regs.rbp);
+    printf_s("RSP: 0x%x\n", regs.rsp);
+    printf_s("R8:  0x%x\n", regs.r8 );
+    printf_s("R9:  0x%x\n", regs.r9 );
+    printf_s("R10: 0x%x\n", regs.r10);
+    printf_s("R11: 0x%x\n", regs.r11);
+    printf_s("R12: 0x%x\n", regs.r12);
+    printf_s("R13: 0x%x\n", regs.r13);
+    printf_s("R14: 0x%x\n", regs.r14);
+    printf_s("R15: 0x%x\n", regs.r15);
+    printf_s("RIP: 0x%x\n", regs.rip);
     
 }
 

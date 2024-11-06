@@ -51,7 +51,7 @@ static int size = 1;
 
 
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
-    uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
+    uint8_t * framebuffer = (uint8_t *)(uintptr_t) VBE_mode_info->framebuffer;
     uint64_t offset = (x * ((VBE_mode_info->bpp)/8)) + (y * VBE_mode_info->pitch);
     framebuffer[offset]     =  (hexColor) & 0xFF;
     framebuffer[offset+1]   =  (hexColor >> 8) & 0xFF; 
@@ -189,7 +189,7 @@ void vdDelete(){
 
 void backspaceMove() {
     // Puntero al framebuffer para acceder a los píxeles
-    uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
+    uint8_t * framebuffer = (uint8_t *)(uintptr_t) VBE_mode_info->framebuffer;
 
     // Bucle para mover el contenido a la izquierda
     for (int i = posY; i < VBE_mode_info->height && i < posY + 3*16*size; i++) {
@@ -263,7 +263,7 @@ void clear() {
 void moveScreenUpIfFull() {
     if (posY >= VBE_mode_info->height - (32*size) - MARGIN) {
         // Mover todo el contenido una línea hacia arriba
-        uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
+        uint8_t * framebuffer = (uint8_t *)(uintptr_t) VBE_mode_info->framebuffer;
         for (int y = MARGIN + 16*size; y < VBE_mode_info->height; y++) {
             for (int x = MARGIN; x < VBE_mode_info->width-MARGIN; x++) {
                 uint64_t destOffset = (x * (VBE_mode_info->bpp/8)) + ((y - 16*size) * VBE_mode_info->pitch);

@@ -26,7 +26,7 @@
 #define CTRL_PRESS 0x1D // Tecla de control presionada
 #define CTRL_RELEASE 0x9D // Tecla de control liberada
 
-static uint8_t regs_ok = 0 ;
+static uint8_t regs_ok = 0 ; // flag para chequear si los registros ya fueron actualizados
 
 
 static unsigned char asccCode[58][2] = {
@@ -128,8 +128,8 @@ unsigned char keyHandler(unsigned int key){
  	switch (key)
  	{
 	case ESCAPE_KEY:
- 		regs_ok = 1; // Activar registro
- 		return 0; // No se inserta nada en el búfer
+ 		regs_ok = 1;  // se utiliza ESC para cambiar el flag de registros actualizados
+ 		return 0; 
  	case RIGHT_SHIFT_PRESS:
  	case LEFT_SHIFT_PRESS:
  		shift = 1; // Activar shift
@@ -215,11 +215,11 @@ void buffNext() {
      }
  }
 
- uint8_t regsReady(){
+ uint8_t regsReady(){   // retorna si los registros fueron actualizados o no
 	return regs_ok;
  }
 
- void uncheckRegs(){
+ void uncheckRegs(){   
 	regs_ok = 0;
  }
 

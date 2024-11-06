@@ -13,8 +13,6 @@ uint8_t getMinutes();
 uint8_t getHours();
 uint8_t getKeyPressed();
 char * TimeClock(char * buffer);
-void printRegStatusASM();
-void saveRegisters();
 void _out(uint16_t port, uint8_t value);
 uint8_t _in(uint16_t port);
 

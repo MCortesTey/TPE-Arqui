@@ -1,11 +1,10 @@
-
 #define ZERO_EXCEPTION_ID 0
 
 static void zero_division();
 #include "exceptions.h"
 #include "videoDriver.h"
 #include "lib.h"
-;extern uint64_t exception_regs[18];
+
 
 void exceptionDispatcher(int exception, uint64_t exceptionRegisters[18]) {
 	if (exception == ZERO_EXCEPTION_ID)
@@ -13,18 +12,15 @@ void exceptionDispatcher(int exception, uint64_t exceptionRegisters[18]) {
 	else{
 		invalidOperation();
 	}
-	printRegStatus(exceptionRegisters); //&regBackup
+	printRegStatus(exceptionRegisters); // printea los registros guardados en exceptionHandler 
 }
 
 void zero_division() {
-	//regsChecked = 1;
 	vdPrintError("Error: Division by cero is not permitted");
 	vdNewline();
-
 }
 
 void invalidOperation(){
-	//regsChecked = 1;
 	vdPrintError("Error: Invalid Operation");
 	vdNewline();
 }

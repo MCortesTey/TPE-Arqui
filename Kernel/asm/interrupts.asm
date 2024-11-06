@@ -15,26 +15,19 @@ GLOBAL _irq80Handler
 
 GLOBAL _exception0Handler
 GLOBAL _exception6Handler
-GLOBAL saveRegisters
-GLOBAL printRegStatusASM
 
-EXTERN uncheckRegs
+
 EXTERN irqDispatcher
 EXTERN syscallDispatcher
 EXTERN exceptionDispatcher
-EXTERN printRegStatus
-EXTERN load_main
-EXTERN regsReady
-EXTERN saveRegs
 EXTERN keyboardDriver
 EXTERN getStackBase
 
-GLOBAL exception_regs
-;GLOBAL registers
-;GLOBAL regsChecked
+EXTERN uncheckRegs
+EXTERN regsReady
+EXTERN saveRegs
 
 SECTION .text
-
 
 %macro pushState 0
 	push rax
@@ -123,21 +116,20 @@ picSlaveMask:
 _irq00Handler:
 	irqHandlerMaster 0
 
+
 ;Keyboard
 _irq01Handler:
 	pushState
 
 	mov rdi, 1 
-	call irqDispatcher
+	call irqDispatcher   ; llama a irqDispatcher que llama a keybord_handler
 
-	call regsReady
+	call regsReady     ; chequea si ya se guardaron los registros a partir del flag regs_ok
 	cmp rax, 1
-	jne .exit
+	jne .exit          ; si flag == 0 guarda los registros en registers
 
 	popState
 	pushState
-
-.saveRegs:
 	
     mov [registers + 8 * 0 ], rax
     mov [registers + 8 * 1 ], rbx
@@ -147,7 +139,6 @@ _irq01Handler:
     mov [registers + 8 * 5 ], rdi
     mov [registers + 8 * 6 ], rbp
     mov rax, [rsp + 18 * 8]
-    ;add rax, 16 * 8 ; es lo que se decremento rsp con la macro pushState y el pusheo de la dir. de retorno
     mov [registers + 8 * 7 ], rax ;rsp
 
     mov [registers + 8 * 8 ], r8
@@ -158,12 +149,13 @@ _irq01Handler:
    	mov [registers + 8 * 13], r13
    	mov [registers + 8 * 14], r14
    	mov [registers + 8 * 15], r15
-   	mov rax, [rsp+15*8]; posicion en el stack de la dir. de retorno (valor del rip previo al llamado de la interrupcion)
+   	mov rax, [rsp+15*8]                 ; posicion en el stack de la dir. de retorno (valor del rip previo al llamado de la interrupcion)
 	mov [registers + 8 * 16], rax
 
-    mov rdi, registers
-	call uncheckRegs
-    call saveRegs
+	call uncheckRegs  ; cambia a 0 el flag de chequeo de registros (regs_ok)
+
+	mov rdi, registers
+    call saveRegs  ; guarda copia de registros (definida en sysCalls.c)
 
 .exit:
 	mov al, 20h
@@ -204,8 +196,6 @@ _irq80Handler:
 	push r14
 	push r15
 	
-
-
 	mov r8, rcx
 	mov rcx, rdx
 	mov rdx, rsi
@@ -232,8 +222,6 @@ _irq80Handler:
 	mov [exception_regs + 8*4 ], rsi
 	mov [exception_regs + 8*5 ], rdi
 	mov [exception_regs + 8*6 ], rbp
-	; mov rax, rsp
-    ; add rax, 16 * 8                     ; RSP del contexto anterior
     mov rax, [rsp + 18 * 8]
 	mov [exception_regs + 8*7 ], rax	;
 	mov [exception_regs + 8*8 ], r8
@@ -249,16 +237,15 @@ _irq80Handler:
 	mov rax, [rsp+17*8]                     ; RFLAGS
 	mov [exception_regs + 8*17], rax
 
-	mov rdi, %1                             ; Parametros para exceptionDispatcher
+	mov rdi, %1                             ; le pasa a exceptionDispatcher nro de excepcion y arreglo de registros
 	mov rsi, exception_regs
-
 	call exceptionDispatcher
 
-	popState
-    call getStackBase
-	mov [rsp+24], rax ; El StackBase
+	popState                               ;regreso a la shell (getStackBase: funcion en kernel.c) 
+    call getStackBase                      ; obtiene la dirección base del stack y la coloca en el registro rax
+	mov [rsp+24], rax 
     mov rax, userland
-    mov [rsp], rax ; PISO la dirección de retorno
+    mov [rsp], rax     ;Se mueve el valor de rax (direc de userland) a la ubicación actual del stack apuntada por rsp
 
     sti
     iretq
@@ -278,13 +265,12 @@ haltcpu:
 	hlt
 	ret
 
-
 section .bss 
 	aux resq 1	
 	registers resq 17
 	exception_regs resq 18
 
 
-SECTION .rodata
+section .rodata
 	userland equ 0x400000
 	
