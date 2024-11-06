@@ -8,10 +8,7 @@ int ticks_elapsed();
 int seconds_elapsed();
 uint64_t ms_elapsed();
 void timer_ms(long * time );
-uint8_t getSeconds();
-uint8_t getMinutes();
-uint8_t getHours();
-void convertToGMTMinus3(int *hours);
 char * TimeClock(char * buffer);
+void convertToGMTMinus3(int *hours);
 
 #endif

@@ -4,7 +4,6 @@
 #include "functions.h"
 #include "syscalls_shell.h"
 
-
 #define STDOUT 1
 #define WHITE 0xFFFFFFFF
 #define BUFFER_SIZE 256
@@ -15,15 +14,6 @@ static unsigned int log(uint64_t n, int base) {
         count++;
     return count;
 }
-
-// void putcharColor(char c, uint32_t color) { //puede que esta no la necesitemos 
-//     syscall_write(&c, 1, STDOUT, color);
-// }
-
-// void putchar_s(char c) {
-//     putcharColor(c, WHITE);
-// }
-
 
 void putchar_s(char c){
     syscall_write(&c, 1, STDOUT);
@@ -124,7 +114,6 @@ void strcpy_s(char *dest, const char *src) {
     dest[i] = '\0';
 }
 
-
 void clearScreen(){
     syscall_clear();
 }
@@ -172,6 +161,7 @@ void showTime(){
 void changeSize(int size){
     syscall_changesize(size);
 }
+
 void setSize(int size){
     changeSize(size);
 }
@@ -225,7 +215,6 @@ int atoi(char *str) {
 
     return sign*res;
 }
-
 
 void makeSound(uint64_t freq, uint64_t duration) {
     syscall_makeSound(freq, duration);
