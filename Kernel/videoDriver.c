@@ -58,7 +58,6 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y) {
     framebuffer[offset+2]   =  (hexColor >> 16) & 0xFF;
 }
 
-
 void vdPrintCharColor(char c, uint64_t fcolor, uint64_t bcolor) {
     moveScreenUpIfFull();
 
@@ -71,7 +70,7 @@ void vdPrintCharColor(char c, uint64_t fcolor, uint64_t bcolor) {
     int cx, cy;
     int pos = c - 33; // Posición en el array de fuentes basándose en el carácter
 
-    // Recorre cada fila del carácter
+    
     for (cy = 0; cy < 16; cy++) {
         int maskCheck = 0x01; // Inicializa una máscara para comprobar cada bit en el array de fuentes
         for (cx = 0; cx < 10; cx++) {
@@ -122,20 +121,17 @@ void checkChar(char character, uint64_t fcolor, uint64_t bcolor){
     }
 }
 
-
 void vdPrintColorLen(char * string, uint64_t fcolor, uint64_t bcolor, int len){
     for(int i = 0; i < len && string[i] != 0; i++){
         checkChar(string[i], fcolor, bcolor );
     }
 }
 
-
 void vdPrintColor(char * string, uint64_t fColor, uint64_t bColor){
     for(int i = 0; string[i] != 0; i++){
         checkChar(string[i], fColor, bColor);
     }
 }
-
 
 void vdPrint(char * string){
     vdPrintColor(string, WHITE, BLACK);
@@ -151,11 +147,9 @@ void vdPrintUpto(char * string, int len){
     vdPrintColorUpto(string, WHITE, BLACK, len);
 }
 
-
 void vdPrintError(char *string){
     vdPrintColor(string, RED, BLACK);
 }
-
 
 void vdDelete(){
     // Si la posición actual está en el borde superior izquierdo de la pantalla, no hay nada que borrar
@@ -185,7 +179,6 @@ void vdDelete(){
     // Ajusta la posición del cursor después de borrar el carácter
     posX -= 10*size;
 }
-
 
 void backspaceMove() {
     // Puntero al framebuffer para acceder a los píxeles
@@ -222,12 +215,9 @@ void backspaceMove() {
         }
     }
 }
+
 void vdNewline() {
-    //cursorOff();
     cursor_pos = 0;
-    // if (posY >= VBE_mode_info->height-(32*size)-MARGIN) {
-    //     moveScreen();
-    // }
     posX = MARGIN;
     posY += 16*size;
     moveScreenUpIfFull();
@@ -238,8 +228,7 @@ void vdTab(){
     return;
 }
 
-
-void vdPrintRegister(char *regName, uint64_t regValue) { // le paso el nombre y el estado del registro en uint64
+void vdPrintRegister(char *regName, uint64_t regValue) { // le paso el nombre y el estado del registro
     char buffer[256] = {0}; 
     vdPrint(regName);  
     vdPrint(": 0x"); 
@@ -247,7 +236,6 @@ void vdPrintRegister(char *regName, uint64_t regValue) { // le paso el nombre y 
     vdPrint(buffer);
     vdNewline();
 }
-
 
 void clear() {
     int i, j;
@@ -283,7 +271,6 @@ void moveScreenUpIfFull() {
         posY -= 16*size;
     }
 }
-
 
 void changeSize(int a){
     if(a == 0){ // Reducir el tamaño a 1 si se pasa 0
