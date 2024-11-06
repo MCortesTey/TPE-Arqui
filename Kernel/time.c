@@ -2,6 +2,7 @@
 #include <naiveConsole.h>
 #include <videoDriver.h>
 #include <interrupts.h>
+
 static unsigned long ticks = 0;
 
 void timer_handler() {
@@ -19,6 +20,7 @@ int seconds_elapsed() {
 uint64_t ms_elapsed() {
     return ticks * 55;
 }
+
 void timer_ms(long * time ){
     *time = ms_elapsed();
 }
@@ -69,7 +71,6 @@ char * TimeClock(char * buffer) {
     buffer[digits] = 0; 
     return buffer;
 }
-
 
 void convertToGMTMinus3(int *hours) {
     *hours -= 3;
